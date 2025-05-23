@@ -149,6 +149,11 @@ function Signup() {
       );
       return;
     }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      showToast("error", "Please enter a valid email address", 3000);
+      return;
+    }
     if (password !== confirmPassword) {
       showToast(
         "warning",
@@ -392,7 +397,7 @@ function Signup() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
-                      minLength={5}
+                      minLength={2}
                     />
                   </div>
                   <div className="mb-3 input-group">
@@ -438,7 +443,7 @@ function Signup() {
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       required
-                      minLength={25}
+                      minLength={5}
                     />
                   </div>
 
