@@ -353,13 +353,8 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
       setCnic(newUser.cnic || "Not available");
       setContact(newUser.phone || "Not available");
       setAddress(newUser.address || "Not available");
-      const profileImageUrl = newUser.profileImage
-        ? `https://lost-and-found-backend-xi.vercel.app/${newUser.profileImage.replace(
-            /\\/g,
-            "/"
-          )}`
-        : "";
-      setProfileImage(profileImageUrl);
+     
+      setProfileImage(newUser.profileImage);
 
       setTitle(lostItem.title || "");
       setSelectedCategory(lostItem.category || "");
