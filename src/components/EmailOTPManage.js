@@ -161,6 +161,21 @@ function EmailOTPManage() {
 
   return (
     <div>
+       {Loading && (
+        <div
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-75"
+          style={{ zIndex: 1055 }}
+        >
+          <button className="btn btn-dark" type="button" disabled>
+            <span
+              className="spinner-border spinner-border-sm me-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Loading...
+          </button>
+        </div>
+      )}
       <ToastContainer />
       <div className="container vh-100 d-flex justify-content-center align-items-center">
         <div
