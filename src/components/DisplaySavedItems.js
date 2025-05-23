@@ -22,7 +22,7 @@ function DisplaySavedItems() {
       );
 
       if (!response.ok) {
-        alert("Error getting saved items");
+        
         return;
       }
 

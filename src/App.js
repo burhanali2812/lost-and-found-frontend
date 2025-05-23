@@ -62,7 +62,6 @@ function App() {
         }
       );
       if (!response.ok) {
-        alert("Error getting saved items");
         return;
       }
       const data = await response.json();
