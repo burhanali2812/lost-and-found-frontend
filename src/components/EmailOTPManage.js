@@ -11,6 +11,7 @@ function EmailOTPManage() {
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const [Loading, setLoading] = useState(false);
   const {
     profileImage,
     frontCnic,
@@ -45,7 +46,11 @@ function EmailOTPManage() {
   };
 
   useEffect(() => {
+    setLoading(true);
     sendOTP();
+       setTimeout(() => {
+        setLoading(false); // Hide loader
+      }, 2000);
     inputRefs.current[0]?.focus(); // auto-focus on first input
   }, []);
 
@@ -70,7 +75,11 @@ function EmailOTPManage() {
   // };
 
   const handleResend = () => {
+    setLoading(true)
     sendOTP();
+      setTimeout(() => {
+        setLoading(false); // Hide loader
+      }, 2000);
     alert("OTP resent!");
     setOtp(new Array(6).fill("")); // reset input boxes
     inputRefs.current[0]?.focus();
@@ -102,6 +111,7 @@ function EmailOTPManage() {
   const getOtpValue = () => otp.join("");
 
   const verifyOTP = async () => {
+    setLoading(true);
     debugger;
     const enteredOtp = getOtpValue();
     if (enteredOtp === currentOTP) {
@@ -138,6 +148,7 @@ function EmailOTPManage() {
       const data = await response.json();
 
       if (response.ok) {
+        setLoading(false);
         showToast("success", "User Registered Successfully", 3000, "top-right");
         navigate("/login-signup");
       } else {
