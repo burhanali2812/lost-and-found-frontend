@@ -123,41 +123,45 @@ function EmailOTPManage() {
   };
 
   const finalSignup = async () => {
-    debugger;
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("cnic", cnic);
-    formData.append("address", address);
-    formData.append("password", password);
-    formData.append("phone", phone);
-    formData.append("token", token);
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("email", email);
+  formData.append("cnic", cnic);
+  formData.append("address", address);
+  formData.append("password", password);
+  formData.append("phone", phone);
+  formData.append("token", token);
 
-    if (profileImage) formData.append("profileImage", profileImage);
-    if (frontCnic) formData.append("frontCnic", frontCnic);
-    if (backCnic) formData.append("backCnic", backCnic);
-    try {
-      const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/signup",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+  if (profileImage) formData.append("profileImage", profileImage);
+  if (frontCnic) formData.append("frontCnic", frontCnic);
+  if (backCnic) formData.append("backCnic", backCnic);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setLoading(false);
-        showToast("success", "User Registered Successfully", 3000, "top-right");
-        navigate("/login-signup");
-      } else {
-        showToast("error", data.message, 3000, "top-right");
+  try {
+    const response = await fetch(
+      "https://lost-and-found-backend-xi.vercel.app/auth/signup",
+      {
+        method: "POST",
+        body: formData,
       }
-    } catch (error) {
-      console.error("Error Uploading User:", error);
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setLoading(false);
+      showToast("success", "User Registered Successfully", 3000, "top-right");
+      navigate("/login-signup");
+    } else {
+      setLoading(false); // Ensure loading is turned off
+      showToast("error", data.message || "Signup failed", 3000, "top-right");
     }
-  };
+  } catch (error) {
+    setLoading(false); // Ensure loading is turned off
+    console.error("Error Uploading User:", error);
+    showToast("error", "Network or Server Error", 3000, "top-right");
+  }
+};
+
 
   return (
     <div>
