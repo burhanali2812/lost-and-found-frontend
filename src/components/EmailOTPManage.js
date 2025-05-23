@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "./Toastify2";
 function EmailOTPManage() {
-  const [timer, setTimer] = useState(30); // 2 minutes in seconds
+  const [timer, setTimer] = useState(120); // 2 minutes in seconds
   const [canResend, setCanResend] = useState(false);
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [currentOTP, setCurrentOTP] = useState("");
@@ -40,7 +40,7 @@ function EmailOTPManage() {
     console.log("name", name);
     console.log("email", email);
     sendGenericEmail(email, name, "", otpGenerated, "otp");
-    setTimer(30); // reset timer to 2 minutes
+    setTimer(120); // reset timer to 2 minutes
     setCanResend(false);
   };
 
