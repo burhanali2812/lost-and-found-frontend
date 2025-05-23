@@ -4,8 +4,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "./Toastify2";
 function EmailOTPManage() {
-
-
   const [timer, setTimer] = useState(30); // 2 minutes in seconds
   const [canResend, setCanResend] = useState(false);
   const [otp, setOtp] = useState(new Array(6).fill(""));
@@ -13,7 +11,18 @@ function EmailOTPManage() {
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const { profileImage, frontCnic, backCnic , name,email,cnic, address, password,phone,token} = location.state || {};
+  const {
+    profileImage,
+    frontCnic,
+    backCnic,
+    name,
+    email,
+    cnic,
+    address,
+    password,
+    phone,
+    token,
+  } = location.state || {};
 
   const generateOTP = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -65,7 +74,7 @@ function EmailOTPManage() {
     alert("OTP resent!");
     setOtp(new Array(6).fill("")); // reset input boxes
     inputRefs.current[0]?.focus();
-     setCanResend(false);
+    setCanResend(false);
   };
 
   const handleChange = (element, index) => {
@@ -117,10 +126,13 @@ function EmailOTPManage() {
     if (frontCnic) formData.append("frontCnic", frontCnic);
     if (backCnic) formData.append("backCnic", backCnic);
     try {
-      const response = await fetch("http://localhost:5000/auth/signup", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/signup",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await response.json();
 
@@ -188,57 +200,56 @@ function EmailOTPManage() {
                 <i className="fas fa-clock me-2"></i>
                 OTP will expire in
               </p>
-              
 
-               <div className="text-center mt-4">
-              {!canResend ? (
-                <div className="d-flex justify-content-center align-items-center">
-                <div
-                  className="mt-1"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "50%",
-                    border: "8px solid white",
-                    backgroundColor: "transparent",
-                    color: "#ffc107",
-                    fontSize: "39px",
-                    fontWeight: "bold",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {timer % 120}
-                </div>
-              </div>
-              ) : (
-                <>
-                  <div className="mt-2">
-                    <span
-                      className="text-warning"
+              <div className="text-center mt-4">
+                {!canResend ? (
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      className="mt-1"
                       style={{
-                        cursor: "pointer",
+                        width: "100px",
+                        height: "100px",
+                        borderRadius: "50%",
+                        border: "8px solid white",
+                        backgroundColor: "transparent",
+                        color: "#ffc107",
+                        fontSize: "39px",
                         fontWeight: "bold",
-                        fontSize: "1.05rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
-                      onClick={handleResend}
                     >
-                      <i className="fas fa-paper-plane me-2"></i>
-                      Resend OTP
-                    </span>
+                      {timer % 120}
+                    </div>
                   </div>
+                ) : (
+                  <>
+                    <div className="mt-2">
+                      <span
+                        className="text-warning"
+                        style={{
+                          cursor: "pointer",
+                          fontWeight: "bold",
+                          fontSize: "1.05rem",
+                        }}
+                        onClick={handleResend}
+                      >
+                        <i className="fas fa-paper-plane me-2"></i>
+                        Resend OTP
+                      </span>
+                    </div>
 
-                  <div className="mt-2">
-                    <p className="text-light" style={{ fontSize: "0.9rem" }}>
-                      <i className="fas fa-info-circle me-2"></i>
-                      Didn't receive the OTP? Check your spam folder or try
-                      resending.
-                    </p>
-                  </div>
-                </>
-              )}
-            </div>
+                    <div className="mt-2">
+                      <p className="text-light" style={{ fontSize: "0.9rem" }}>
+                        <i className="fas fa-info-circle me-2"></i>
+                        Didn't receive the OTP? Check your spam folder or try
+                        resending.
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
 
             <div className="d-flex justify-content-center gap-2 mt-4">
@@ -266,7 +277,6 @@ function EmailOTPManage() {
             </div>
 
             {/* Timer or Resend Section */}
-           
 
             <div className="text-center mt-4">
               <button

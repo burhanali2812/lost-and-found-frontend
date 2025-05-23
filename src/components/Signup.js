@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import React from "react";
 import { showToast } from "./Toastify2";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import "./Signup.css";
 import { ToastContainer } from "react-toastify";
 import ReCAPTCHA from "react-google-recaptcha";
-
 
 function Signup() {
   const [profileImage, setProfileImage] = useState(null);
@@ -35,7 +34,6 @@ function Signup() {
   const [showlPassword, setShowlPassword] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(null);
 
-
   const handleAlreadyLogin = (e) => {
     e.preventDefault();
     setAction("signin");
@@ -59,18 +57,21 @@ function Signup() {
       }
     }
     try {
-      const response = await fetch("http://localhost:5000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          loginType,
-          email: lemail,
-          password: lpassword,
-          cnic: lcnic,
-        }),
-      });
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            loginType,
+            email: lemail,
+            password: lpassword,
+            cnic: lcnic,
+          }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
@@ -208,8 +209,6 @@ function Signup() {
       showToast("warning", "Please complete the reCAPTCHA.", 3000, "top-right");
       return;
     }
-
-
 
     resetFormData();
 
