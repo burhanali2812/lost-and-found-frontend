@@ -41,16 +41,13 @@ function UserVerification({ user, setUser }) {
 
   const getUser = async () => {
     try {
-      const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/getAllUser",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch("http://localhost:5000/auth/getAllUser", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       if (!response.ok) {
         alert("Cannot Fetch Users");
         return;
@@ -91,7 +88,7 @@ function UserVerification({ user, setUser }) {
 
     try {
       const response = await fetch(
-        `https://lost-and-found-backend-xi.vercel.app/auth/verifyUser/${userIds}`,
+        `http://localhost:5000/auth/verifyUser/${userIds}`,
         {
           method: "PUT",
           headers: {
@@ -113,7 +110,7 @@ function UserVerification({ user, setUser }) {
 
     try {
       const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/pushNotification",
+        "http://localhost:5000/auth/pushNotification",
         {
           method: "POST",
           headers: {
@@ -168,30 +165,14 @@ function UserVerification({ user, setUser }) {
       setContact(user.phone || "");
       setAddress(user.address || "");
 
-      // Handle image URLs if available
-      const profileImageUrl = user.profileImage
-        ? `https://lost-and-found-backend-xi.vercel.app/${user.profileImage.replace(
-            /\\/g,
-            "/"
-          )}`
-        : "";
-      setProfileImage(profileImageUrl);
+   
+      setProfileImage(user.profileImage);
 
-      const frontCnicImageUrl = user.frontCnic
-        ? `https://lost-and-found-backend-xi.vercel.app/${user.frontCnic.replace(
-            /\\/g,
-            "/"
-          )}`
-        : "";
-      setFrontSideCnic(frontCnicImageUrl);
+    
+      setFrontSideCnic(user.frontCnic);
 
-      const backCnicImageUrl = user.backCnic
-        ? `https://lost-and-found-backend-xi.vercel.app/${user.backCnic.replace(
-            /\\/g,
-            "/"
-          )}`
-        : "";
-      setBackSideCnic(backCnicImageUrl);
+    
+      setBackSideCnic(user.backCnic);
     } else {
       console.error("User data is missing");
     }

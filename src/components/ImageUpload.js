@@ -23,13 +23,10 @@ const ImageUpload = () => {
     formData.append("image", image);
 
     try {
-      const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/api/upload",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch("http://localhost:5000/api/upload", {
+        method: "POST",
+        body: formData,
+      });
 
       const data = await response.json();
       if (data.success) {
@@ -44,9 +41,7 @@ const ImageUpload = () => {
   // Fetch uploaded images
   const fetchImages = async () => {
     try {
-      const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/api/images"
-      );
+      const response = await fetch("http://localhost:5000/api/images");
       const data = await response.json();
       setImages(data.map((img) => img.imageUrl));
     } catch (error) {

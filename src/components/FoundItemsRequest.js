@@ -27,16 +27,13 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
 
   const getUser = async () => {
     try {
-      const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/getAllUser",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch("http://localhost:5000/auth/getAllUser", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       if (!response.ok) return;
 
       const data = await response.json();
@@ -49,7 +46,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
   const getLostItems = async () => {
     try {
       const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/get-foundItems",
+        "http://localhost:5000/auth/get-foundItems",
         {
           method: "GET",
           headers: {
@@ -84,7 +81,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
   const verifyFoundItems = async (id, userID) => {
     try {
       const response = await fetch(
-        `https://lost-and-found-backend-xi.vercel.app/auth/verifyFoundItems/${id}`,
+        `http://localhost:5000/auth/verifyFoundItems/${id}`,
         {
           method: "PUT",
           headers: {
@@ -101,7 +98,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
       getLostItems();
       try {
         const response = await fetch(
-          "https://lost-and-found-backend-xi.vercel.app/auth/pushNotification",
+          "http://localhost:5000/auth/pushNotification",
           {
             method: "POST",
             headers: {
@@ -143,7 +140,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
     let fetchedItems;
     try {
       const response = await fetch(
-        `https://lost-and-found-backend-xi.vercel.app/auth/search-lost?city=${selectedCity}&category=${selectedCategory}`,
+        `http://localhost:5000/auth/search-lost?city=${selectedCity}&category=${selectedCategory}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -189,7 +186,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
       try {
         checkBrand.forEach(async (matchedItem) => {
           const notificationResponse = await fetch(
-            "https://lost-and-found-backend-xi.vercel.app/auth/pushNotification",
+            "http://localhost:5000/auth/pushNotification",
             {
               method: "POST",
               headers: {
@@ -230,7 +227,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
   const declineFoundRequest = async () => {
     try {
       const response = await fetch(
-        `https://lost-and-found-backend-xi.vercel.app/auth/verifyFoundItems/${selectedFoundItems._id}`,
+        `http://localhost:5000/auth/verifyFoundItems/${selectedFoundItems._id}`,
         {
           method: "PUT",
           headers: {
@@ -249,7 +246,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
 
       try {
         const notificationResponse = await fetch(
-          "https://lost-and-found-backend-xi.vercel.app/auth/pushNotification",
+          "http://localhost:5000/auth/pushNotification",
           {
             method: "POST",
             headers: {
@@ -322,10 +319,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
       setContact(newUser.phone || "Not available");
       setAddress(newUser.address || "Not available");
       const profileImageUrl = newUser.profileImage
-        ? `https://lost-and-found-backend-xi.vercel.app/${newUser.profileImage.replace(
-            /\\/g,
-            "/"
-          )}`
+        ? `http://localhost:5000/${newUser.profileImage.replace(/\\/g, "/")}`
         : "";
       setProfileImage(profileImageUrl);
 

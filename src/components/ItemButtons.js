@@ -28,7 +28,7 @@ function ItemButtons({
       if (item?.itemId) {
         // Fetch item details
         const response1 = await fetch(
-          `https://lost-and-found-backend-xi.vercel.app/auth/get-foundItemById/${item.itemId}`,
+          `http://localhost:5000/auth/get-foundItemById/${item.itemId}`,
           {
             method: "GET",
             headers: {
@@ -53,7 +53,7 @@ function ItemButtons({
         if (userId) {
           // Get user details
           const response2 = await fetch(
-            `https://lost-and-found-backend-xi.vercel.app/auth/getUser/${userId}`,
+            `http://localhost:5000/auth/getUser/${userId}`,
             {
               method: "GET",
               headers: {
@@ -74,7 +74,7 @@ function ItemButtons({
           const fixedPath = data2.user?.profileImage?.replace(/\\/g, "/");
           const fullImageURL = fixedPath?.startsWith("http")
             ? fixedPath
-            : `https://lost-and-found-backend-xi.vercel.app/${fixedPath}`;
+            : `http://localhost:5000/${fixedPath}`;
           setProfileImage(fullImageURL || "");
         }
 
@@ -134,17 +134,14 @@ function ItemButtons({
     localStorage.setItem("saveState", JSON.stringify(newSaveState));
 
     try {
-      await fetch(
-        `https://lost-and-found-backend-xi.vercel.app/auth/save-item/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({ isSaved: !save[id] }),
-        }
-      );
+      await fetch(`http://localhost:5000/auth/save-item/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ isSaved: !save[id] }),
+      });
       alert("Item save status updated successfully.");
       onSave();
     } catch (error) {
@@ -158,7 +155,7 @@ function ItemButtons({
 
     try {
       const response = await fetch(
-        `https://lost-and-found-backend-xi.vercel.app/auth/delete-savedItems/${id}`,
+        `http://localhost:5000/auth/delete-savedItems/${id}`,
         {
           method: "PUT",
           headers: {

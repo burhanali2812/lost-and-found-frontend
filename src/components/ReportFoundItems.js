@@ -636,7 +636,7 @@ function ReportFoundItems() {
     const getLostItems = async () => {
       try {
         const response = await fetch(
-          "https://lost-and-found-backend-xi.vercel.app/auth/get-lostItems",
+          "http://localhost:5000/auth/get-lostItems",
           {
             method: "GET",
             headers: {
@@ -748,7 +748,7 @@ function ReportFoundItems() {
 
     try {
       const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/add-foundItems",
+        "http://localhost:5000/auth/add-foundItems",
         {
           method: "POST",
           headers: {

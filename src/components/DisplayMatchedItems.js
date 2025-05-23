@@ -12,7 +12,7 @@ function DisplayMatchedItems() {
     setLoading(true); // Start loading
     try {
       const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/get-savedItems",
+        "http://localhost:5000/auth/get-savedItems",
         {
           method: "GET",
           headers: {
@@ -42,7 +42,7 @@ function DisplayMatchedItems() {
       }
 
       const foundItemsResponse = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/get-foundItemsByIds",
+        "http://localhost:5000/auth/get-foundItemsByIds",
         {
           method: "POST",
           headers: {

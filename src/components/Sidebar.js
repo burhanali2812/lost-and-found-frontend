@@ -38,7 +38,7 @@ function Sidebar({
     const getProfileImage = async () => {
       try {
         const response = await fetch(
-          `https://lost-and-found-backend-xi.vercel.app/auth/getUser/${userId}`,
+          `http://localhost:5000/auth/getUser/${userId}`,
           {
             method: "GET",
             headers: {
@@ -123,7 +123,7 @@ function Sidebar({
             <div style={{ textAlign: "center" }}>
               {profilePicture ? (
                 <img
-                  src={`https://lost-and-found-backend-xi.vercel.app/${profilePicture.replace(
+                  src={`http://localhost:5000/${profilePicture.replace(
                     /\\/g,
                     "/"
                   )}`}

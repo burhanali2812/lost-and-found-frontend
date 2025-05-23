@@ -28,16 +28,13 @@ function App() {
 
   const getLostItems = async () => {
     try {
-      const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/get-lostItems",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch("http://localhost:5000/auth/get-lostItems", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       if (!response.ok) return;
       const data = await response.json();
       const filterLostItems = data.lostItems.filter(
@@ -52,7 +49,7 @@ function App() {
   const getAllSavedItems = async () => {
     try {
       const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/get-savedItems",
+        "http://localhost:5000/auth/get-savedItems",
         {
           method: "GET",
           headers: {
@@ -81,7 +78,7 @@ function App() {
   const getFoundItems = async () => {
     try {
       const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/get-foundItems",
+        "http://localhost:5000/auth/get-foundItems",
         {
           method: "GET",
           headers: {
