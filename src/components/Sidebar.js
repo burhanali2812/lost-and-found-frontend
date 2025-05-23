@@ -123,10 +123,7 @@ function Sidebar({
             <div style={{ textAlign: "center" }}>
               {profilePicture ? (
                 <img
-                  src={`https://lost-and-found-backend-xi.vercel.app/${profilePicture.replace(
-                    /\\/g,
-                    "/"
-                  )}`}
+                  src={profilePicture}
                   alt="Profile"
                   style={{
                     width: "85px",
