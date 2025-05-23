@@ -16,7 +16,7 @@ function Notification({ notification, setNotification }) {
   const getNotifications = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/auth/get-notifications/${userId}`,
+        `https://lost-and-found-backend-xi.vercel.app/auth/get-notifications/${userId}`,
         {
           method: "GET",
           headers: {
@@ -43,7 +43,7 @@ function Notification({ notification, setNotification }) {
   const deleteNotification = async (userid) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/auth/delete-notifications/${userid}`,
+        `https://lost-and-found-backend-xi.vercel.app/auth/delete-notifications/${userid}`,
         {
           method: "DELETE",
           headers: {
@@ -73,7 +73,7 @@ function Notification({ notification, setNotification }) {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/auth/seen-notifications/${id}`,
+        `https://lost-and-found-backend-xi.vercel.app/auth/seen-notifications/${id}`,
         {
           method: "PUT",
           headers: {
@@ -103,7 +103,7 @@ function Notification({ notification, setNotification }) {
   const deleteAccount = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/auth/deleteUser/${userId}`,
+        `https://lost-and-found-backend-xi.vercel.app/auth/deleteUser/${userId}`,
         {
           method: "DELETE",
           headers: {

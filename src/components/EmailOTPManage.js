@@ -127,15 +127,17 @@ function EmailOTPManage() {
     if (frontCnic) formData.append("frontCnic", frontCnic);
     if (backCnic) formData.append("backCnic", backCnic);
     try {
-      const response = await fetch("http://localhost:5000/auth/signup", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/signup",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
-       
         showToast("success", "User Registered Successfully", 3000, "top-right");
         navigate("/login-signup");
       } else {

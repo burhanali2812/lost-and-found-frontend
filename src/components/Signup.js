@@ -57,18 +57,21 @@ function Signup() {
       }
     }
     try {
-      const response = await fetch("http://localhost:5000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          loginType,
-          email: lemail,
-          password: lpassword,
-          cnic: lcnic,
-        }),
-      });
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            loginType,
+            email: lemail,
+            password: lpassword,
+            cnic: lcnic,
+          }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {

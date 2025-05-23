@@ -24,7 +24,7 @@ export default function ItemCard({ item, savedItem, onDelete, onSave }) {
       try {
         if (savedItem?.itemId) {
           const response1 = await fetch(
-            `http://localhost:5000/auth/get-foundItemById/${savedItem.itemId}`,
+            `https://lost-and-found-backend-xi.vercel.app/auth/get-foundItemById/${savedItem.itemId}`,
             {
               method: "GET",
               headers: {
@@ -44,7 +44,7 @@ export default function ItemCard({ item, savedItem, onDelete, onSave }) {
           if (userId) {
             // Step 2: Get user details using userId
             const response2 = await fetch(
-              `http://localhost:5000/auth/getUser/${userId}`,
+              `https://lost-and-found-backend-xi.vercel.app/auth/getUser/${userId}`,
               {
                 method: "GET",
                 headers: {
@@ -61,7 +61,7 @@ export default function ItemCard({ item, savedItem, onDelete, onSave }) {
             const fixedPath = data2.user?.profileImage?.replace(/\\/g, "/");
             const fullImageURL = fixedPath?.startsWith("http")
               ? fixedPath
-              : `http://localhost:5000/${fixedPath}`;
+              : `https://lost-and-found-backend-xi.vercel.app/${fixedPath}`;
 
             setProfileImage(fullImageURL);
             console.log("Profile Image URL:", data2.user?.profileImage);

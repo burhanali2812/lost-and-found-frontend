@@ -720,13 +720,16 @@ function ReportLostItems() {
       formData.append("images", file);
     });
     try {
-      const response = await fetch("http://localhost:5000/auth/add-lostItems", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: formData,
-      });
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/add-lostItems",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: formData,
+        }
+      );
 
       const data = await response.json();
 

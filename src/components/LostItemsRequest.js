@@ -29,13 +29,16 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
 
   const getUser = async () => {
     try {
-      const response = await fetch("http://localhost:5000/auth/getAllUser", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/getAllUser",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       if (!response.ok) return;
 
       const data = await response.json();
@@ -47,13 +50,16 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
 
   const getLostItems = async () => {
     try {
-      const response = await fetch("http://localhost:5000/auth/get-lostItems", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/get-lostItems",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       if (!response.ok) return;
 
       const data = await response.json();
@@ -82,7 +88,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
   const verifyLostItem = async (id, userID) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/auth/verifyLostItems/${id}`,
+        `https://lost-and-found-backend-xi.vercel.app/auth/verifyLostItems/${id}`,
         {
           method: "PUT",
           headers: {
@@ -99,7 +105,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
       getLostItems();
       try {
         const response = await fetch(
-          "http://localhost:5000/auth/pushNotification",
+          "https://lost-and-found-backend-xi.vercel.app/auth/pushNotification",
           {
             method: "POST",
             headers: {
@@ -143,7 +149,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
     let fetchedItems;
     try {
       const response = await fetch(
-        `http://localhost:5000/auth/search-found?city=${selectedCity}&category=${selectedCategory}`,
+        `https://lost-and-found-backend-xi.vercel.app/auth/search-found?city=${selectedCity}&category=${selectedCategory}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -185,7 +191,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
     if (checkBrand && checkBrand.length > 0) {
       try {
         const notificationResponse = await fetch(
-          "http://localhost:5000/auth/pushNotification",
+          "https://lost-and-found-backend-xi.vercel.app/auth/pushNotification",
           {
             method: "POST",
             headers: {
@@ -216,7 +222,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
         console.log("Filtered by saved:", saveitem);
         try {
           const notificationResponse = await fetch(
-            "http://localhost:5000/auth/postSavedItems",
+            "https://lost-and-found-backend-xi.vercel.app/auth/postSavedItems",
             {
               method: "POST",
               headers: {
@@ -255,7 +261,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
     console.log("selectedlost items", selectedLostItems);
     try {
       const response = await fetch(
-        `http://localhost:5000/auth/verifyLostItems/${selectedLostItems._id}`,
+        `https://lost-and-found-backend-xi.vercel.app/auth/verifyLostItems/${selectedLostItems._id}`,
         {
           method: "PUT",
           headers: {
@@ -274,7 +280,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
 
       try {
         const notificationResponse = await fetch(
-          "http://localhost:5000/auth/pushNotification",
+          "https://lost-and-found-backend-xi.vercel.app/auth/pushNotification",
           {
             method: "POST",
             headers: {
@@ -348,7 +354,10 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
       setContact(newUser.phone || "Not available");
       setAddress(newUser.address || "Not available");
       const profileImageUrl = newUser.profileImage
-        ? `http://localhost:5000/${newUser.profileImage.replace(/\\/g, "/")}`
+        ? `https://lost-and-found-backend-xi.vercel.app/${newUser.profileImage.replace(
+            /\\/g,
+            "/"
+          )}`
         : "";
       setProfileImage(profileImageUrl);
 
