@@ -49,7 +49,6 @@ function Sidebar({
         );
 
         if (!response.ok) {
-          alert("Failed to fetch user");
           return;
         }
 
