@@ -25,39 +25,43 @@ function EmailOTPManage() {
     token,
   } = location.state || {};
 
-  const generateOTP = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let otp = "";
-    for (let i = 0; i < 6; i++) {
-      otp += chars.charAt(Math.floor(Math.random() * chars.length));
+ const sendOTP = async () => {
+  try {
+    const response = await fetch(
+      "https://lost-and-found-backend-xi.vercel.app/auth/send-otp",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email }),
+      }
+    );
+    if (response.ok) {
+      setTimer(120);
+      setCanResend(false);
+    } else {
+      const data = await response.json();
+      showToast("error", data.message || "Failed to send OTP", 3000, "top-right");
     }
-    return otp;
-  };
+  } catch (error) {
+    console.error("Error:", error);
+    showToast("error", "Network Error. Try again.", 3000, "top-right");
+  }
+};
 
-  const sendOTP = () => {
-    const otpGenerated = generateOTP();
-    setCurrentOTP(otpGenerated);
-    console.log("otpGenerated", otpGenerated);
-    console.log("name", name);
-    console.log("email", email);
-    sendGenericEmail(email, name, "", otpGenerated, "otp");
-    setTimer(120); // reset timer to 2 minutes
-    setCanResend(false);
-  };
 
   useEffect(() => {
     setLoading(true);
     sendOTP();
-       setTimeout(() => {
-        setLoading(false); // Hide loader
-      }, 2000);
+    setTimeout(() => {
+      setLoading(false); // Hide loader
+    }, 2000);
     inputRefs.current[0]?.focus(); // auto-focus on first input
   }, []);
 
   useEffect(() => {
     if (timer === 0) {
-      const otpGenerated = generateOTP();
-      setCurrentOTP(otpGenerated);
       setCanResend(true);
       return;
     }
@@ -68,19 +72,13 @@ function EmailOTPManage() {
     return () => clearInterval(interval);
   }, [timer]);
 
-  // const formatTime = (seconds) => {
-  //   const m = Math.floor(seconds / 60);
-  //   const s = seconds % 60;
-  //   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-  // };
-
   const handleResend = () => {
-    setLoading(true)
+    setLoading(true);
     sendOTP();
-      setTimeout(() => {
-        setLoading(false); // Hide loader
-      }, 2000);
-    alert("OTP resent!");
+    setTimeout(() => {
+      setLoading(false); // Hide loader
+    }, 2000);
+    showToast("success", "OTP Resent!", 3000, "top-right");
     setOtp(new Array(6).fill("")); // reset input boxes
     inputRefs.current[0]?.focus();
     setCanResend(false);
@@ -111,61 +109,77 @@ function EmailOTPManage() {
   const getOtpValue = () => otp.join("");
 
   const verifyOTP = async () => {
-    setLoading(true);
-    debugger;
-    const enteredOtp = getOtpValue();
-    if (enteredOtp === currentOTP) {
-      await finalSignup();
-      alert("OTP Verified Successfully!");
-    } else {
-      alert("Invalid OTP. Please try again.");
-    }
-  };
-
-  const finalSignup = async () => {
-  const formData = new FormData();
-  formData.append("name", name);
-  formData.append("email", email);
-  formData.append("cnic", cnic);
-  formData.append("address", address);
-  formData.append("password", password);
-  formData.append("phone", phone);
-  formData.append("token", token);
-
-  if (profileImage) formData.append("profileImage", profileImage);
-  if (frontCnic) formData.append("frontCnic", frontCnic);
-  if (backCnic) formData.append("backCnic", backCnic);
-
+  setLoading(true);
+  const enteredOtp = getOtpValue();
   try {
     const response = await fetch(
-      "https://lost-and-found-backend-xi.vercel.app/auth/signup",
+      "https://lost-and-found-backend-xi.vercel.app/auth/verify-otp",
       {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, otp: enteredOtp }),
       }
     );
-
-    const data = await response.json();
-
+    const data = await response.json(); // Get server response
     if (response.ok) {
-      setLoading(false);
-      showToast("success", "User Registered Successfully", 3000, "top-right");
-      navigate("/login-signup");
+      await finalSignup();
+      showToast("success", "OTP Verified Successfully!", 3000, "top-right");
     } else {
-      setLoading(false); // Ensure loading is turned off
-      showToast("error", data.message || "Signup failed", 3000, "top-right");
+      showToast("error", data.message || "Invalid OTP. Please try again.", 3000, "top-right");
     }
   } catch (error) {
-    setLoading(false); // Ensure loading is turned off
-    console.error("Error Uploading User:", error);
-    showToast("error", "Network or Server Error", 3000, "top-right");
+    console.error("Error:", error);
+    showToast("error", "Network Error. Try again.", 3000, "top-right");
   }
+  setLoading(false);
 };
 
 
+  const finalSignup = async () => {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("cnic", cnic);
+    formData.append("address", address);
+    formData.append("password", password);
+    formData.append("phone", phone);
+    formData.append("token", token);
+
+    if (profileImage) formData.append("profileImage", profileImage);
+    if (frontCnic) formData.append("frontCnic", frontCnic);
+    if (backCnic) formData.append("backCnic", backCnic);
+
+    try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/signup",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setLoading(false);
+        showToast("success", "User Registered Successfully", 3000, "top-right");
+        navigate("/login-signup");
+      } else {
+        setLoading(false); // Ensure loading is turned off
+        showToast("error", data.message || "Signup failed", 3000, "top-right");
+      }
+    } catch (error) {
+      setLoading(false); // Ensure loading is turned off
+      console.error("Error Uploading User:", error);
+      showToast("error", "Network or Server Error", 3000, "top-right");
+    }
+  };
+
   return (
     <div>
-       {Loading && (
+      {Loading && (
         <div
           className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-75"
           style={{ zIndex: 1055 }}

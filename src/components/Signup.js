@@ -1,10 +1,11 @@
 import { useState } from "react";
 import React from "react";
 import { showToast } from "./Toastify2";
+import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./Signup.css";
-import { ToastContainer } from "react-toastify";
+
 import ReCAPTCHA from "react-google-recaptcha";
 
 function Signup() {
