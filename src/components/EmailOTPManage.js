@@ -1,36 +1,53 @@
 import { useState, useEffect, useRef } from "react";
-import { sendGenericEmail } from "./sendGenericEmail";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "./Toastify2";
+
 function EmailOTPManage() {
-  const [timer, setTimer] = useState(120); // 2 minutes in seconds
+  // State management
+  const [timer, setTimer] = useState(120);
   const [canResend, setCanResend] = useState(false);
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [strength, setStrength] = useState("");
+  const [isLoading, setIsLoading] = useState(true); // Initial loading state
+  const [isVerifying, setIsVerifying] = useState(false);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const [Loading, setLoading] = useState(false);
+
+  // Safely destructure location.state with defaults
   const {
     profileImage,
     frontCnic,
     backCnic,
-    name,
-    email,
-    cnic,
-    address,
-    password,
-    phone,
-    token,
+    name = "",
+    email = "",
+    cnic = "",
+    address = "",
+    password = "",
+    phone = "",
+    token = "",
+    forgetName = "",
+    forgetEmail = "",
+    action = "",
+    forgetToken = ""
   } = location.state || {};
-  const { forgetName, forgetEmail, action, forgetToken } = location.state;
 
+  // Send OTP function
   const sendOTP = async () => {
+    setIsLoading(true);
     const otpName = action === "ForgetPassword" ? forgetName : name;
     const otpEmail = action === "ForgetPassword" ? forgetEmail : email;
+    
+    if (!otpEmail) {
+      showToast("error", "Email address is required", 3000, "top-right");
+      setIsLoading(false);
+      navigate("/login-signup");
+      return;
+    }
+
     try {
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/send-otp",
@@ -42,41 +59,36 @@ function EmailOTPManage() {
           body: JSON.stringify({ name: otpName, email: otpEmail }),
         }
       );
+      
       if (response.ok) {
         setTimer(120);
         setCanResend(false);
+        setIsLoading(false);
       } else {
         const data = await response.json();
-        showToast(
-          "error",
-          data.message || "Failed to send OTP",
-          3000,
-          "top-right"
-        );
+        showToast("error", data.message || "Failed to send OTP", 3000, "top-right");
+        navigate("/login-signup");
       }
     } catch (error) {
       console.error("Error:", error);
       showToast("error", "Network Error. Try again.", 3000, "top-right");
+      navigate("/login-signup");
     }
   };
-  const modelClosed = ()=>{
-    navigate("/login-signup")
-  }
 
+  // Initial OTP send
   useEffect(() => {
-    setLoading(true);
     sendOTP();
-    setTimeout(() => {
-      setLoading(false); // Hide loader
-    }, 2000);
-    inputRefs.current[0]?.focus(); // auto-focus on first input
+    inputRefs.current[0]?.focus();
   }, []);
 
+  // Timer countdown
   useEffect(() => {
     if (timer === 0) {
       setCanResend(true);
       return;
     }
+    
     const interval = setInterval(() => {
       setTimer((prev) => prev - 1);
     }, 1000);
@@ -84,18 +96,16 @@ function EmailOTPManage() {
     return () => clearInterval(interval);
   }, [timer]);
 
-  const handleResend = () => {
-    setLoading(true);
-    sendOTP();
-    setTimeout(() => {
-      setLoading(false); // Hide loader
-    }, 2000);
+  // Handle OTP resend
+  const handleResend = async () => {
+    setIsLoading(true);
+    await sendOTP();
     showToast("success", "OTP Resent!", 3000, "top-right");
-    setOtp(new Array(6).fill("")); // reset input boxes
+    setOtp(new Array(6).fill(""));
     inputRefs.current[0]?.focus();
-    setCanResend(false);
   };
 
+  // OTP input handling
   const handleChange = (element, index) => {
     if (!/^[a-zA-Z0-9]?$/.test(element.value)) return;
 
@@ -109,21 +119,25 @@ function EmailOTPManage() {
   };
 
   const handleKeyDown = (e, index) => {
-    if (
-      e.key === "Backspace" &&
-      otp[index] === "" &&
-      inputRefs.current[index - 1]
-    ) {
+    if (e.key === "Backspace" && !otp[index] && inputRefs.current[index - 1]) {
       inputRefs.current[index - 1].focus();
     }
   };
 
   const getOtpValue = () => otp.join("");
 
+  // OTP verification
   const verifyOTP = async () => {
-    setLoading(true);
     const enteredOtp = getOtpValue();
+    
+    if (enteredOtp.length !== 6) {
+      showToast("error", "Please enter a 6-digit OTP", 3000, "top-right");
+      return;
+    }
+
+    setIsVerifying(true);
     const actualEmail = action === "ForgetPassword" ? forgetEmail : email;
+    
     try {
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/verify-otp",
@@ -135,7 +149,9 @@ function EmailOTPManage() {
           body: JSON.stringify({ email: actualEmail, otp: enteredOtp }),
         }
       );
-      const data = await response.json(); // Get server response
+      
+      const data = await response.json();
+      
       if (response.ok) {
         if (action === "ForgetPassword") {
           openChangePasswordModal();
@@ -144,29 +160,30 @@ function EmailOTPManage() {
           showToast("success", "OTP Verified Successfully!", 3000, "top-right");
         }
       } else {
-        showToast(
-          "error",
-          data.message || "Invalid OTP. Please try again.",
-          3000,
-          "top-right"
-        );
+        showToast("error", data.message || "Invalid OTP. Please try again.", 3000, "top-right");
       }
     } catch (error) {
       console.error("Error:", error);
       showToast("error", "Network Error. Try again.", 3000, "top-right");
+    } finally {
+      setIsVerifying(false);
     }
-    setLoading(false);
   };
+
+  // Password change modal
   const openChangePasswordModal = () => {
     const modalElement = document.getElementById("changePasswordModal");
-    const existingModal = window.bootstrap.Modal.getInstance(modalElement);
-    if (existingModal) existingModal.dispose();
-
-    const newModal = new window.bootstrap.Modal(modalElement);
-    newModal.show();
+    const modal = new window.bootstrap.Modal(modalElement);
+    modal.show();
   };
 
+  const modelClosed = () => {
+    navigate("/login-signup");
+  };
+
+  // Final signup submission
   const finalSignup = async () => {
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
@@ -192,19 +209,20 @@ function EmailOTPManage() {
       const data = await response.json();
 
       if (response.ok) {
-        setLoading(false);
         showToast("success", "User Registered Successfully", 3000, "top-right");
         navigate("/login-signup");
       } else {
-        setLoading(false); // Ensure loading is turned off
         showToast("error", data.message || "Signup failed", 3000, "top-right");
       }
     } catch (error) {
-      setLoading(false); // Ensure loading is turned off
       console.error("Error Uploading User:", error);
       showToast("error", "Network or Server Error", 3000, "top-right");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // Password strength checker
   const checkPasswordStrength = (password) => {
     if (password.length < 6) return "Weak";
     if (
@@ -217,72 +235,85 @@ function EmailOTPManage() {
     }
     return "Medium";
   };
+
   const handlePasswordChange = (e) => {
     const value = e.target.value;
     setNewPassword(value);
     setStrength(checkPasswordStrength(value));
   };
-  const passwordChnage = async () => {
+
+  // Password change submission
+  const passwordChange = async () => {
     if (newPassword !== confirmPassword) {
-      showToast(
-        "warning",
-        "Confirm password does'nt match!",
-        3000,
-        "top-right"
-      );
+      showToast("warning", "Passwords don't match!", 3000, "top-right");
       return;
     }
+
+    if (strength === "Weak") {
+      showToast("warning", "Password is too weak", 3000, "top-right");
+      return;
+    }
+
+    setIsLoading(true);
+    
     try {
-      const response = await fetch("https://lost-and-found-backend-xi.vercel.app/auth/getUserEmail", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: forgetToken,
-          newPassword: confirmPassword,
-        }),
-      });
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/getUserEmail",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: forgetToken,
+            newPassword: confirmPassword,
+          }),
+        }
+      );
+      
       if (response.ok) {
-        setLoading(false);
-        showToast(
-          "success",
-          "Password changed successfully!",
-          3000,
-          "top-right"
-        );
-        setTimeout(() => {
-          navigate("/login-signup");
-        }, 500);
+        showToast("success", "Password changed successfully!", 3000, "top-right");
+        navigate("/login-signup");
       } else {
-        setLoading(false);
         showToast("error", "Error changing password!", 3000, "top-right");
       }
     } catch (error) {
-      setLoading(false);
-      console.error("Error Uploading User:", error);
+      console.error("Error:", error);
       showToast("error", "Network or Server Error", 3000, "top-right");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div>
-      {Loading && (
+    <div className="position-relative">
+      {/* Loading Overlay */}
+      {(isLoading || isVerifying) && (
         <div
           className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-75"
           style={{ zIndex: 1055 }}
         >
-          <button className="btn btn-dark" type="button" disabled>
-            <span
-              className="spinner-border spinner-border-sm me-2"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            Loading...
-          </button>
+          <div className="text-center">
+            <div className="spinner-border text-warning" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <p className="text-white mt-2">
+              {isVerifying ? "Verifying OTP..." : "Sending OTP..."}
+            </p>
+          </div>
         </div>
       )}
-      <ToastContainer />
+
+      {/* Back Button */}
+      <button 
+        className="btn btn-link text-white position-absolute top-0 start-0 m-3"
+        onClick={() => navigate(-1)}
+        disabled={isLoading}
+      >
+        <i className="fas fa-arrow-left me-2"></i> Back
+      </button>
+
+      {/* Main Content */}
       <div className="container vh-100 d-flex justify-content-center align-items-center">
         <div
           className="card shadow text-white p-1"
@@ -298,16 +329,13 @@ function EmailOTPManage() {
           <div
             className="card-body"
             style={{
-              overflowY: "scroll",
+              overflowY: "auto",
               maxHeight: "100%",
               scrollbarWidth: "none",
               msOverflowStyle: "none",
             }}
           >
-            <div
-              className="text-center text-white mb-3"
-              style={{ marginTop: 50 }}
-            >
+            <div className="text-center text-white mb-3" style={{ marginTop: 50 }}>
               <h1
                 style={{
                   fontSize: "2rem",
@@ -348,31 +376,30 @@ function EmailOTPManage() {
                         justifyContent: "center",
                       }}
                     >
-                      {timer % 120}
+                      {Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')}
                     </div>
                   </div>
                 ) : (
                   <>
                     <div className="mt-2">
-                      <span
-                        className="text-warning"
+                      <button
+                        className="btn btn-link text-warning p-0"
                         style={{
-                          cursor: "pointer",
                           fontWeight: "bold",
                           fontSize: "1.05rem",
                         }}
                         onClick={handleResend}
+                        disabled={isLoading}
                       >
                         <i className="fas fa-paper-plane me-2"></i>
                         Resend OTP
-                      </span>
+                      </button>
                     </div>
 
                     <div className="mt-2">
                       <p className="text-light" style={{ fontSize: "0.9rem" }}>
                         <i className="fas fa-info-circle me-2"></i>
-                        Didn't receive the OTP? Check your spam folder or try
-                        resending.
+                        Didn't receive the OTP? Check your spam folder.
                       </p>
                     </div>
                   </>
@@ -380,6 +407,7 @@ function EmailOTPManage() {
               </div>
             </div>
 
+            {/* OTP Input Fields */}
             <div className="d-flex justify-content-center gap-2 mt-4">
               {otp.map((val, index) => (
                 <input
@@ -400,25 +428,40 @@ function EmailOTPManage() {
                   ref={(el) => (inputRefs.current[index] = el)}
                   onChange={(e) => handleChange(e.target, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
+                  disabled={isLoading}
                 />
               ))}
             </div>
 
-            {/* Timer or Resend Section */}
-
+            {/* Verify Button */}
             <div className="text-center mt-4">
               <button
                 className="btn btn-outline-warning fw-bold d-flex align-items-center justify-content-center px-4 py-2 mx-auto"
                 onClick={verifyOTP}
+                disabled={isLoading || isVerifying}
               >
-                <i className="fas fa-key me-2"></i>
-                Verify OTP
+                {isVerifying ? (
+                  <>
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Verifying...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-key me-2"></i>
+                    Verify OTP
+                  </>
+                )}
               </button>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Change Password Modal */}
       <div
         className="modal fade"
         id="changePasswordModal"
@@ -430,20 +473,21 @@ function EmailOTPManage() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="changePasswordModalLabel">
-                Forget Password Request
+                Change Password
               </h5>
               <button
                 type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                disabled={isLoading}
               ></button>
             </div>
             <div className="modal-body">
               <form>
                 <div className="mb-3">
                   <label className="form-label">
-                    <strong>Enter New Password</strong>
+                    <strong>New Password</strong>
                   </label>
                   <input
                     type="password"
@@ -451,11 +495,11 @@ function EmailOTPManage() {
                     placeholder="Enter new password"
                     value={newPassword}
                     onChange={handlePasswordChange}
+                    disabled={isLoading}
                   />
                 </div>
                 {newPassword && (
                   <div className="mt-2">
-                    {/* Strength Text */}
                     <div
                       style={{
                         fontSize: "14px",
@@ -470,8 +514,6 @@ function EmailOTPManage() {
                     >
                       {strength} Password
                     </div>
-
-                    {/* Progress Bar */}
                     <div className="progress mt-1" style={{ height: "5px" }}>
                       <div
                         className="progress-bar"
@@ -495,16 +537,19 @@ function EmailOTPManage() {
                   </div>
                 )}
 
-                <label className="form-label mt-2">
-                  <strong>Enter Confirm Password</strong>
-                </label>
-                <input
-                  type="password"
-                  className="form-control "
-                  placeholder="Confirm new password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
+                <div className="mb-3 mt-3">
+                  <label className="form-label">
+                    <strong>Confirm Password</strong>
+                  </label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    placeholder="Confirm new password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    disabled={isLoading}
+                  />
+                </div>
               </form>
             </div>
             <div className="modal-footer">
@@ -513,20 +558,32 @@ function EmailOTPManage() {
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
                 onClick={modelClosed}
+                disabled={isLoading}
               >
                 Close
               </button>
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={passwordChnage}
+                onClick={passwordChange}
+                disabled={isLoading || !newPassword || !confirmPassword}
               >
-                Submit
+                {isLoading ? (
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                ) : (
+                  "Submit"
+                )}
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      <ToastContainer />
     </div>
   );
 }
