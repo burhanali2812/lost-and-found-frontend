@@ -62,31 +62,15 @@ function EmailOTPManage() {
   const modelClosed = ()=>{
     navigate("/login-signup")
   }
-useEffect(() => {
-  const initialize = async () => {
-    if (!location.state) {
-      navigate("/login-signup");
-      return;
-    }
 
-    setLoading(true);
-    await sendOTP(); // Wait for async OTP call
-    setLoading(false);
-
-    // Wait for inputs to render
-    setTimeout(() => {
-      const firstInput = inputRefs.current[0];
-      if (firstInput) {
-        firstInput.focus();
-      }
-    }, 100); // delay ensures DOM is ready
-  };
-
-  initialize();
-}, []);
-
-
-
+  useEffect(() => {
+   // setLoading(true);
+    sendOTP();
+    //setTimeout(() => {
+      setLoading(false); // Hide loader
+   // }, 2000);
+    inputRefs.current[0]?.focus(); // auto-focus on first input
+  }, []);
 
   useEffect(() => {
     if (timer === 0) {
@@ -260,7 +244,7 @@ useEffect(() => {
         }),
       });
       if (response.ok) {
-       
+        setLoading(false);
         showToast(
           "success",
           "Password changed successfully!",
@@ -271,11 +255,11 @@ useEffect(() => {
           navigate("/login-signup");
         }, 500);
       } else {
-     
+        setLoading(false);
         showToast("error", "Error changing password!", 3000, "top-right");
       }
     } catch (error) {
-  
+      setLoading(false);
       console.error("Error Uploading User:", error);
       showToast("error", "Network or Server Error", 3000, "top-right");
     }
