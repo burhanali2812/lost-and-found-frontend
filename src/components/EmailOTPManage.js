@@ -64,15 +64,23 @@ function EmailOTPManage() {
   }
 useEffect(() => {
   const init = async () => {
-    if (!location.state) return;
+    if (!location.state) return navigate("/login-signup");
+
     setLoading(true);
-    await sendOTP(); // wait for OTP request
+    await sendOTP(); // Waits for OTP to be sent
     setLoading(false);
-    inputRefs.current[0]?.focus();
+
+    // Delay focus to ensure inputs are rendered
+    setTimeout(() => {
+      if (inputRefs.current[0]) {
+        inputRefs.current[0].focus();
+      }
+    }, 50);
   };
 
   init();
 }, []);
+
 
 
   useEffect(() => {
