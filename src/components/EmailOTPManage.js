@@ -64,13 +64,20 @@ function EmailOTPManage() {
   }
 
   useEffect(() => {
-   // setLoading(true);
-    sendOTP();
-    //setTimeout(() => {
-      setLoading(false); // Hide loader
-   // }, 2000);
-    inputRefs.current[0]?.focus(); // auto-focus on first input
-  }, []);
+  sendOTP();                 // trigger OTP logic
+  setLoading(false);         // hide loader
+
+  // Delay the focus slightly so inputs have time to render
+  setTimeout(() => {
+    if (inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+      console.log("Focused first OTP input");
+    } else {
+      console.log("OTP input not ready");
+    }
+  }, 300); // 300ms is usually enough
+}, []);
+
 
   useEffect(() => {
     if (timer === 0) {
