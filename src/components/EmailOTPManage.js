@@ -26,11 +26,11 @@ function EmailOTPManage() {
     phone,
     token,
   } = location.state || {};
-  const { forgetName, forgetEmail, action, forgetToken } = location.state;
+ // const { forgetName, forgetEmail, action, forgetToken } = location.state;
 
   const sendOTP = async () => {
-    const otpName = action === "ForgetPassword" ? forgetName : name;
-    const otpEmail = action === "ForgetPassword" ? forgetEmail : email;
+    //const otpName = action === "ForgetPassword" ? forgetName : name;
+    //const otpEmail = action === "ForgetPassword" ? forgetEmail : email;
     try {
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/send-otp",
@@ -39,7 +39,7 @@ function EmailOTPManage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name: otpName, email: otpEmail }),
+          body: JSON.stringify({ name ,email }),
         }
       );
       if (response.ok) {
@@ -64,20 +64,13 @@ function EmailOTPManage() {
   }
 
   useEffect(() => {
-  sendOTP();                 // trigger OTP logic
-  setLoading(false);         // hide loader
-
-  // Delay the focus slightly so inputs have time to render
-  setTimeout(() => {
-    if (inputRefs.current[0]) {
-      inputRefs.current[0].focus();
-      console.log("Focused first OTP input");
-    } else {
-      console.log("OTP input not ready");
-    }
-  }, 300); // 300ms is usually enough
-}, []);
-
+   // setLoading(true);
+    sendOTP();
+    //setTimeout(() => {
+      setLoading(false); // Hide loader
+   // }, 2000);
+    inputRefs.current[0]?.focus(); // auto-focus on first input
+  }, []);
 
   useEffect(() => {
     if (timer === 0) {
@@ -130,7 +123,7 @@ function EmailOTPManage() {
   const verifyOTP = async () => {
     setLoading(true);
     const enteredOtp = getOtpValue();
-    const actualEmail = action === "ForgetPassword" ? forgetEmail : email;
+    //const actualEmail = action === "ForgetPassword" ? forgetEmail : email;
     try {
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/verify-otp",
@@ -139,25 +132,27 @@ function EmailOTPManage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email: actualEmail, otp: enteredOtp }),
+          body: JSON.stringify({ email, otp: enteredOtp }),
         }
       );
       const data = await response.json(); // Get server response
       if (response.ok) {
-        if (action === "ForgetPassword") {
+       // if (action === "ForgetPassword") {
           openChangePasswordModal();
-        } else {
+      //  } 
+       // else {
           await finalSignup();
           showToast("success", "OTP Verified Successfully!", 3000, "top-right");
-        }
-      } else {
+       // }
+      } 
+      //else {
         showToast(
           "error",
           data.message || "Invalid OTP. Please try again.",
           3000,
           "top-right"
         );
-      }
+     // }
     } catch (error) {
       console.error("Error:", error);
       showToast("error", "Network Error. Try again.", 3000, "top-right");
@@ -246,7 +241,7 @@ function EmailOTPManage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          token: forgetToken,
+         // token: forgetToken,
           newPassword: confirmPassword,
         }),
       });
