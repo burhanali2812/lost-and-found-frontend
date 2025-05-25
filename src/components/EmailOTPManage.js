@@ -7,7 +7,9 @@ function EmailOTPManage() {
   const [timer, setTimer] = useState(120); // 2 minutes in seconds
   const [canResend, setCanResend] = useState(false);
   const [otp, setOtp] = useState(new Array(6).fill(""));
-  const [currentOTP, setCurrentOTP] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [strength, setStrength] = useState("");
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,32 +26,42 @@ function EmailOTPManage() {
     phone,
     token,
   } = location.state || {};
+  const { forgetName, forgetEmail, action, forgetToken } = location.state;
 
- const sendOTP = async () => {
-  try {
-    const response = await fetch(
-      "https://lost-and-found-backend-xi.vercel.app/auth/send-otp",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email }),
+  const sendOTP = async () => {
+    const otpName = action === "ForgetPassword" ? forgetName : name;
+    const otpEmail = action === "ForgetPassword" ? forgetEmail : email;
+    try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/send-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: otpName, email: otpEmail }),
+        }
+      );
+      if (response.ok) {
+        setTimer(120);
+        setCanResend(false);
+      } else {
+        const data = await response.json();
+        showToast(
+          "error",
+          data.message || "Failed to send OTP",
+          3000,
+          "top-right"
+        );
       }
-    );
-    if (response.ok) {
-      setTimer(120);
-      setCanResend(false);
-    } else {
-      const data = await response.json();
-      showToast("error", data.message || "Failed to send OTP", 3000, "top-right");
+    } catch (error) {
+      console.error("Error:", error);
+      showToast("error", "Network Error. Try again.", 3000, "top-right");
     }
-  } catch (error) {
-    console.error("Error:", error);
-    showToast("error", "Network Error. Try again.", 3000, "top-right");
+  };
+  const modelClosed = ()=>{
+    navigate("/login-signup")
   }
-};
-
 
   useEffect(() => {
     setLoading(true);
@@ -109,33 +121,50 @@ function EmailOTPManage() {
   const getOtpValue = () => otp.join("");
 
   const verifyOTP = async () => {
-  setLoading(true);
-  const enteredOtp = getOtpValue();
-  try {
-    const response = await fetch(
-      "https://lost-and-found-backend-xi.vercel.app/auth/verify-otp",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, otp: enteredOtp }),
+    setLoading(true);
+    const enteredOtp = getOtpValue();
+    const actualEmail = action === "ForgetPassword" ? forgetEmail : email;
+    try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/verify-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: actualEmail, otp: enteredOtp }),
+        }
+      );
+      const data = await response.json(); // Get server response
+      if (response.ok) {
+        if (action === "ForgetPassword") {
+          openChangePasswordModal();
+        } else {
+          await finalSignup();
+          showToast("success", "OTP Verified Successfully!", 3000, "top-right");
+        }
+      } else {
+        showToast(
+          "error",
+          data.message || "Invalid OTP. Please try again.",
+          3000,
+          "top-right"
+        );
       }
-    );
-    const data = await response.json(); // Get server response
-    if (response.ok) {
-      await finalSignup();
-      showToast("success", "OTP Verified Successfully!", 3000, "top-right");
-    } else {
-      showToast("error", data.message || "Invalid OTP. Please try again.", 3000, "top-right");
+    } catch (error) {
+      console.error("Error:", error);
+      showToast("error", "Network Error. Try again.", 3000, "top-right");
     }
-  } catch (error) {
-    console.error("Error:", error);
-    showToast("error", "Network Error. Try again.", 3000, "top-right");
-  }
-  setLoading(false);
-};
+    setLoading(false);
+  };
+  const openChangePasswordModal = () => {
+    const modalElement = document.getElementById("changePasswordModal");
+    const existingModal = window.bootstrap.Modal.getInstance(modalElement);
+    if (existingModal) existingModal.dispose();
 
+    const newModal = new window.bootstrap.Modal(modalElement);
+    newModal.show();
+  };
 
   const finalSignup = async () => {
     const formData = new FormData();
@@ -172,6 +201,65 @@ function EmailOTPManage() {
       }
     } catch (error) {
       setLoading(false); // Ensure loading is turned off
+      console.error("Error Uploading User:", error);
+      showToast("error", "Network or Server Error", 3000, "top-right");
+    }
+  };
+  const checkPasswordStrength = (password) => {
+    if (password.length < 6) return "Weak";
+    if (
+      password.length >= 6 &&
+      /[A-Z]/.test(password) &&
+      /[0-9]/.test(password) &&
+      /[!@#$%^&*]/.test(password)
+    ) {
+      return "Strong";
+    }
+    return "Medium";
+  };
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setNewPassword(value);
+    setStrength(checkPasswordStrength(value));
+  };
+  const passwordChnage = async () => {
+    if (newPassword !== confirmPassword) {
+      showToast(
+        "warning",
+        "Confirm password does'nt match!",
+        3000,
+        "top-right"
+      );
+      return;
+    }
+    try {
+      const response = await fetch("https://lost-and-found-backend-xi.vercel.app/auth/getUserEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: forgetToken,
+          newPassword: confirmPassword,
+        }),
+      });
+      if (response.ok) {
+        setLoading(false);
+        showToast(
+          "success",
+          "Password changed successfully!",
+          3000,
+          "top-right"
+        );
+        setTimeout(() => {
+          navigate("/login-signup");
+        }, 500);
+      } else {
+        setLoading(false);
+        showToast("error", "Error changing password!", 3000, "top-right");
+      }
+    } catch (error) {
+      setLoading(false);
       console.error("Error Uploading User:", error);
       showToast("error", "Network or Server Error", 3000, "top-right");
     }
@@ -325,6 +413,115 @@ function EmailOTPManage() {
               >
                 <i className="fas fa-key me-2"></i>
                 Verify OTP
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id="changePasswordModal"
+        tabIndex="-1"
+        aria-labelledby="changePasswordModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="changePasswordModalLabel">
+                Forget Password Request
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form>
+                <div className="mb-3">
+                  <label className="form-label">
+                    <strong>Enter New Password</strong>
+                  </label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    placeholder="Enter new password"
+                    value={newPassword}
+                    onChange={handlePasswordChange}
+                  />
+                </div>
+                {newPassword && (
+                  <div className="mt-2">
+                    {/* Strength Text */}
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        color:
+                          strength === "Weak"
+                            ? "red"
+                            : strength === "Medium"
+                            ? "orange"
+                            : "green",
+                      }}
+                    >
+                      {strength} Password
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="progress mt-1" style={{ height: "5px" }}>
+                      <div
+                        className="progress-bar"
+                        role="progressbar"
+                        style={{
+                          width:
+                            strength === "Weak"
+                              ? "33%"
+                              : strength === "Medium"
+                              ? "66%"
+                              : "100%",
+                          backgroundColor:
+                            strength === "Weak"
+                              ? "red"
+                              : strength === "Medium"
+                              ? "orange"
+                              : "green",
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+
+                <label className="form-label mt-2">
+                  <strong>Enter Confirm Password</strong>
+                </label>
+                <input
+                  type="password"
+                  className="form-control "
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </form>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+                onClick={modelClosed}
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={passwordChnage}
+              >
+                Submit
               </button>
             </div>
           </div>

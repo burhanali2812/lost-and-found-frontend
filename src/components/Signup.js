@@ -4,6 +4,7 @@ import { showToast } from "./Toastify2";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+
 import "./Signup.css";
 
 import ReCAPTCHA from "react-google-recaptcha";
@@ -34,6 +35,7 @@ function Signup() {
   const [showcPassword, setShowcPassword] = useState(false);
   const [showlPassword, setShowlPassword] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(null);
+  const [forgetEmail, setForgetEmail] = useState("");
 
   const handleAlreadyLogin = (e) => {
     e.preventDefault();
@@ -233,6 +235,60 @@ function Signup() {
       },
     });
   };
+
+  const openForgetPasswordModal = () => {
+    const modalElement = document.getElementById("forgetPasswordModal");
+
+    const existingModal = window.bootstrap.Modal.getInstance(modalElement);
+    if (existingModal) {
+      existingModal.dispose();
+    }
+
+    const forgetModal = new window.bootstrap.Modal(modalElement);
+    forgetModal.show();
+  };
+
+const verifyForgetPassword = async () => {
+  try {
+    const response = await fetch(
+      "https://lost-and-found-backend-xi.vercel.app/auth/getUserEmail",
+      {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: forgetEmail,
+        }),
+      }
+    );
+
+    const data = await response.json(); 
+
+    if (response.ok && data.success) {
+      showToast("success", "User Email Verified!", 3000, "top-right");
+      setTimeout(() => {
+        navigate("/email-OTP", {
+          state: {
+            forgetName: data.name,
+            forgetEmail: forgetEmail, 
+            action: "ForgetPassword",
+            forgetToken: data.token
+          },
+        });
+      }, 1000);
+        
+     
+    } else {
+    
+      showToast("error", data.message || "Email not found", 3000, "top-right");
+    }
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    showToast("Error", "Something went wrong. Try again.", 3000, "top-right");
+  }
+};
+
 
   const resetFormData = () => {
     setProfileImage(null);
@@ -847,17 +903,75 @@ function Signup() {
                     </button>
                   </div>
                   <div className="text-end mt-3">
-                    <a
-                      href="/forgot-password"
-                      className="text-decoration-none text-white-50 fw-semibold"
+                    <button
+                      type="button"
+                      className="btn btn-link text-white-50 fw-semibold p-0 m-0"
                       style={{ fontSize: "0.9rem" }}
+                      onClick={openForgetPasswordModal}
                     >
                       Forgot Password?
-                    </a>
+                    </button>
                   </div>
                 </form>
               </>
             )}
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id="forgetPasswordModal"
+        tabIndex="-1"
+        aria-labelledby="forgetPasswordModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="forgetPasswordModalLabel">
+                Forget Password Request
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form>
+                <div className="mb-3">
+                  <label htmlFor="rejectionReason" className="form-label">
+                    <strong>Enter Your Email</strong>
+                  </label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    rows="4"
+                    id="rejectionReason"
+                    value={forgetEmail}
+                    onChange={(e) => setForgetEmail(e.target.value)}
+                  ></input>
+                </div>
+              </form>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={verifyForgetPassword}
+              >
+                Submit
+              </button>
+            </div>
           </div>
         </div>
       </div>
