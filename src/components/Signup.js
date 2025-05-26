@@ -262,9 +262,7 @@ const verifyForgetPassword = async () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email: forgetEmail,
-        }),
+        body: JSON.stringify({ email: forgetEmail }),
       }
     );
 
@@ -273,24 +271,27 @@ const verifyForgetPassword = async () => {
     if (response.ok && data.success) {
       showToast("success", "User Email Verified!", 3000, "top-right");
 
-      // ✅ Close modal using window.bootstrap.Modal
       const modalElement = document.getElementById("forgetPasswordModal");
       const existingModal = window.bootstrap.Modal.getInstance(modalElement);
       if (existingModal) {
         existingModal.hide();
-      }
 
-      // ✅ Navigate after a short delay
-      setTimeout(() => {
-        navigate("/email-OTP", {
-          state: {
-            forgetName: data.name,
-            forgetEmail: forgetEmail,
-            action: "ForgetPassword",
-            forgetToken: data.token,
+        // ⏳ Wait until modal is completely hidden before navigating
+        modalElement.addEventListener(
+          "hidden.bs.modal",
+          () => {
+            navigate("/email-OTP", {
+              state: {
+                forgetName: data.name,
+                forgetEmail: forgetEmail,
+                action: "ForgetPassword",
+                forgetToken: data.token,
+              },
+            });
           },
-        });
-      }, 500);
+          { once: true } // so it runs only once
+        );
+      }
     } else {
       showToast("error", data.message || "Email not found", 3000, "top-right");
     }
@@ -299,6 +300,7 @@ const verifyForgetPassword = async () => {
     showToast("error", "Something went wrong. Try again.", 3000, "top-right");
   }
 };
+
 
 
 
