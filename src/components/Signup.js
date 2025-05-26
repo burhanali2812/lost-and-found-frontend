@@ -273,14 +273,14 @@ const verifyForgetPassword = async () => {
     if (response.ok && data.success) {
       showToast("success", "User Email Verified!", 3000, "top-right");
 
-      // ✅ Close the modal manually
-      const modalEl = document.getElementById("forgetPasswordModal");
-      if (modalEl) {
-        const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-        modal.hide();
+      // ✅ Close modal using window.bootstrap.Modal
+      const modalElement = document.getElementById("forgetPasswordModal");
+      const existingModal = window.bootstrap.Modal.getInstance(modalElement);
+      if (existingModal) {
+        existingModal.hide();
       }
 
-      // ✅ Navigate after short delay
+      // ✅ Navigate after a short delay
       setTimeout(() => {
         navigate("/email-OTP", {
           state: {
@@ -299,6 +299,7 @@ const verifyForgetPassword = async () => {
     showToast("error", "Something went wrong. Try again.", 3000, "top-right");
   }
 };
+
 
 
 
