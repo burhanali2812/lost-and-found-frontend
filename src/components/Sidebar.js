@@ -322,7 +322,7 @@ function Sidebar({
 
             <li className="nav-item">
               <Link
-                to="/"
+                to="/notification"
                 className="nav-link text-white"
                 onClick={() => isMobile && setShowMobileMenu(false)}
               >
