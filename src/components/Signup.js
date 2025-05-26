@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { showToast } from "./Toastify2";
 import { ToastContainer } from "react-toastify";
@@ -112,6 +112,35 @@ function Signup() {
       );
     }
   };
+  useEffect(() => {
+    
+    const cleanupModals = () => {
+      
+      const backdrops = document.querySelectorAll('.modal-backdrop');
+      backdrops.forEach(backdrop => backdrop.remove());
+      
+    
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+     const modals = document.querySelectorAll('.modal');
+      modals.forEach(modal => {
+        modal.style.display = 'none';
+        const modalInstance = window.bootstrap.Modal.getInstance(modal); 
+        if (modalInstance) {
+          modalInstance.hide();
+          modalInstance.dispose();
+        }
+      });
+    };
+
+    // Run cleanup on mount
+    cleanupModals();
+
+    // Optional: Also clean up when component unmounts
+    return () => cleanupModals();
+  }, []);
+
 
   const handleUploadImage = (e) => {
     const file = e.target.files[0];
@@ -248,63 +277,62 @@ function Signup() {
     forgetModal.show();
   };
 
-const verifyForgetPassword = async () => {
-  if (!forgetEmail.trim()) {
-    showToast("error", "Email is required", 3000, "top-right");
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      "https://lost-and-found-backend-xi.vercel.app/auth/getUserEmail",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: forgetEmail }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (response.ok && data.success) {
-      showToast("success", "User Email Verified!", 3000, "top-right");
-
-      // Forcefully hide modal
-      const modalElement = document.getElementById("forgetPasswordModal");
-
-      const modalInstance =
-        window.bootstrap.Modal.getInstance(modalElement) ||
-        new window.bootstrap.Modal(modalElement);
-
-      modalInstance.hide();
-
-      // Wait for Bootstrap transition to complete
-      setTimeout(() => {
-        navigate("/email-OTP", {
-          state: {
-            forgetName: data.name,
-            forgetEmail: forgetEmail,
-            action: "ForgetPassword",
-            forgetToken: data.token,
-          },
-        });
-      }, 500); // wait 500ms to let modal hide animation finish
-    } else {
-      showToast("error", data.message || "Email not found", 3000, "top-right");
+  const verifyForgetPassword = async () => {
+    if (!forgetEmail.trim()) {
+      showToast("error", "Email is required", 3000, "top-right");
+      return;
     }
-  } catch (error) {
-    console.error("Error verifying email:", error);
-    showToast("error", "Something went wrong. Try again.", 3000, "top-right");
-  }
-};
 
+    try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/getUserEmail",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: forgetEmail }),
+        }
+      );
 
+      const data = await response.json();
 
+      if (response.ok && data.success) {
+        showToast("success", "User Email Verified!", 3000, "top-right");
 
+        // Forcefully hide modal
+        const modalElement = document.getElementById("forgetPasswordModal");
 
+        const modalInstance =
+          window.bootstrap.Modal.getInstance(modalElement) ||
+          new window.bootstrap.Modal(modalElement);
 
+        modalInstance.hide();
+
+        // Wait for Bootstrap transition to complete
+        setTimeout(() => {
+          navigate("/email-OTP", {
+            state: {
+              forgetName: data.name,
+              forgetEmail: forgetEmail,
+              action: "ForgetPassword",
+              forgetToken: data.token,
+            },
+          });
+        }, 500); // wait 500ms to let modal hide animation finish
+      } else {
+        showToast(
+          "error",
+          data.message || "Email not found",
+          3000,
+          "top-right"
+        );
+      }
+    } catch (error) {
+      console.error("Error verifying email:", error);
+      showToast("error", "Something went wrong. Try again.", 3000, "top-right");
+    }
+  };
 
   const resetFormData = () => {
     setProfileImage(null);
@@ -935,69 +963,69 @@ const verifyForgetPassword = async () => {
         </div>
       </div>
 
-     <div
-  className="modal fade"
-  id="forgetPasswordModal"
-  tabIndex="-1"
-  aria-labelledby="forgetPasswordModalLabel"
-  aria-hidden="true"
-  data-bs-backdrop="static" 
->
-  <div className="modal-dialog">
-    <div className="modal-content">
-      <div className="modal-header">
-        <h5 className="modal-title" id="forgetPasswordModalLabel">
-          Forget Password Request
-        </h5>
-        <button
-          type="button"
-          className="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-          onClick={() => {
-            // Reset email when closing
-            setForgetEmail("");
-          }}
-        ></button>
-      </div>
-      <div className="modal-body">
-        <form onSubmit={(e) => e.preventDefault()}>
-          <div className="mb-3">
-            <label htmlFor="forgetEmailInput" className="form-label">
-              <strong>Enter Your Email</strong>
-            </label>
-            <input
-              type="email"
-              className="form-control"
-              id="forgetEmailInput"
-              value={forgetEmail}
-              onChange={(e) => setForgetEmail(e.target.value)}
-              required
-            />
+      <div
+        className="modal fade"
+        id="forgetPasswordModal"
+        tabIndex="-1"
+        aria-labelledby="forgetPasswordModalLabel"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="forgetPasswordModalLabel">
+                Forget Password Request
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={() => {
+                  // Reset email when closing
+                  setForgetEmail("");
+                }}
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form onSubmit={(e) => e.preventDefault()}>
+                <div className="mb-3">
+                  <label htmlFor="forgetEmailInput" className="form-label">
+                    <strong>Enter Your Email</strong>
+                  </label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    id="forgetEmailInput"
+                    value={forgetEmail}
+                    onChange={(e) => setForgetEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </form>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+                onClick={() => setForgetEmail("")}
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={verifyForgetPassword}
+                disabled={!forgetEmail.trim()} // Disable if empty
+              >
+                Submit
+              </button>
+            </div>
           </div>
-        </form>
+        </div>
       </div>
-      <div className="modal-footer">
-        <button
-          type="button"
-          className="btn btn-secondary"
-          data-bs-dismiss="modal"
-          onClick={() => setForgetEmail("")}
-        >
-          Close
-        </button>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={verifyForgetPassword}
-          disabled={!forgetEmail.trim()} // Disable if empty
-        >
-          Submit
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
     </>
   );
 }
