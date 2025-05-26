@@ -268,26 +268,34 @@ const verifyForgetPassword = async () => {
 
     const data = await response.json();
 
-   if (response.ok && data.success) {
-  showToast("success", "User Email Verified!", 3000, "top-right");
-  const modalElement = document.getElementById("forgetPasswordModal");
-  const modalInstance = window.bootstrap.Modal.getInstance(modalElement) || 
-                      new window.bootstrap.Modal(modalElement);
+    if (response.ok && data.success) {
+      showToast("success", "User Email Verified!", 3000, "top-right");
+      const modalElement = document.getElementById("forgetPasswordModal");
+      const modalInstance = window.bootstrap.Modal.getInstance(modalElement) || 
+                          new window.bootstrap.Modal(modalElement);
 
-  // Listen for when the modal is fully hidden
-  modalElement.addEventListener('hidden.bs.modal', () => {
-    navigate("/email-OTP", {
-      state: {
-        forgetName: data.name,
-        forgetEmail: forgetEmail,
-        action: "ForgetPassword",
-        forgetToken: data.token,
-      }
-    });
-  }, { once: true }); // Use { once: true } to auto-remove the listener
+      // Hide the modal first
+      modalInstance.hide();
 
-  modalInstance.hide();
-} else {
+      // Manually remove backdrop (if any)
+      const backdrops = document.querySelectorAll('.modal-backdrop');
+      backdrops.forEach(backdrop => backdrop.remove());
+
+      // Reset body styles (Bootstrap adds these when modal opens)
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+
+      // Navigate to email-OTP
+      navigate("/email-OTP", {
+        state: {
+          forgetName: data.name,
+          forgetEmail: forgetEmail,
+          action: "ForgetPassword",
+          forgetToken: data.token,
+        }
+      });
+    } else {
       showToast("error", data.message || "Email not found", 3000, "top-right");
     }
   } catch (error) {

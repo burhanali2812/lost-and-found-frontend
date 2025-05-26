@@ -64,11 +64,11 @@ function EmailOTPManage() {
   }
 
   useEffect(() => {
-   // setLoading(true);
+    setLoading(true);
     sendOTP();
-    //setTimeout(() => {
+    setTimeout(() => {
       setLoading(false); // Hide loader
-   // }, 2000);
+    }, 2000);
     inputRefs.current[0]?.focus(); // auto-focus on first input
   }, []);
 
