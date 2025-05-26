@@ -926,7 +926,7 @@ const verifyForgetPassword = async () => {
                       type="button"
                       className="btn btn-link text-white-50 fw-semibold p-0 m-0"
                       style={{ fontSize: "0.9rem" }}
-                      onClick={openForgetPasswordModal}
+                      onClick={verifyForgetPassword}
                     >
                       Forgot Password?
                     </button>
