@@ -268,27 +268,26 @@ const verifyForgetPassword = async () => {
 
     const data = await response.json();
 
-    if (response.ok && data.success) {
-      showToast("success", "User Email Verified!", 3000, "top-right");
+   if (response.ok && data.success) {
+  showToast("success", "User Email Verified!", 3000, "top-right");
+  const modalElement = document.getElementById("forgetPasswordModal");
+  const modalInstance = window.bootstrap.Modal.getInstance(modalElement) || 
+                      new window.bootstrap.Modal(modalElement);
 
-        const modalElement = document.getElementById("forgetPasswordModal");
-      if (modalElement) {
-        const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-        modalInstance.hide();
+  // Listen for when the modal is fully hidden
+  modalElement.addEventListener('hidden.bs.modal', () => {
+    navigate("/email-OTP", {
+      state: {
+        forgetName: data.name,
+        forgetEmail: forgetEmail,
+        action: "ForgetPassword",
+        forgetToken: data.token,
       }
+    });
+  }, { once: true }); // Use { once: true } to auto-remove the listener
 
-      // Wait for Bootstrap transition to complete
-      setTimeout(() => {
-        navigate("/email-OTP", {
-          state: {
-            forgetName: data.name,
-            forgetEmail: forgetEmail,
-            action: "ForgetPassword",
-            forgetToken: data.token,
-          },
-        });
-      }, 500); // wait 500ms to let modal hide animation finish
-    } else {
+  modalInstance.hide();
+} else {
       showToast("error", data.message || "Email not found", 3000, "top-right");
     }
   } catch (error) {
