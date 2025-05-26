@@ -271,27 +271,26 @@ const verifyForgetPassword = async () => {
     if (response.ok && data.success) {
       showToast("success", "User Email Verified!", 3000, "top-right");
 
+      // Forcefully hide modal
       const modalElement = document.getElementById("forgetPasswordModal");
-      const existingModal = window.bootstrap.Modal.getInstance(modalElement);
-      if (existingModal) {
-        existingModal.hide();
 
-        // ⏳ Wait until modal is completely hidden before navigating
-        modalElement.addEventListener(
-          "hidden.bs.modal",
-          () => {
-            navigate("/email-OTP", {
-              state: {
-                forgetName: data.name,
-                forgetEmail: forgetEmail,
-                action: "ForgetPassword",
-                forgetToken: data.token,
-              },
-            });
+      const modalInstance =
+        window.bootstrap.Modal.getInstance(modalElement) ||
+        new window.bootstrap.Modal(modalElement);
+
+      modalInstance.hide();
+
+      // Wait for Bootstrap transition to complete
+      setTimeout(() => {
+        navigate("/email-OTP", {
+          state: {
+            forgetName: data.name,
+            forgetEmail: forgetEmail,
+            action: "ForgetPassword",
+            forgetToken: data.token,
           },
-          { once: true } // so it runs only once
-        );
-      }
+        });
+      }, 1500); // wait 500ms to let modal hide animation finish
     } else {
       showToast("error", data.message || "Email not found", 3000, "top-right");
     }
@@ -300,6 +299,7 @@ const verifyForgetPassword = async () => {
     showToast("error", "Something went wrong. Try again.", 3000, "top-right");
   }
 };
+
 
 
 
