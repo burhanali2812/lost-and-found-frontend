@@ -249,11 +249,16 @@ function Signup() {
   };
 
 const verifyForgetPassword = async () => {
+  if (!forgetEmail.trim()) {
+    showToast("error", "Email is required", 3000, "top-right");
+    return;
+  }
+
   try {
     const response = await fetch(
       "https://lost-and-found-backend-xi.vercel.app/auth/getUserEmail",
       {
-        method: "POST", 
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -263,31 +268,38 @@ const verifyForgetPassword = async () => {
       }
     );
 
-    const data = await response.json(); 
+    const data = await response.json();
 
     if (response.ok && data.success) {
       showToast("success", "User Email Verified!", 3000, "top-right");
+
+      // ✅ Close the modal manually
+      const modalEl = document.getElementById("forgetPasswordModal");
+      if (modalEl) {
+        const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        modal.hide();
+      }
+
+      // ✅ Navigate after short delay
       setTimeout(() => {
         navigate("/email-OTP", {
           state: {
             forgetName: data.name,
-            forgetEmail: forgetEmail, 
+            forgetEmail: forgetEmail,
             action: "ForgetPassword",
-            forgetToken: data.token
+            forgetToken: data.token,
           },
         });
-      }, 1000);
-        
-     
+      }, 500);
     } else {
-    
       showToast("error", data.message || "Email not found", 3000, "top-right");
     }
   } catch (error) {
     console.error("Error verifying email:", error);
-    showToast("Error", "Something went wrong. Try again.", 3000, "top-right");
+    showToast("error", "Something went wrong. Try again.", 3000, "top-right");
   }
 };
+
 
 
   const resetFormData = () => {
