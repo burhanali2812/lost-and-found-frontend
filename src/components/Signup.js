@@ -271,14 +271,11 @@ const verifyForgetPassword = async () => {
     if (response.ok && data.success) {
       showToast("success", "User Email Verified!", 3000, "top-right");
 
-      // Forcefully hide modal
-      const modalElement = document.getElementById("forgetPasswordModal");
-
-      const modalInstance =
-        window.bootstrap.Modal.getInstance(modalElement) ||
-        new window.bootstrap.Modal(modalElement);
-
-      modalInstance.hide();
+        const modalElement = document.getElementById("forgetPasswordModal");
+      if (modalElement) {
+        const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+        modalInstance.hide();
+      }
 
       // Wait for Bootstrap transition to complete
       setTimeout(() => {
@@ -290,7 +287,7 @@ const verifyForgetPassword = async () => {
             forgetToken: data.token,
           },
         });
-      }, 1500); // wait 500ms to let modal hide animation finish
+      }, 500); // wait 500ms to let modal hide animation finish
     } else {
       showToast("error", data.message || "Email not found", 3000, "top-right");
     }
