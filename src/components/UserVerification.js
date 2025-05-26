@@ -56,8 +56,8 @@ function UserVerification({ user, setUser }) {
         return;
       }
       const data = await response.json();
-      console.log(data);
-      const filterUsers = data.user.filter(
+      console.log("data", data);
+      const filterUsers = data.users.filter(
         (user) => user.isVerified === "requested"
       );
       setUser(filterUsers);
