@@ -249,59 +249,59 @@ function Signup() {
   };
 
 const verifyForgetPassword = async () => {
-  if (!forgetEmail.trim()) {
-    showToast("error", "Email is required", 3000, "top-right");
-    return;
-  }
+  // if (!forgetEmail.trim()) {
+  //   showToast("error", "Email is required", 3000, "top-right");
+  //   return;
+  // }
 
-  try {
-    const response = await fetch(
-      "https://lost-and-found-backend-xi.vercel.app/auth/getUserEmail",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: forgetEmail }),
-      }
-    );
+  // try {
+  //   const response = await fetch(
+  //     "https://lost-and-found-backend-xi.vercel.app/auth/getUserEmail",
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ email: forgetEmail }),
+  //     }
+  //   );
 
-    const data = await response.json();
+  //   const data = await response.json();
 
-    if (response.ok && data.success) {
-      showToast("success", "User Email Verified!", 3000, "top-right");
-      const modalElement = document.getElementById("forgetPasswordModal");
-      const modalInstance = window.bootstrap.Modal.getInstance(modalElement) || 
-                          new window.bootstrap.Modal(modalElement);
+  //   if (response.ok && data.success) {
+  //     showToast("success", "User Email Verified!", 3000, "top-right");
+  //     const modalElement = document.getElementById("forgetPasswordModal");
+  //     const modalInstance = window.bootstrap.Modal.getInstance(modalElement) || 
+  //                         new window.bootstrap.Modal(modalElement);
 
-      // Hide the modal first
-      modalInstance.hide();
+  //     // Hide the modal first
+  //     modalInstance.hide();
 
-      // Manually remove backdrop (if any)
-      const backdrops = document.querySelectorAll('.modal-backdrop');
-      backdrops.forEach(backdrop => backdrop.remove());
+  //     // Manually remove backdrop (if any)
+  //     const backdrops = document.querySelectorAll('.modal-backdrop');
+  //     backdrops.forEach(backdrop => backdrop.remove());
 
-      // Reset body styles (Bootstrap adds these when modal opens)
-      document.body.classList.remove('modal-open');
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
+  //     // Reset body styles (Bootstrap adds these when modal opens)
+  //     document.body.classList.remove('modal-open');
+  //     document.body.style.overflow = '';
+  //     document.body.style.paddingRight = '';
 
       // Navigate to email-OTP
       navigate("/email-OTP", {
         state: {
-          forgetName: data.name,
+          forgetName: name,
           forgetEmail: forgetEmail,
           action: "ForgetPassword",
-          forgetToken: data.token,
+          //forgetToken: token,
         }
       });
-    } else {
-      showToast("error", data.message || "Email not found", 3000, "top-right");
-    }
-  } catch (error) {
-    console.error("Error verifying email:", error);
-    showToast("error", "Something went wrong. Try again.", 3000, "top-right");
-  }
+  //   } else {
+  //     showToast("error", data.message || "Email not found", 3000, "top-right");
+  //   }
+  // } catch (error) {
+  //   console.error("Error verifying email:", error);
+  //   showToast("error", "Something went wrong. Try again.", 3000, "top-right");
+  // }
 };
 
 
