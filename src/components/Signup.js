@@ -613,9 +613,50 @@ function Signup() {
                       ></i>
                     </span>
                   </div>
+                   {password && (
+                  <div className="mt-2">
+                    {/* Strength Text */}
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        color:
+                          strength === "Weak"
+                            ? "red"
+                            : strength === "Medium"
+                            ? "orange"
+                            : "green",
+                      }}
+                    >
+                      {strength} Password
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="progress mt-1" style={{ height: "5px" }}>
+                      <div
+                        className="progress-bar"
+                        role="progressbar"
+                        style={{
+                          width:
+                            strength === "Weak"
+                              ? "33%"
+                              : strength === "Medium"
+                              ? "66%"
+                              : "100%",
+                          backgroundColor:
+                            strength === "Weak"
+                              ? "red"
+                              : strength === "Medium"
+                              ? "orange"
+                              : "green",
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
 
                   {/* Confirm Password */}
-                  <div className="mb-3 input-group">
+                  <div className="mb-3 mt-1 input-group">
                     <span className="input-group-text bg-white">
                       <i className="fas fa-lock"></i>
                     </span>
