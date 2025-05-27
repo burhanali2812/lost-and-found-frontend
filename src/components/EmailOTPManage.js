@@ -448,32 +448,36 @@ function EmailOTPManage() {
             </div>
             <div className="modal-body">
               <form>
+                {/* New Password Field */}
                 <div className="mb-3">
                   <label className="form-label">
                     <strong>Enter New Password</strong>
                   </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Enter new password"
-                    value={newPassword}
-                    onChange={handlePasswordChange}
-                  />
-                  <span
-                    className="input-group-text bg-white"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    <i
-                      className={`fas ${
-                        showPassword ? "fa-eye-slash" : "fa-eye"
-                      }`}
-                    ></i>
-                  </span>
+                  <div className="input-group">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className="form-control"
+                      placeholder="Enter new password"
+                      value={newPassword}
+                      onChange={handlePasswordChange}
+                    />
+                    <span
+                      className="input-group-text bg-white"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <i
+                        className={`fas ${
+                          showPassword ? "fa-eye-slash" : "fa-eye"
+                        }`}
+                      ></i>
+                    </span>
+                  </div>
                 </div>
+
+                {/* Password Strength */}
                 {newPassword && (
                   <div className="mt-2">
-                    {/* Strength Text */}
                     <div
                       style={{
                         fontSize: "14px",
@@ -489,7 +493,6 @@ function EmailOTPManage() {
                       {strength} Password
                     </div>
 
-                    {/* Progress Bar */}
                     <div className="progress mt-1" style={{ height: "5px" }}>
                       <div
                         className="progress-bar"
@@ -513,27 +516,30 @@ function EmailOTPManage() {
                   </div>
                 )}
 
-                <label className="form-label mt-2">
+                {/* Confirm Password Field */}
+                <label className="form-label mt-3">
                   <strong>Enter Confirm Password</strong>
                 </label>
-                <input
-                  type="password"
-                  className="form-control "
-                  placeholder="Confirm new password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-                <span
-                  className="input-group-text bg-white"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setShowcPassword(!showcPassword)}
-                >
-                  <i
-                    className={`fas ${
-                      showcPassword ? "fa-eye-slash" : "fa-eye"
-                    }`}
-                  ></i>
-                </span>
+                <div className="input-group">
+                  <input
+                    type={showcPassword ? "text" : "password"}
+                    className="form-control"
+                    placeholder="Confirm new password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  <span
+                    className="input-group-text bg-white"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setShowcPassword(!showcPassword)}
+                  >
+                    <i
+                      className={`fas ${
+                        showcPassword ? "fa-eye-slash" : "fa-eye"
+                      }`}
+                    ></i>
+                  </span>
+                </div>
               </form>
             </div>
             <div className="modal-footer">
