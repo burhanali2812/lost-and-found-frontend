@@ -42,7 +42,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
       if (!response.ok) return;
 
       const data = await response.json();
-      setUsers(data.user);
+      setUsers(data.users);
     } catch (error) {
       console.error("Error fetching Users:", error);
     }
