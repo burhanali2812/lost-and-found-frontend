@@ -232,7 +232,11 @@ function EmailOTPManage() {
       );
       return;
     }
+    console.log("forgetToken", forgetToken);
+      console.log("newPassword", newPassword);
     try {
+      
+      
       const response = await fetch("https://lost-and-found-backend-xi.vercel.app/auth/reset-password", {
         method: "POST",
         headers: {
@@ -240,7 +244,7 @@ function EmailOTPManage() {
         },
         body: JSON.stringify({
           token: forgetToken,
-          newPassword: confirmPassword,
+          newPassword: newPassword,
         }),
       });
       if (response.ok) {
