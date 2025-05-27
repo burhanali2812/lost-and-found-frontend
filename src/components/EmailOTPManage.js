@@ -14,6 +14,8 @@ function EmailOTPManage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [Loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showcPassword, setShowcPassword] = useState(false);
   const {
     profileImage,
     frontCnic,
@@ -59,9 +61,9 @@ function EmailOTPManage() {
       showToast("error", "Network Error. Try again.", 3000, "top-right");
     }
   };
-  const modelClosed = ()=>{
-    navigate("/login-signup")
-  }
+  const modelClosed = () => {
+    navigate("/login-signup");
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -233,20 +235,21 @@ function EmailOTPManage() {
       return;
     }
     console.log("forgetToken", forgetToken);
-      console.log("newPassword", newPassword);
+    console.log("newPassword", newPassword);
     try {
-      
-      
-      const response = await fetch("https://lost-and-found-backend-xi.vercel.app/auth/reset-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: forgetToken,
-          newPassword: newPassword,
-        }),
-      });
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/reset-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: forgetToken,
+            newPassword: newPassword,
+          }),
+        }
+      );
       if (response.ok) {
         setLoading(false);
         showToast(
@@ -456,6 +459,17 @@ function EmailOTPManage() {
                     value={newPassword}
                     onChange={handlePasswordChange}
                   />
+                  <span
+                    className="input-group-text bg-white"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <i
+                      className={`fas ${
+                        showPassword ? "fa-eye-slash" : "fa-eye"
+                      }`}
+                    ></i>
+                  </span>
                 </div>
                 {newPassword && (
                   <div className="mt-2">
@@ -509,6 +523,17 @@ function EmailOTPManage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
+                <span
+                  className="input-group-text bg-white"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setShowcPassword(!showcPassword)}
+                >
+                  <i
+                    className={`fas ${
+                      showcPassword ? "fa-eye-slash" : "fa-eye"
+                    }`}
+                  ></i>
+                </span>
               </form>
             </div>
             <div className="modal-footer">
