@@ -233,7 +233,7 @@ function EmailOTPManage() {
       return;
     }
     try {
-      const response = await fetch("https://lost-and-found-backend-xi.vercel.app/auth/getUserEmail", {
+      const response = await fetch("https://lost-and-found-backend-xi.vercel.app/auth/reset-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -253,7 +253,7 @@ function EmailOTPManage() {
         );
         setTimeout(() => {
           navigate("/login-signup");
-        }, 500);
+        }, 1000);
       } else {
         setLoading(false);
         showToast("error", "Error changing password!", 3000, "top-right");
