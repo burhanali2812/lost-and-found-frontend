@@ -614,7 +614,7 @@ function Signup() {
                     </span>
                   </div>
                    {password && (
-                  <div className="mt-2">
+                  <div className="mt-0 mb-1">
                     {/* Strength Text */}
                     <div
                       style={{
@@ -656,7 +656,7 @@ function Signup() {
                 )}
 
                   {/* Confirm Password */}
-                  <div className="mb-3 mt-1 input-group">
+                  <div className="mb-3 input-group">
                     <span className="input-group-text bg-white">
                       <i className="fas fa-lock"></i>
                     </span>
