@@ -456,7 +456,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
             ) : (
               <tr>
                 <td colSpan="7" className="text-center">
-                  No Verification Request Available
+                  No Lost Items Request Available
                 </td>
               </tr>
             )}

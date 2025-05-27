@@ -40,7 +40,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
       if (!response.ok) return;
 
       const data = await response.json();
-      setUsers(data.user);
+      setUsers(data.users);
     } catch (error) {
       console.error("Error fetching Users:", error);
     }
@@ -430,7 +430,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
             ) : (
               <tr>
                 <td colSpan="7" className="text-center">
-                  No Verification Request Available
+                  No found Items Request Available
                 </td>
               </tr>
             )}
