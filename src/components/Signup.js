@@ -36,7 +36,26 @@ function Signup() {
   const [showlPassword, setShowlPassword] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(null);
   const [forgetEmail, setForgetEmail] = useState("");
+  const [strength, setStrength] = useState("");
 
+
+    const checkPasswordStrength = (password) => {
+    if (password.length < 8) return "Weak";
+    if (
+      password.length >= 6 &&
+      /[A-Z]/.test(password) &&
+      /[0-9]/.test(password) &&
+      /[!@#$%^&*]/.test(password)
+    ) {
+      return "Strong";
+    }
+    return "Medium";
+  };
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    setStrength(checkPasswordStrength(value));
+  };
   const handleAlreadyLogin = (e) => {
     e.preventDefault();
     setAction("signin");
@@ -577,7 +596,7 @@ function Signup() {
                       placeholder="Password"
                       id="password"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                     onChange={handlePasswordChange}
                       required
                       minLength={8}
                     />

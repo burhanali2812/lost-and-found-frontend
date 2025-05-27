@@ -206,7 +206,7 @@ function EmailOTPManage() {
     }
   };
   const checkPasswordStrength = (password) => {
-    if (password.length < 6) return "Weak";
+    if (password.length < 8) return "Weak";
     if (
       password.length >= 6 &&
       /[A-Z]/.test(password) &&
@@ -257,7 +257,7 @@ function EmailOTPManage() {
         );
         setTimeout(() => {
           navigate("/login-signup");
-        }, 1000);
+        }, 1500);
       } else {
         setLoading(false);
         showToast("error", "Error changing password!", 3000, "top-right");
