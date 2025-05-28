@@ -19,6 +19,7 @@ function Sidebar({
 
   const userId = localStorage.getItem("userId");
   const userName = localStorage.getItem("userName");
+  //const role = localStorage.getItem('role');
   const unreadCount = notification.filter((n) => !n.isRead).length;
 
   useEffect(() => {
@@ -28,6 +29,7 @@ function Sidebar({
         setShowMobileMenu(false);
       }
     };
+
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -46,7 +48,9 @@ function Sidebar({
           }
         );
 
-        if (!response.ok) return;
+        if (!response.ok) {
+          return;
+        }
 
         const data = await response.json();
         setProfilePicture(data.user.profileImage);
@@ -60,9 +64,13 @@ function Sidebar({
   }, [userId]);
 
   const handleToast = () => {
-    localStorage.clear();
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
     showToast("success", "LogOut Successfully!", 3000);
-    setTimeout(() => navigate("/login-signup"), 1300);
+    setTimeout(() => {
+      navigate("/login-signup");
+    }, 1300);
   };
 
   const toggleSidebar = () => {
@@ -74,13 +82,12 @@ function Sidebar({
   };
 
   return (
-    <div className="d-flex flex-column flex-md-row">
-      {/* Toggle button for mobile */}
+    <div className="d-flex vh-100">
       {isMobile && (
         <button
           className="btn btn-dark position-fixed m-2"
+          style={{ zIndex: 1000 }}
           onClick={toggleSidebar}
-          style={{ zIndex: 1050 }}
         >
           <i className="fas fa-bars"></i>
         </button>
@@ -88,146 +95,312 @@ function Sidebar({
 
       {/* Sidebar */}
       <div
-        className={`bg-dark text-white p-3 d-flex flex-column position-fixed ${
+        className={`sidebar text-white d-flex flex-column p-3 ${
+          isOpen ? "sidebar-open" : "sidebar-collapsed"
+        } ${
           isMobile
             ? showMobileMenu
-              ? "start-0"
-              : "d-none"
-            : isOpen
-            ? "sidebar-open"
-            : "sidebar-collapsed"
+              ? "mobile-sidebar-open"
+              : "mobile-sidebar-closed"
+            : ""
         }`}
         style={{
-          minHeight: "100vh",
-          width: isMobile ? "250px" : isOpen ? "250px" : "70px",
-          zIndex: 1040,
-          transition: "all 0.3s ease",
+          position: "fixed",
+          height: "100vh",
+          backgroundImage: "linear-gradient(45deg, #0f2027, #203a43, #2c5364)",
+          zIndex: 999,
         }}
       >
         {/* Logo */}
-        <h5 className="text-center fw-bold mb-4">
+        <h4 className="text-center my-3 fw-bold text-white">
           <i className="fa-solid fa-clipboard-list me-2"></i>
-          {(!isMobile || showMobileMenu) && "Lost & Found"}
-        </h5>
+          {!isMobile || showMobileMenu ? "LOST & FOUND MANAGEMENT SYSTEM" : ""}
+        </h4>
 
-        {/* Profile */}
-        {userData && (
-          <div className="text-center mb-3">
-            {profilePicture ? (
-              <img
-                src={profilePicture}
-                alt="Profile"
-                className="rounded"
-                style={{ width: "85px", height: "100px", objectFit: "cover" }}
-              />
-            ) : (
-              <i className="fa-solid fa-user-circle fa-4x text-secondary mb-2"></i>
-            )}
-            <h6 className="mb-1 mt-2">{userName || "Loading..."}</h6>
-            <span
-              className="badge"
-              style={{
-                backgroundColor:
-                  userData.isVerified === "accepted" ? "#28a745" : "#dc3545",
-              }}
-            >
-              {userData.role === "admin" && (
+        {(isOpen || isMobile) && (
+          <div className="d-flex align-items-center justify-content-center gap-2 mb-3">
+            <div style={{ textAlign: "center" }}>
+              {profilePicture ? (
+                <img
+                  src={profilePicture}
+                  alt="Profile"
+                  style={{
+                    width: "85px",
+                    height: "100px",
+                    objectFit: "cover",
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+                    marginTop: "15px",
+                  }}
+                />
+              ) : (
+                <i
+                  className="fa-solid fa-user-circle fa-5x text-secondary"
+                  style={{ marginBottom: "10px" }}
+                ></i>
+              )}
+              {(!isMobile || showMobileMenu) && (
                 <>
-                  <i className="fas fa-user-shield"></i> Admin |{" "}
+                  <div className="text-center">
+                    <h4 className="mb-1">{userName || "Loading..."}</h4>
+                    <span
+                      className="badge"
+                      style={{
+                        backgroundColor:
+                          userData?.isVerified === "accepted"
+                            ? "#28a745"
+                            : "#dc3545",
+                        color: "white",
+                      }}
+                    >
+                      {userData?.role === "admin" && (
+                        <>
+                          <i className="fas fa-user-shield "></i> Admin {" | "}
+                        </>
+                      )}
+                      {userData?.isVerified === "accepted" ? (
+                        <>
+                          <i className="fas fa-check-circle "></i> Verified
+                        </>
+                      ) : (
+                        "Not Verified"
+                      )}
+                    </span>
+                  </div>
                 </>
               )}
-              {userData.isVerified === "accepted" ? "Verified" : "Not Verified"}
-            </span>
+            </div>
           </div>
         )}
 
-        {/* Navigation */}
-        <ul className="nav nav-pills flex-column mb-auto">
-          {userData?.role === "admin" && (
-            <>
-              <NavItem icon="fas fa-home" to="/dashboard" label="Dashboard" />
-              <NavItem
-                icon="fas fa-user-check"
-                to="/user-verification"
-                label="User Verification"
-                badge={user?.length}
-              />
-              <NavItem
-                icon="fas fa-search-location"
-                to="/lostItemsRequest"
-                label="Lost Item Requests"
-                badge={lostItems?.length}
-              />
-              <NavItem
-                icon="fas fa-check-circle"
-                to="/foundItemsRequest"
-                label="Found Item Claims"
-                badge={foundItems?.length}
-              />
-            </>
-          )}
-          {userData?.role === "user" && (
-            <>
-              <NavItem
-                icon="fas fa-bell"
+        {/* Navigation Links */}
+        <div className="my-3">
+          <ul className="nav flex-column">
+            {userData && userData.role === "admin" ? (
+              <li className="nav-item">
+                <Link
+                  to="/dashboard"
+                  className="nav-link text-white"
+                  onClick={() => isMobile && setShowMobileMenu(false)}
+                >
+                  <i className="fas fa-home"></i>{" "}
+                  {(!isMobile || showMobileMenu) && (
+                    <span className="ms-2">Dashboard</span>
+                  )}
+                </Link>
+              </li>
+            ) : (
+              ""
+            )}
+            {userData && userData.role === "user" ? (
+              <li className="nav-item mt-2">
+                <Link to="/notification" className="nav-link text-white">
+                  <i className="fas fa-bell"></i>
+                  {(!isMobile || showMobileMenu) && (
+                    <span className="ms-2">Notifications</span>
+                  )}
+                  {unreadCount > 0 && (
+                    <span className="badge bg-danger ms-2">{unreadCount}</span>
+                  )}
+                </Link>
+              </li>
+            ) : (
+              ""
+            )}
+
+            {userData && userData.role === "admin" && (
+              <>
+                <li className="nav-item">
+                  <Link
+                    to="/user-verification"
+                    className="nav-link text-white"
+                    onClick={() => isMobile && setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-user-check"></i>
+                    {(!isMobile || showMobileMenu) && (
+                      <>
+                        <span className="ms-2">User Verification</span>
+                        {user && user.length > 0 && (
+                          <span className="badge bg-danger ms-2">
+                            {user.length}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link
+                    to="/lostItemsRequest"
+                    className="nav-link text-white"
+                    onClick={() => isMobile && setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-search-location"></i>
+                    {(!isMobile || showMobileMenu) && (
+                      <>
+                        <span className="ms-2">Lost Item Requests</span>
+                        {lostItems && lostItems.length > 0 && (
+                          <span className="badge bg-danger ms-2">
+                            {lostItems.length}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    to="/foundItemsRequest"
+                    className="nav-link text-white"
+                    onClick={() => isMobile && setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-check-circle"></i>
+                    {(!isMobile || showMobileMenu) && (
+                      <>
+                        <span className="ms-2">Found Item Claims</span>
+
+                        {foundItems && foundItems.length > 0 && (
+                          <span className="badge bg-danger ms-2">
+                            {foundItems.length}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </Link>
+                </li>
+              </>
+            )}
+
+            {userData?.isVerified === "accepted" && (
+              <>
+                <li className="nav-item">
+                  <Link
+                    to="/reportLostItems"
+                    className="nav-link text-white"
+                    onClick={() => isMobile && setShowMobileMenu(false)}
+                  >
+                    <i className="fa-solid fa-magnifying-glass"></i>{" "}
+                    {(!isMobile || showMobileMenu) && (
+                      <span className="ms-2">Report Lost Items</span>
+                    )}
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    to="/reportFoundItems"
+                    className="nav-link text-white"
+                    onClick={() => isMobile && setShowMobileMenu(false)}
+                  >
+                    <i className="fa-solid fa-clipboard-list"></i>{" "}
+                    {(!isMobile || showMobileMenu) && (
+                      <span className="ms-2">Report Found Items</span>
+                    )}
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    to="/displaySavedItems"
+                    className="nav-link text-white"
+                    onClick={() => isMobile && setShowMobileMenu(false)}
+                  >
+                    <i className="fa-solid fa-bookmark me-2"></i>{" "}
+                    {(!isMobile || showMobileMenu) && (
+                      <>
+                        <span className="ms-2">Saved Items</span>
+                        {savedItem && savedItem.length > 0 && (
+                          <span className="badge bg-danger ms-2">
+                            {savedItem.length}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </Link>
+                </li>
+              </>
+            )}
+
+            <li className="nav-item">
+              <Link
                 to="/notification"
-                label="Notifications"
-                badge={unreadCount}
-              />
-            </>
-          )}
-          {userData?.isVerified === "accepted" && (
-            <>
-              <NavItem
-                icon="fa-solid fa-magnifying-glass"
-                to="/reportLostItems"
-                label="Report Lost Items"
-              />
-              <NavItem
-                icon="fa-solid fa-clipboard-list"
-                to="/reportFoundItems"
-                label="Report Found Items"
-              />
-            </>
-          )}
-          <li className="nav-item mt-3">
+                className="nav-link text-white"
+                onClick={() => isMobile && setShowMobileMenu(false)}
+              >
+                <i className="fa-solid fa-user-cog"></i>{" "}
+                {(!isMobile || showMobileMenu) && (
+                  <span className="ms-2">Profile Setting</span>
+                )}
+              </Link>
+            </li>
+
+              <li className="nav-item mt-3">
             <button onClick={handleToast} className="btn btn-danger w-100">
               <i className="fas fa-sign-out-alt me-2"></i>Logout
             </button>
           </li>
-        </ul>
+          </ul>
+        </div>
       </div>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <div
-        className="flex-grow-1"
+        className="flex-grow-1 p-4"
         style={{
-          marginLeft: isMobile
-            ? "0"
-            : isOpen
-            ? "250px"
-            : "70px",
-          transition: "margin-left 0.3s ease",
-          padding: "1rem",
-          width: "100%",
+          marginLeft: isMobile ? "0" : isOpen ? "250px" : "80px",
+          transition: "margin-left 0.3s ease-in-out",
+          paddingTop: isMobile ? "60px" : "0",
         }}
       >
         {children}
       </div>
-    </div>
-  );
-}
 
-function NavItem({ icon, to, label, badge }) {
-  return (
-    <li className="nav-item">
-      <Link to={to} className="nav-link text-white d-flex justify-content-between align-items-center">
-        <span>
-          <i className={`${icon}`}></i> <span className="ms-2">{label}</span>
-        </span>
-        {badge > 0 && <span className="badge bg-danger">{badge}</span>}
-      </Link>
-    </li>
+      {/* Sidebar Styles */}
+      <style>{`
+        .sidebar {
+          width: 250px;
+          transition: all 0.3s ease-in-out;
+        }
+        .sidebar-collapsed {
+          width: 80px;
+        }
+        .sidebar-collapsed span {
+          display: none;
+        }
+          .sidebar {
+          width: 250px;
+          transition: all 0.3s ease-in-out;
+          overflow-y: auto;
+          scrollbar-width: none;        /* Firefox */
+          -ms-overflow-style: none;     /* Internet Explorer 10+ */
+        }
+
+        .sidebar::-webkit-scrollbar {
+          display: none;                /* Chrome, Safari and Opera */
+        }
+        .nav-link {
+          padding: 10px;
+          transition: background 0.3s;
+        }
+        .nav-link:hover {
+          background:#1f5f74;
+          border-radius: 5px;
+        }
+        
+        /* Mobile styles */
+        .mobile-sidebar-closed {
+          transform: translateX(-100%);
+        }
+        .mobile-sidebar-open {
+          transform: translateX(0);
+        }
+        
+        @media (min-width: 768px) {
+          .mobile-sidebar-closed {
+            transform: translateX(0);
+          }
+        }
+      `}</style>
+    </div>
   );
 }
 
