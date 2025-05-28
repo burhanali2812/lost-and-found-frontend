@@ -245,18 +245,6 @@ function UserVerification({ user, setUser }) {
           )}
         </tbody>
       </table>
-      <>
-        <style>
-    {`
-      @media (max-width: 576px) {
-        .modal-dialog {
-          max-width: 90% !important;
-          margin: auto !important;
-        }
-      }
-    `}
-  </style>
- 
       <div
         className="modal fade"
         id="verifyUser"
@@ -264,9 +252,7 @@ function UserVerification({ user, setUser }) {
         aria-labelledby="verifyUserLabel"
         aria-hidden="true"
       >
-           <div className="modal-dialog modal-dialog-centered">
-
-
+        <div className="modal-dialog modal-lg">
           <div className="modal-content bg-dark text-light rounded-4 shadow">
             <div className="modal-header border-0">
               <h5 className="modal-title" id="verifyUserLabel">
@@ -445,8 +431,6 @@ function UserVerification({ user, setUser }) {
           </div>
         </div>
       </div>
-
-           </>
 
       <div
         className="modal fade"
