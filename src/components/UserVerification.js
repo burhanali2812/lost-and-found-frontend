@@ -252,7 +252,8 @@ function UserVerification({ user, setUser }) {
         aria-labelledby="verifyUserLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-dialog-centered">
+        <div className="modal-dialog modal-lg modal-dialog-centered">
+
 
           <div className="modal-content bg-dark text-light rounded-4 shadow">
             <div className="modal-header border-0">
