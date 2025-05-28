@@ -19,6 +19,7 @@ function Sidebar({
 
   const userId = localStorage.getItem("userId");
   const userName = localStorage.getItem("userName");
+  //const role = localStorage.getItem('role');
   const unreadCount = notification.filter((n) => !n.isRead).length;
 
   useEffect(() => {
@@ -81,7 +82,7 @@ function Sidebar({
   };
 
   return (
-    <div className="d-flex" style={{ height: '100%', minHeight: '100vh', position: 'relative' }}>
+    <div className="d-flex vh-100">
       {isMobile && (
         <button
           className="btn btn-dark position-fixed m-2"
@@ -104,14 +105,10 @@ function Sidebar({
             : ""
         }`}
         style={{
-          position: isMobile ? "fixed" : "sticky",
-          top: 0,
-          left: 0,
-          bottom: 0,
-          height: isMobile ? '100%' : '100vh',
+          position: "fixed",
+          height: "100vh",
           backgroundImage: "linear-gradient(45deg, #0f2027, #203a43, #2c5364)",
           zIndex: 999,
-          overflowY: 'auto',
         }}
       >
         {/* Logo */}
@@ -362,8 +359,6 @@ function Sidebar({
           marginLeft: isMobile ? "0" : isOpen ? "250px" : "80px",
           transition: "margin-left 0.3s ease-in-out",
           paddingTop: isMobile ? "60px" : "0",
-          width: isMobile ? '100%' : 'auto',
-          minHeight: '100vh',
         }}
       >
         {children}
@@ -381,13 +376,16 @@ function Sidebar({
         .sidebar-collapsed span {
           display: none;
         }
-        .sidebar {
+          .sidebar {
+          width: 250px;
+          transition: all 0.3s ease-in-out;
           overflow-y: auto;
-          scrollbar-width: none;
-          -ms-overflow-style: none;
+          scrollbar-width: none;        /* Firefox */
+          -ms-overflow-style: none;     /* Internet Explorer 10+ */
         }
+
         .sidebar::-webkit-scrollbar {
-          display: none;
+          display: none;                /* Chrome, Safari and Opera */
         }
         .nav-link {
           padding: 10px;
@@ -409,21 +407,6 @@ function Sidebar({
         @media (min-width: 768px) {
           .mobile-sidebar-closed {
             transform: translateX(0);
-          }
-        }
-
-        /* Prevent zooming issues on mobile */
-        @media (max-width: 767px) {
-          html {
-            touch-action: manipulation;
-          }
-          body {
-            overflow-x: hidden;
-            position: relative;
-            width: 100%;
-          }
-          .sidebar {
-            -webkit-overflow-scrolling: touch;
           }
         }
       `}</style>
