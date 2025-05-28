@@ -64,11 +64,10 @@ function Sidebar({ children, user, notification, lostItems, foundItems, savedIte
           zIndex: 999,
         }}
       >
-       <h4 className="text-center mt-4 fw-bold text-white">
-  <i className="fa-solid fa-magnifying-glass-location me-2"></i>
-  Lost & Found Hub
-</h4>
-
+        <h4 className="text-center mt-4 fw-bold text-white">
+          <i className="fa-solid fa-magnifying-glass-location me-2"></i>
+          LOST & FOUND MANAGEMENT SYSTEM
+        </h4>
 
         <div className="d-flex align-items-center justify-content-center gap-2 mb-3">
           <div style={{ textAlign: "center" }}>
