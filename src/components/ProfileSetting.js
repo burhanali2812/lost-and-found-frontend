@@ -109,7 +109,7 @@ function ProfileSetting() {
                     className="bg-dark  rounded-circle d-flex justify-content-center align-items-center me-2"
                     style={{ width: "25px", height: "25px" }}
                   >
-                    <i className="fas fa-tags text-white"></i>
+                    <i className="fas fa-id-badge text-white"></i>
                   </span>
                   PERSONAL INFORMATION
                 </span>
