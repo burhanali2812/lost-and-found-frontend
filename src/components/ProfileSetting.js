@@ -143,7 +143,7 @@ function ProfileSetting() {
                 <div className="card-header bg-dark text-white fw-bold text-center">
                   Front Side of CNIC
                 </div>
-                <div className="card-body d-flex align-items-center justify-content-center p-0 " style={{ height: "260px" }}>
+                <div className="card-body d-flex align-items-center justify-content-center" style={{ height: "260px" }}>
                   {currentUser.frontCnic ? (
                     <img
                       src={currentUser.frontCnic}
@@ -165,7 +165,7 @@ function ProfileSetting() {
                 <div className="card-header bg-dark text-white fw-bold text-center">
                   Back Side of CNIC
                 </div>
-                <div className="card-body d-flex align-items-center justify-content-center p-0" style={{ height: "260px"}}>
+                <div className="card-body d-flex align-items-center justify-content-center" style={{ height: "260px"}}>
                   {currentUser.backCnic ? (
                     <img
                       src={currentUser.backCnic}
