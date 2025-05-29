@@ -14,6 +14,7 @@ import DisplayMatchedItems from "./components/DisplayMatchedItems";
 import DisplaySavedItems from "./components/DisplaySavedItems";
 import EmailOTPManage from "./components/EmailOTPManage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ProfileSetting from "./components/ProfileSetting";
 
 function App() {
   const [user, setUser] = useState([]);
@@ -192,6 +193,10 @@ function App() {
                 <Route
                   path="/displaySavedItems"
                   element={<DisplaySavedItems />}
+                />
+                 <Route
+                  path="/profileSetting"
+                  element={<ProfileSetting />}
                 />
               </Routes>
             </Sidebar>
