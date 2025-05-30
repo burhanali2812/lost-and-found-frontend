@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "./Toastify2";
+import { useNavigate } from "react-router-dom";
 function ProfileSetting() {
+    const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
   const userId = localStorage.getItem("userId");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -106,6 +108,34 @@ function ProfileSetting() {
     setCnicText("View CNIC Images");
     setIdPassword("");
   };
+   const deleteAccount = async () => {
+    const confirmation = window.confirm("Do You want to delete account?");
+    if(!confirmation){
+      return;
+    }
+      try {
+        const response = await fetch(
+          "https://lost-and-found-backend-xi.vercel.app/auth/deleteUser",
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+  
+        if (!response.ok) {
+          showToast("error", "Error Deleting Account", 3000, "top-right");
+          return;
+        }
+        showToast("success", "Account Deleted SuccessFully", 3000, "top-right");
+        setTimeout(() => {
+          navigate("/login-signup");
+        }, 1500);
+      } catch (error) {
+        console.error("Error Deleting Account:", error);
+      }
+    };
 
   return (
     <>
@@ -300,7 +330,7 @@ function ProfileSetting() {
         <div className="row">
           <div className="col-md-8"></div> {/* Push buttons to right */}
           <div className="col-md-4 mt-4 mb-5 d-flex flex-column flex-md-row justify-content-md-end align-items-center gap-2">
-            <button className="btn btn-danger w-100 w-md-auto">
+            <button className="btn btn-danger w-100 w-md-auto" onClick={deleteAccount}>
               <i className="fas fa-trash-alt me-1"></i> Delete My Account
             </button>
             <button

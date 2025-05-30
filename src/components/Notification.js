@@ -100,34 +100,36 @@ function Notification({ notification, setNotification }) {
       console.error("Error updating notification status:", error);
     }
   };
-  const deleteAccount = async () => {
-    try {
-      const response = await fetch(
-        `https://lost-and-found-backend-xi.vercel.app/auth/deleteUser/${userId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        showToast("error", "Error Deleting Account", 3000, "top-right");
-        return;
+const deleteAccount = async () => {
+  try {
+    const response = await fetch(
+      "https://lost-and-found-backend-xi.vercel.app/auth/deleteUser",
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       }
-      showToast("success", "Account Deleted SuccessFully", 3000, "top-right");
-      localStorage.removeItem("token");
-      localStorage.removeItem("userId");
-      localStorage.removeItem("userName");
-      setTimeout(() => {
-        navigate("/login-signup");
-      }, 1500);
-    } catch (error) {
-      console.error("Error Deleting Account:", error);
+    );
+
+    if (!response.ok) {
+      showToast("error", "Error Deleting Account", 3000, "top-right");
+      return;
     }
-  };
+
+    showToast("success", "Account Deleted Successfully", 3000, "top-right");
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+    setTimeout(() => {
+      navigate("/login-signup");
+    }, 1500);
+  } catch (error) {
+    console.error("Error Deleting Account:", error);
+    showToast("error", "Network error while deleting account", 3000, "top-right");
+  }
+};
+
 
   return (
     <div>
