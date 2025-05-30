@@ -56,6 +56,7 @@ function ProfileSetting() {
       const data = await response.json();
       if (response.ok) {
         showToast("success", data.message, 3000, "top-right");
+        setIdPassword(" ")
         setCnicVisible(true); // Removes blur from image
         setShowPasswordModal(false);
       } else {
@@ -83,7 +84,6 @@ function ProfileSetting() {
     <>
       <ToastContainer />
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div className="card  " style={{ width: "33rem" }}>
           <div className="card-body">
             <div className="container">
               <div className="d-flex justify-content-center align-items-center mb-4">
@@ -202,115 +202,115 @@ function ProfileSetting() {
                     </button>
                   </div>
 
-                  <div className="row mt-2 g-2 align-content-center">
-                    <div className="col-md-12">
-                      <div className="card shadow-sm border-0">
-                        <div className="card-header bg-dark text-white fw-bold text-center">
-                          Front Side of CNIC
-                        </div>
-                        <div
-                          className="card-body d-flex align-items-center justify-content-center"
-                          style={{ height: "260px" }}
-                        >
-                          {currentUser.frontCnic ? (
-                            <img
-                              src={currentUser.frontCnic}
-                              alt="CNIC Front"
-                              className="w-100 h-100 object-fit-cover"
-                              style={{
-                                filter: cnicVisible ? "none" : "blur(8px)",
-                              }}
-                            />
-                          ) : (
-                            <div className="text-center w-100 text-muted">
-                              <i className="fas fa-id-card fa-2x mt-4"></i>
-                              <p className="mt-2">Front CNIC not uploaded</p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+              <div className="row mt-2 g-3 justify-content-center">
+  {/* Front CNIC */}
+  <div className="col-12 col-md-6 col-lg-4">
+    <div className="card shadow-sm border-0">
+      <div className="card-header bg-dark text-white fw-bold text-center">
+        Front Side of CNIC
+      </div>
+      <div className="card-body p-2">
+        {currentUser.frontCnic ? (
+          <div className="ratio ratio-4x3">
+            <img
+              src={currentUser.frontCnic}
+              alt="CNIC Front"
+              className="img-fluid rounded"
+              style={{
+                filter: cnicVisible ? "none" : "blur(8px)",
+              }}
+            />
+          </div>
+        ) : (
+          <div className="text-center w-100 text-muted mt-4">
+            <i className="fas fa-id-card fa-2x"></i>
+            <p className="mt-2">Front CNIC not uploaded</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
 
-                    <div className="col-md-12">
-                      <div className="card shadow-sm ">
-                        <div className="card-header bg-dark text-white fw-bold text-center">
-                          Back Side of CNIC
-                        </div>
-                        <div
-                          className="card-body d-flex align-items-center justify-content-center"
-                          style={{ height: "260px" }}
-                        >
-                          {currentUser.backCnic ? (
-                            <img
-                              src={currentUser.backCnic}
-                              alt="CNIC Back"
-                              className="w-100 h-100 object-fit-cover"
-                              style={{
-                                filter: cnicVisible ? "none" : "blur(8px)",
-                              }}
-                            />
-                          ) : (
-                            <div className="text-center w-100 text-muted">
-                              <i className="fas fa-id-card-alt fa-2x mt-4"></i>
-                              <p className="mt-2">Back CNIC not uploaded</p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+  {/* Back CNIC */}
+  <div className="col-12 col-md-6 col-lg-4">
+    <div className="card shadow-sm border-0">
+      <div className="card-header bg-dark text-white fw-bold text-center">
+        Back Side of CNIC
+      </div>
+      <div className="card-body p-2">
+        {currentUser.backCnic ? (
+          <div className="ratio ratio-4x3">
+            <img
+              src={currentUser.backCnic}
+              alt="CNIC Back"
+              className="img-fluid rounded"
+              style={{
+                filter: cnicVisible ? "none" : "blur(8px)",
+              }}
+            />
+          </div>
+        ) : (
+          <div className="text-center w-100 text-muted mt-4">
+            <i className="fas fa-id-card-alt fa-2x"></i>
+            <p className="mt-2">Back CNIC not uploaded</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
+
                 </>
               )}
             </div>
           </div>
-        </div>
+     
       </div>
 
-      {showPasswordModal && (
-        <div
-          className="modal show d-block"
-          tabIndex="-1"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Enter Password</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setShowPasswordModal(false)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <input
-                  type="password"
-                  className="form-control"
-                  placeholder="Your account password"
-                  value={idPassword}
-                  onChange={(e) => setIdPassword(e.target.value)}
-                />
-              </div>
-              <div>
-                <p>
-                  <b>Note:</b>This is security purpose to show tha cnic images
-                </p>
-              </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  onClick={closePasswordModal}
-                >
-                  Cancel
-                </button>
-                <button className="btn btn-primary" onClick={verifyPassword}>
-                  Verify
-                </button>
-              </div>
-            </div>
+     {showPasswordModal && (
+  <div
+    className="modal show d-block"
+    tabIndex="-1"
+    style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+  >
+    <div className="modal-dialog modal-dialog-centered">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">Enter Password</h5>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={closePasswordModal}
+          ></button>
+        </div>
+
+        <div className="modal-body">
+          <input
+            type="password"
+            className="form-control mb-3"
+            placeholder="Your account password"
+            value={idPassword}
+            onChange={(e) => setIdPassword(e.target.value)}
+          />
+
+          <div className="alert alert-info small mb-0">
+            <strong>Note:</strong> For security reasons, please enter your password to view CNIC images.
           </div>
         </div>
-      )}
+
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={closePasswordModal}>
+            Cancel
+          </button>
+          <button className="btn btn-primary" onClick={verifyPassword}>
+            Verify
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
     </>
   );
 }
