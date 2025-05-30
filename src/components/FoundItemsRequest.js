@@ -211,7 +211,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
         });
 
         // setSelectedBrands(checkBrand);
-        alert("Notifications Sent Successfully");
+        showToast("success" ,"Notifications Sent Successfully", 3000 , "top-right");
       } catch (error) {
         console.error("Error Pushing Notification:", error);
       }
@@ -265,11 +265,10 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
         );
 
         if (!notificationResponse.ok) {
-          alert("Notification Sending error");
           showToast("error", "Notification Sending error", 3000, "top-right");
           return;
         }
-        alert("Notification Sent Successfully");
+        showToast("success" ,"Notifications Sent Successfully", 3000 , "top-right");
         showToast(
           "success",
           "Notification Sent Successfully",

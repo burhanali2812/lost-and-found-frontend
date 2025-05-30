@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-
+import { ToastContainer } from "react-toastify";
+import { showToast } from "./Toastify2";
 function ItemButtons({
   savedItem,
   onDelete,
@@ -99,7 +100,7 @@ function ItemButtons({
 
   const handleWhatsapp = () => {
     if (!phoneNumber) {
-      alert("Phone number not available.");
+      showToast("warning", "Phone number not available.", 3000, "top-right");
       return;
     }
 
@@ -114,7 +115,7 @@ function ItemButtons({
     } and I truly believe it is mine.\n\nIt is very important to me, so please let me know how I can confirm and collect it.\n\nI would be very thankful for your help and honesty.\n\nThank you so much.`;
 
     if (message.length > 2000) {
-      alert("Message is too long for WhatsApp.");
+      showToast("warning", "Message is too long for WhatsApp.", 3000, "top-right");
       return;
     }
 
@@ -145,7 +146,8 @@ function ItemButtons({
           body: JSON.stringify({ isSaved: !save[id] }),
         }
       );
-      alert("Item save status updated successfully.");
+        showToast("success", "Item save status updated successfully.", 3000, "top-right");
+
       onSave();
     } catch (error) {
       console.error("Error saving item:", error);
@@ -168,10 +170,10 @@ function ItemButtons({
         }
       );
       if (!response.ok) {
-        alert("Unable to delete SavedItems");
+        showToast("error", "Unable to delete SavedItems", 3000, "top-right");
       }
       onDelete();
-      alert("SavedItem Deleted Successfully");
+       showToast("success", "SavedItem Deleted Successfully", 3000, "top-right");
     } catch (error) {
       console.error("Delete error:", error);
     }
@@ -184,6 +186,9 @@ function ItemButtons({
   if (!savedItem) return null;
 
   return (
+    <>
+    <ToastContainer/>
+   
     <div className="d-flex flex-wrap justify-content-center gap-2">
       {/* Details Button */}
       <button
@@ -520,6 +525,7 @@ function ItemButtons({
         </div>
       </div>
     </div>
+     </>
   );
 }
 

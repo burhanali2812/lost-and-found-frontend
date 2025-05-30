@@ -208,7 +208,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
         );
 
         if (!notificationResponse.ok) {
-          alert("Notification Sending error");
+          showToast("error","Notification Sending error",3000,);
           return;
         }
         //setSelectedBrands(checkBrand)

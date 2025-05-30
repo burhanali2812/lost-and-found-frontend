@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
+import { ToastContainer } from "react-toastify";
+import { showToast } from "./Toastify2";
 function DisplaySavedItems() {
   const [matchedItems, setMatchedItems] = useState([]);
   const [userItem, setUserItem] = useState([]);
@@ -56,7 +58,6 @@ function DisplaySavedItems() {
       );
 
       if (!foundItemsResponse.ok) {
-        alert("Error getting full found item details");
         return;
       }
 
@@ -64,7 +65,7 @@ function DisplaySavedItems() {
       setMatchedItems(foundItemsData.foundItems || []);
     } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong. Please try again later.");
+      showToast( "error","Something went wrong. Please try again later.", 3000 ,"top-right");
     } finally {
       setLoading(false); // End loading
     }
@@ -79,6 +80,8 @@ function DisplaySavedItems() {
   };
 
   return (
+    <>
+    <ToastContainer/>
     <div className="container">
       <div className="row">
         {loading ? ( // Show loading state
@@ -106,6 +109,7 @@ function DisplaySavedItems() {
         )}
       </div>
     </div>
+    </>
   );
 }
 
