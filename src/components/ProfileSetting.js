@@ -10,6 +10,8 @@ function ProfileSetting() {
 
   const [cnicVisible, setCnicVisible] = useState(false);
   const [idPassword, setIdPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [cnicText, setCnicText] = useState("View CNIC Images");
   const [resetPasswordText, setResetPasswordText] = useState("Verify");
 
@@ -97,10 +99,12 @@ function ProfileSetting() {
     if (resetPasswordText === "Reset Password") {
       setResetPasswordModal(false);
       setVerifiedPassword(false);
+      setIdPassword("");
     }
     setShowPasswordModal(false);
     setResetPasswordModal(false);
     setCnicText("View CNIC Images");
+    setIdPassword("");
   };
 
   return (
@@ -299,13 +303,13 @@ function ProfileSetting() {
           <div className="col-12 col-md-4 mt-4 mb-5">
             <div className="row">
               <div className="col-6 d-flex justify-content-center justify-content-md-end">
-                <button className="btn btn-danger w-100 w-md-auto">
+                <button className="btn btn-danger  w-md-auto">
                   <i className="fas fa-trash-alt me-1"></i> Delete Account
                 </button>
               </div>
               <div className="col-6 d-flex justify-content-center justify-content-md-end">
                 <button
-                  className="btn btn-warning w-100 w-md-auto"
+                  className="btn btn-warning  w-md-auto"
                   onClick={() => setResetPasswordModal(true)}
                 >
                   <i className="fas fa-key me-1"></i> Reset Password
@@ -405,8 +409,8 @@ function ProfileSetting() {
                       type="password"
                       className="form-control mb-3"
                       placeholder="Your New password"
-                      value={idPassword}
-                      onChange={(e) => setIdPassword(e.target.value)}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
                     />
                     <label className="form-label">
                       <strong>Enter Confirm Password</strong>
@@ -415,8 +419,8 @@ function ProfileSetting() {
                       type="password"
                       className="form-control mb-3"
                       placeholder="Your Confirm password"
-                      value={idPassword}
-                      onChange={(e) => setIdPassword(e.target.value)}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                   </>
                 )}
