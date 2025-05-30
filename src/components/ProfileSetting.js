@@ -3,7 +3,7 @@ import { ToastContainer } from "react-toastify";
 import { showToast } from "./Toastify2";
 import { useNavigate } from "react-router-dom";
 function ProfileSetting() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
   const userId = localStorage.getItem("userId");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -45,10 +45,52 @@ function ProfileSetting() {
     getUser();
   }, [userId]);
   const resetPassword = async () => {
-    setVerifiedPassword(false);
-    setResetPasswordModal(false);
-    setResetPasswordText("Verify");
-    setIdPassword("");
+    const token = localStorage.getItem("resetToken");
+    console.log("token", token);
+    console.log("newPassword", newPassword);
+    console.log("confirmPassword", confirmPassword);
+
+    if (newPassword !== confirmPassword) {
+      showToast(
+        "warning",
+        "Confirm password does'nt match!",
+        3000,
+        "top-right"
+      );
+      return;
+    }
+    try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/reset-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token,
+            newPassword: newPassword,
+          }),
+        }
+      );
+      if (response.ok) {
+        showToast(
+          "success",
+          "Password changed successfully!",
+          3000,
+          "top-right"
+        );
+        setVerifiedPassword(false);
+        setResetPasswordModal(false);
+        setResetPasswordText("Verify");
+        setIdPassword("");
+      } else {
+        showToast("error", "Error changing password!", 3000, "top-right");
+      }
+    } catch (error) {
+      console.error("Error Uploading User:", error);
+      showToast("error", "Network or Server Error", 3000, "top-right");
+    }
   };
 
   const verifyPassword = async (action) => {
@@ -57,7 +99,14 @@ function ProfileSetting() {
       return;
     }
 
+    if (!idPassword) {
+      showToast("error", "Please enter your password", 3000, "top-right");
+      return;
+    }
+
     try {
+      console.log("checkAction", action);
+      
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/verify-password",
         {
@@ -66,10 +115,12 @@ function ProfileSetting() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify({ password: idPassword }),
+          body: JSON.stringify({ password: idPassword, action: action }),
         }
       );
+
       const data = await response.json();
+
       if (response.ok) {
         showToast("success", data.message, 3000, "top-right");
         if (action === "cnic") {
@@ -77,6 +128,10 @@ function ProfileSetting() {
           setCnicVisible(true); // Removes blur from image
           setShowPasswordModal(false);
         } else if (action === "password") {
+          console.log("Backend response:", data);
+          console.log("Token from backend:", data.token);
+
+          localStorage.setItem("resetToken", data.token);
           setVerifiedPassword(true);
           setResetPasswordText("Reset Password");
         }
@@ -88,6 +143,7 @@ function ProfileSetting() {
       showToast("error", "Network Error. Try again.", 3000, "top-right");
     }
   };
+
   const openPasswordModal = () => {
     if (cnicText === "View CNIC Images") {
       setShowPasswordModal(true);
@@ -99,6 +155,7 @@ function ProfileSetting() {
   };
   const closePasswordModal = () => {
     if (resetPasswordText === "Reset Password") {
+      setCnicText("View CNIC Images");
       setResetPasswordModal(false);
       setVerifiedPassword(false);
       setIdPassword("");
@@ -108,34 +165,34 @@ function ProfileSetting() {
     setCnicText("View CNIC Images");
     setIdPassword("");
   };
-   const deleteAccount = async () => {
+  const deleteAccount = async () => {
     const confirmation = window.confirm("Do You want to delete account?");
-    if(!confirmation){
+    if (!confirmation) {
       return;
     }
-      try {
-        const response = await fetch(
-          "https://lost-and-found-backend-xi.vercel.app/auth/deleteUser",
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-  
-        if (!response.ok) {
-          showToast("error", "Error Deleting Account", 3000, "top-right");
-          return;
+    try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/deleteUser",
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-        showToast("success", "Account Deleted SuccessFully", 3000, "top-right");
-        setTimeout(() => {
-          navigate("/login-signup");
-        }, 1500);
-      } catch (error) {
-        console.error("Error Deleting Account:", error);
+      );
+
+      if (!response.ok) {
+        showToast("error", "Error Deleting Account", 3000, "top-right");
+        return;
       }
-    };
+      showToast("success", "Account Deleted SuccessFully", 3000, "top-right");
+      setTimeout(() => {
+        navigate("/login-signup");
+      }, 1500);
+    } catch (error) {
+      console.error("Error Deleting Account:", error);
+    }
+  };
 
   return (
     <>
@@ -330,7 +387,10 @@ function ProfileSetting() {
         <div className="row">
           <div className="col-md-8"></div> {/* Push buttons to right */}
           <div className="col-md-4 mt-4 mb-5 d-flex flex-column flex-md-row justify-content-md-end align-items-center gap-2">
-            <button className="btn btn-danger w-100 w-md-auto" onClick={deleteAccount}>
+            <button
+              className="btn btn-danger w-100 w-md-auto"
+              onClick={deleteAccount}
+            >
               <i className="fas fa-trash-alt me-1"></i> Delete My Account
             </button>
             <button
