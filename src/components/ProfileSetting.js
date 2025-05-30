@@ -297,21 +297,20 @@ function ProfileSetting() {
             )}
           </div>
         </div>
-
-       <div className="container mt-4 pb-5">
-  <div className="d-flex justify-content-end flex-nowrap gap-2">
-    <button className="btn btn-danger text-nowrap">
-      <i className="fas fa-trash-alt me-1"></i> Delete Account
-    </button>
-    <button
-      className="btn btn-warning text-nowrap"
-      onClick={() => setResetPasswordModal(true)}
-    >
-      <i className="fas fa-key me-1"></i> Reset Password
-    </button>
-  </div>
-</div>
-
+        <div className="row">
+          <div className="col-md-8"></div> {/* Push buttons to right */}
+          <div className="col-md-4 mt-4 mb-5 d-flex flex-column flex-md-row justify-content-md-end align-items-center gap-2">
+            <button className="btn btn-danger w-100 w-md-auto">
+              <i className="fas fa-trash-alt me-1"></i> Delete My Account
+            </button>
+            <button
+              className="btn btn-warning w-100 w-md-auto"
+              onClick={() => setResetPasswordModal(true)}
+            >
+              <i className="fas fa-key me-1"></i> Reset Password
+            </button>
+          </div>
+        </div>
       </div>
 
       {showPasswordModal && (
