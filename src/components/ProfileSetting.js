@@ -8,8 +8,8 @@ function ProfileSetting() {
   const userId = localStorage.getItem("userId");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [resetPasswordModal, setResetPasswordModal] = useState(false);
+  const [deleteAccountModal, setDeleteAccountModal] = useState(false);
   const [verifiedPassword, setVerifiedPassword] = useState(false);
-
   const [cnicVisible, setCnicVisible] = useState(false);
   const [idPassword, setIdPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -106,7 +106,7 @@ function ProfileSetting() {
 
     try {
       console.log("checkAction", action);
-      
+
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/verify-password",
         {
@@ -128,13 +128,14 @@ function ProfileSetting() {
           setCnicVisible(true); // Removes blur from image
           setShowPasswordModal(false);
         } else if (action === "password") {
-          console.log("Backend response:", data);
-          console.log("Token from backend:", data.token);
-
           localStorage.setItem("resetToken", data.token);
           setVerifiedPassword(true);
           setResetPasswordText("Reset Password");
+        
         }
+          else if(action === "delete"){
+            await deleteAccount();
+          }
       } else {
         showToast("error", data.message, 3000, "top-right");
       }
@@ -155,7 +156,7 @@ function ProfileSetting() {
   };
   const closePasswordModal = () => {
     if (resetPasswordText === "Reset Password") {
-      setCnicText("View CNIC Images");
+      setResetPasswordText("Verify")
       setResetPasswordModal(false);
       setVerifiedPassword(false);
       setIdPassword("");
@@ -163,6 +164,7 @@ function ProfileSetting() {
     setShowPasswordModal(false);
     setResetPasswordModal(false);
     setCnicText("View CNIC Images");
+    setDeleteAccountModal(false)
     setIdPassword("");
   };
   const deleteAccount = async () => {
@@ -389,7 +391,7 @@ function ProfileSetting() {
           <div className="col-md-4 mt-4 mb-5 d-flex flex-column flex-md-row justify-content-md-end align-items-center gap-2">
             <button
               className="btn btn-danger w-100 w-md-auto"
-              onClick={deleteAccount}
+              onClick={()=>setDeleteAccountModal(true)}
             >
               <i className="fas fa-trash-alt me-1"></i> Delete My Account
             </button>
@@ -402,7 +404,6 @@ function ProfileSetting() {
           </div>
         </div>
       </div>
-
       {showPasswordModal && (
         <div
           className="modal show d-block"
@@ -447,6 +448,57 @@ function ProfileSetting() {
                   onClick={() => verifyPassword("cnic")}
                 >
                   Verify
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteAccountModal && (
+        <div
+          className="modal show d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Enter Password</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={closePasswordModal}
+                ></button>
+              </div>
+
+              <div className="modal-body">
+                <input
+                  type="password"
+                  className="form-control mb-3"
+                  placeholder="Enter your password"
+                  value={idPassword}
+                  onChange={(e) => setIdPassword(e.target.value)}
+                />
+
+                <div className="alert alert-info small mb-0">
+                  <strong>Note:</strong> To permanently delete your account,
+                  please confirm by entering your password.
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={closePasswordModal}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-danger"
+                 onClick={() => verifyPassword("delete")}
+                >
+                  Delete Account permanently
                 </button>
               </div>
             </div>
