@@ -10,6 +10,7 @@ function ProfileSetting() {
   const [resetPasswordModal, setResetPasswordModal] = useState(false);
   const [deleteAccountModal, setDeleteAccountModal] = useState(false);
   const [verifiedPassword, setVerifiedPassword] = useState(false);
+  const [userEditModal, setUserEditModal] = useState(false);
   const [cnicVisible, setCnicVisible] = useState(false);
   const [idPassword, setIdPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -46,9 +47,6 @@ function ProfileSetting() {
   }, [userId]);
   const resetPassword = async () => {
     const token = localStorage.getItem("resetToken");
-    console.log("token", token);
-    console.log("newPassword", newPassword);
-    console.log("confirmPassword", confirmPassword);
 
     if (newPassword !== confirmPassword) {
       showToast(
@@ -131,11 +129,9 @@ function ProfileSetting() {
           localStorage.setItem("resetToken", data.token);
           setVerifiedPassword(true);
           setResetPasswordText("Reset Password");
-        
+        } else if (action === "delete") {
+          await deleteAccount();
         }
-          else if(action === "delete"){
-            await deleteAccount();
-          }
       } else {
         showToast("error", data.message, 3000, "top-right");
       }
@@ -156,16 +152,18 @@ function ProfileSetting() {
   };
   const closePasswordModal = () => {
     if (resetPasswordText === "Reset Password") {
-      setResetPasswordText("Verify")
+      setResetPasswordText("Verify");
       setResetPasswordModal(false);
       setVerifiedPassword(false);
       setIdPassword("");
+    } else if (resetPasswordText === "Verify") {
+      setShowPasswordModal(false);
+      setResetPasswordModal(false);
+      setIdPassword("");
+    } else {
+      setCnicText("View CNIC Images");
+      setIdPassword("");
     }
-    setShowPasswordModal(false);
-    setResetPasswordModal(false);
-    setCnicText("View CNIC Images");
-    setDeleteAccountModal(false)
-    setIdPassword("");
   };
   const deleteAccount = async () => {
     const confirmation = window.confirm("Do You want to delete account?");
@@ -290,6 +288,7 @@ function ProfileSetting() {
                       role="button"
                       className="ms-2"
                       style={{ cursor: "pointer", color: "#0d6efd" }}
+                      onClick={() => setUserEditModal(true)}
                     >
                       <i className="fas fa-edit"></i>
                     </span>
@@ -391,7 +390,7 @@ function ProfileSetting() {
           <div className="col-md-4 mt-4 mb-5 d-flex flex-column flex-md-row justify-content-md-end align-items-center gap-2">
             <button
               className="btn btn-danger w-100 w-md-auto"
-              onClick={()=>setDeleteAccountModal(true)}
+              onClick={() => setDeleteAccountModal(true)}
             >
               <i className="fas fa-trash-alt me-1"></i> Delete My Account
             </button>
@@ -468,7 +467,7 @@ function ProfileSetting() {
                 <button
                   type="button"
                   className="btn-close"
-                  onClick={closePasswordModal}
+                  onClick={() => setDeleteAccountModal(false)}
                 ></button>
               </div>
 
@@ -490,15 +489,262 @@ function ProfileSetting() {
               <div className="modal-footer">
                 <button
                   className="btn btn-secondary"
-                  onClick={closePasswordModal}
+                  onClick={() => setDeleteAccountModal(false)}
                 >
                   Cancel
                 </button>
                 <button
                   className="btn btn-danger"
-                 onClick={() => verifyPassword("delete")}
+                  onClick={() => verifyPassword("delete")}
                 >
                   Delete Account permanently
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {userEditModal && (
+        <div
+          className="modal show d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Edit Personal Information</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setUserEditModal(false)}
+                ></button>
+              </div>
+
+              <div className="container d-flex flex-column align-items-center justify-content-center">
+                {currentUser?.profileImage ? (
+                  <img
+                    src={currentUser.profileImage}
+                    alt="Profile"
+                    style={{
+                      width: "110px",
+                      height: "140px",
+                      objectFit: "cover",
+                      borderRadius: "9px",
+                      marginBottom: "5px",
+                      marginTop: "15px",
+                    }}
+                  />
+                ) : (
+                  <i
+                    className="fa-solid fa-user-circle fa-5x text-secondary"
+                    style={{ marginBottom: "10px", marginTop: "15px" }}
+                  ></i>
+                )}
+                <span
+                  className="badge d-inline-block"
+                  style={{
+                    backgroundColor:
+                      currentUser?.isVerified === "accepted"
+                        ? "#28a745"
+                        : "#dc3545",
+                    color: "white",
+                    padding: "6px 10px",
+                    fontSize: "0.8rem",
+                  }}
+                >
+                  {currentUser?.role === "admin" ? (
+                    <>
+                      <i className="fas fa-user-shield me-1"></i> Admin
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-user me-1"></i> User
+                    </>
+                  )}
+                  {" | "}
+                  {currentUser?.isVerified === "accepted" ? (
+                    <>
+                      <i className="fas fa-check-circle ms-1"></i> Verified
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-times-circle ms-1"></i> Not Verified
+                    </>
+                  )}
+                </span>
+                <div className="mb-3 input-group mt-2">
+                  <span className="input-group-text bg-white">
+                    <i className="fas fa-image"></i>
+                  </span>
+                  <input
+                    type="file"
+                    className="form-control"
+                    id="picture"
+                    // onChange={handleUploadImage}
+                  />
+                </div>
+                <div className="mb-3 input-group">
+                  <span className="input-group-text bg-white">
+                    <i className="fas fa-user"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Name"
+                    id="name"
+                    //  value={name}
+                    //  onChange={(e) => setName(e.target.value)}
+                    required
+                    minLength={2}
+                  />
+                </div>
+                <div className="mb-3 input-group">
+                  <span className="input-group-text bg-white">
+                    <i className="fas fa-id-card"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="xxxxx-xxxxxxx-x"
+                    id="cnic"
+                    // value={cnic}
+                    // onChange={(e) => setCnic(e.target.value)}
+                    required
+                    readOnly
+                  />
+                </div>
+
+                {/* Contact */}
+                <div className="mb-3 input-group">
+                  <span className="input-group-text bg-white">
+                    <i className="fas fa-phone"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Whatsapp Contact"
+                    id="contact"
+                    // value={contact}
+                    // onChange={(e) => setContact(e.target.value)}
+                    required
+                    minLength={11}
+                    readOnly
+                  />
+                </div>
+                <div className="mb-3 input-group">
+                  <span className="input-group-text bg-white">
+                    <i className="fas fa-map-marker-alt"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Complete Address With City Name"
+                    id="name"
+                    // value={address}
+                    // onChange={(e) => setAddress(e.target.value)}
+                    required
+                    minLength={5}
+                  />
+                </div>
+
+                {/* Email */}
+                <div className="mb-3 input-group">
+                  <span className="input-group-text bg-white">
+                    <i className="fas fa-envelope"></i>
+                  </span>
+                  <input
+                    type="email"
+                    className="form-control"
+                    placeholder="Email"
+                    id="email"
+                    // value={email}
+                    // onChange={(e) => setEmail(e.target.value)}
+                    required
+                    readOnly
+                  />
+                </div>
+
+                <div className="d-flex justify-content-end mt-2">
+                  <button
+                    className="btn btn-warning"
+                    onClick={openPasswordModal}
+                  >
+                    <i className="fas fa-id-card me-2"></i> {cnicText}
+                  </button>
+                </div>
+
+                <div className="row mt-2 g-3 justify-content-center">
+                  {/* Front CNIC */}
+                  <div className="col-12">
+                    <div className="card shadow-sm border-0">
+                      <div className="card-header bg-dark text-white fw-bold text-center">
+                        Front Side of CNIC
+                      </div>
+                      <div className="card-body p-2">
+                        {currentUser.frontCnic ? (
+                          <div className="ratio ratio-4x3">
+                            <img
+                              src={currentUser.frontCnic}
+                              alt="CNIC Front"
+                              className="img-fluid rounded"
+                              style={{
+                                filter: cnicVisible ? "none" : "blur(8px)",
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-center w-100 text-muted mt-4">
+                            <i className="fas fa-id-card fa-2x"></i>
+                            <p className="mt-2">Front CNIC not uploaded</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Back CNIC */}
+                  <div className="col-12">
+                    <div className="card shadow-sm border-0">
+                      <div className="card-header bg-dark text-white fw-bold text-center">
+                        Back Side of CNIC
+                      </div>
+                      <div className="card-body p-2">
+                        {currentUser.backCnic ? (
+                          <div className="ratio ratio-4x3">
+                            <img
+                              src={currentUser.backCnic}
+                              alt="CNIC Back"
+                              className="img-fluid rounded"
+                              style={{
+                                filter: cnicVisible ? "none" : "blur(8px)",
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-center w-100 text-muted mt-4">
+                            <i className="fas fa-id-card-alt fa-2x"></i>
+                            <p className="mt-2">Back CNIC not uploaded</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setUserEditModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => verifyPassword("delete")}
+                >
+                  Submit
                 </button>
               </div>
             </div>
