@@ -10,6 +10,7 @@ function ProfileSetting() {
   const [resetPasswordModal, setResetPasswordModal] = useState(false);
   const [deleteAccountModal, setDeleteAccountModal] = useState(false);
   const [verifiedPassword, setVerifiedPassword] = useState(false);
+   const [showEditCnicPasswordModal, setEditShowCnicPasswordModal] = useState(false);
   const [userEditModal, setUserEditModal] = useState(false);
   const [cnicVisible, setCnicVisible] = useState(false);
   const [idPassword, setIdPassword] = useState("");
@@ -668,9 +669,9 @@ function ProfileSetting() {
                 <div className="d-flex justify-content-end mt-2">
                   <button
                     className="btn btn-warning"
-                    onClick={openPasswordModal}
+                    onClick={()=> setEditShowCnicPasswordModal(true)}
                   >
-                    <i className="fas fa-id-card me-2"></i> {cnicText}
+                    <i className="fas fa-id-card me-2"></i> Verify
                   </button>
                 </div>
 
@@ -819,6 +820,57 @@ function ProfileSetting() {
                   onClick={() => verifyPassword("password")}
                 >
                   {resetPasswordText}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+        {showEditCnicPasswordModal && (
+        <div
+          className="modal show d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Enter Password</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={closePasswordModal}
+                ></button>
+              </div>
+
+              <div className="modal-body">
+                <input
+                  type="password"
+                  className="form-control mb-3"
+                  placeholder="Your account password"
+                  value={idPassword}
+                  onChange={(e) => setIdPassword(e.target.value)}
+                />
+
+                <div className="alert alert-info small mb-0">
+                  <strong>Note:</strong> For security reasons, please enter your
+                  password to view CNIC images.
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={closePasswordModal}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => verifyPassword("cnic")}
+                >
+                  Verify
                 </button>
               </div>
             </div>
