@@ -13,10 +13,12 @@ function ProfileSetting() {
    const [showEditCnicPasswordModal, setEditShowCnicPasswordModal] = useState(false);
   const [userEditModal, setUserEditModal] = useState(false);
   const [cnicVisible, setCnicVisible] = useState(false);
+  const [cnicEditVisible, setEditCnicVisible] = useState(false);
   const [idPassword, setIdPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [cnicText, setCnicText] = useState("View CNIC Images");
+  const [cnicEditText, setCnicEditText] = useState("View CNIC Images");
   const [resetPasswordText, setResetPasswordText] = useState("Verify");
 
   useEffect(() => {
@@ -124,6 +126,7 @@ function ProfileSetting() {
         showToast("success", data.message, 3000, "top-right");
         if (action === "cnic") {
           setIdPassword("");
+          setCnicText("Hide CNIC Images");
           setCnicVisible(true); // Removes blur from image
           setShowPasswordModal(false);
         } else if (action === "password") {
@@ -145,7 +148,6 @@ function ProfileSetting() {
   const openPasswordModal = () => {
     if (cnicText === "View CNIC Images") {
       setShowPasswordModal(true);
-      setCnicText("Hide CNIC Images");
     } else {
       setCnicVisible(false);
       setCnicText("View CNIC Images");
@@ -166,6 +168,16 @@ function ProfileSetting() {
       setIdPassword("");
     }
   };
+  const openEditShowCnicPasswordModal = ()=>{
+       if (cnicEditText === "View CNIC Images") {
+      setEditShowCnicPasswordModal(true);
+    } else {
+      setEditCnicVisible(false);
+      setCnicEditText("View CNIC Images");
+    }
+
+  }
+
   const deleteAccount = async () => {
     const confirmation = window.confirm("Do You want to delete account?");
     if (!confirmation) {
@@ -669,9 +681,9 @@ function ProfileSetting() {
                 <div className="d-flex justify-content-end mt-2">
                   <button
                     className="btn btn-warning"
-                    onClick={()=> setEditShowCnicPasswordModal(true)}
+                    onClick={openEditShowCnicPasswordModal}
                   >
-                    <i className="fas fa-id-card me-2"></i> Verify
+                    <i className="fas fa-id-card me-2"></i> {cnicEditText}
                   </button>
                 </div>
 
@@ -690,7 +702,7 @@ function ProfileSetting() {
                               alt="CNIC Front"
                               className="img-fluid rounded"
                               style={{
-                                filter: cnicVisible ? "none" : "blur(8px)",
+                                filter: cnicEditVisible ? "none" : "blur(8px)",
                               }}
                             />
                           </div>
@@ -718,7 +730,7 @@ function ProfileSetting() {
                               alt="CNIC Back"
                               className="img-fluid rounded"
                               style={{
-                                filter: cnicVisible ? "none" : "blur(8px)",
+                                filter: cnicEditVisible ? "none" : "blur(8px)",
                               }}
                             />
                           </div>
@@ -840,7 +852,7 @@ function ProfileSetting() {
                 <button
                   type="button"
                   className="btn-close"
-                  onClick={closePasswordModal}
+                  onClick={()=> setEditShowCnicPasswordModal(false)}
                 ></button>
               </div>
 
@@ -862,7 +874,7 @@ function ProfileSetting() {
               <div className="modal-footer">
                 <button
                   className="btn btn-secondary"
-                  onClick={closePasswordModal}
+                  onClick={()=> setEditShowCnicPasswordModal(false)}
                 >
                   Cancel
                 </button>
