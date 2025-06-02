@@ -715,7 +715,7 @@ function ProfileSetting() {
 
                
 
-                <div className="d-flex justify-content-end mt-2 " style={{marginRight: "40px"}}>
+                <div className="d-flex justify-content-end mt-2 " style={{marginRight: "20px"}}>
                   <button
                     className="btn btn-warning "
                     onClick={openEditShowCnicPasswordModal}
@@ -724,7 +724,7 @@ function ProfileSetting() {
                   </button>
                 </div>
 
-                <div className=" mt-2 g-2 mb-3  d-flex flex-column align-items-center justify-content-center">
+                <div className=" mt-2 gap-3 mb-3  d-flex flex-column align-items-center justify-content-center">
                   {/* Front CNIC */}
                   <div className="col-11">
                     <div className="card shadow-sm border-0">
