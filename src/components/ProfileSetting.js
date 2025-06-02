@@ -886,7 +886,7 @@ function ProfileSetting() {
                 </button>
                 <button
                   className="btn btn-primary"
-                  onClick={() => verifyPassword("cnic")}
+                  onClick={() => verifyPassword("cnicEdit")}
                 >
                   Verify
                 </button>
