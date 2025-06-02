@@ -626,9 +626,24 @@ function ProfileSetting() {
                     placeholder="Name"
                     id="name"
                     value={name}
-                    //  onChange={(e) => setName(e.target.value)}
+                      onChange={(e) => setName(e.target.value)}
                     required
                     minLength={2}
+                  />
+                </div>
+                 <div className="mb-3 input-group">
+                  <span className="input-group-text bg-white">
+                    <i className="fas fa-map-marker-alt"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Complete Address With City Name"
+                    id="name"
+                    value={address}
+                     onChange={(e) => setAddress(e.target.value)}
+                    required
+                    minLength={5}
                   />
                 </div>
                 <div className="mb-3 input-group">
@@ -641,7 +656,6 @@ function ProfileSetting() {
                     placeholder="xxxxx-xxxxxxx-x"
                     id="cnic"
                     value={cnic}
-                    // onChange={(e) => setCnic(e.target.value)}
                     required
                     disabled
                      data-bs-toggle="tooltip"
@@ -663,7 +677,6 @@ function ProfileSetting() {
                     placeholder="Whatsapp Contact"
                     id="contact"
                     value={contact}
-                    // onChange={(e) => setContact(e.target.value)}
                     required
                     minLength={11}
                     disabled
@@ -674,21 +687,7 @@ function ProfileSetting() {
                     <i className="fas fa-lock"></i>
                   </span>
                 </div>
-                <div className="mb-3 input-group">
-                  <span className="input-group-text bg-white">
-                    <i className="fas fa-map-marker-alt"></i>
-                  </span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Complete Address With City Name"
-                    id="name"
-                    value={address}
-                    // onChange={(e) => setAddress(e.target.value)}
-                    required
-                    minLength={5}
-                  />
-                </div>
+               
 
                 {/* Email */}
                 <div className="mb-3 input-group">
@@ -701,7 +700,7 @@ function ProfileSetting() {
                     placeholder="Email"
                     id="email"
                     value={email}
-                    // onChange={(e) => setEmail(e.target.value)}
+                  
                     required
                     disabled
                     data-bs-toggle="tooltip"
@@ -711,17 +710,18 @@ function ProfileSetting() {
                     <i className="fas fa-lock"></i>
                   </span>
                 </div>
+                </div>
 
-                <div className="d-flex justify-content-end mt-2">
+                <div className="d-flex justify-content-end mt-2 container">
                   <button
-                    className="btn btn-warning"
+                    className="btn btn-warning btn-sm"
                     onClick={openEditShowCnicPasswordModal}
                   >
                     <i className="fas fa-id-card me-2"></i> {cnicEditText}
                   </button>
                 </div>
 
-                <div className="row mt-2 g-3 justify-content-center">
+                <div className=" mt-1 g-1 container d-flex flex-column align-items-center justify-content-center">
                   {/* Front CNIC */}
                   <div className="col-12">
                     <div className="card shadow-sm border-0">
@@ -778,7 +778,7 @@ function ProfileSetting() {
                     </div>
                   </div>
                 </div>
-              </div>
+              
 
               <div className="modal-footer">
                 <button
