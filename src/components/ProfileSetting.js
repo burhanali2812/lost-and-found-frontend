@@ -10,7 +10,8 @@ function ProfileSetting() {
   const [resetPasswordModal, setResetPasswordModal] = useState(false);
   const [deleteAccountModal, setDeleteAccountModal] = useState(false);
   const [verifiedPassword, setVerifiedPassword] = useState(false);
-   const [showEditCnicPasswordModal, setEditShowCnicPasswordModal] = useState(false);
+  const [showEditCnicPasswordModal, setEditShowCnicPasswordModal] =
+    useState(false);
   const [userEditModal, setUserEditModal] = useState(false);
   const [cnicVisible, setCnicVisible] = useState(false);
   const [cnicEditVisible, setEditCnicVisible] = useState(false);
@@ -20,6 +21,11 @@ function ProfileSetting() {
   const [cnicText, setCnicText] = useState("View CNIC Images");
   const [cnicEditText, setCnicEditText] = useState("View CNIC Images");
   const [resetPasswordText, setResetPasswordText] = useState("Verify");
+  const [name, setName] = useState("");
+  const [cnic, setCnic] = useState("");
+  const [email, setEmail] = useState("");
+  const [contact, setContact] = useState("");
+  const [address, setAddress] = useState("");
 
   useEffect(() => {
     const getUser = async () => {
@@ -135,12 +141,11 @@ function ProfileSetting() {
           setResetPasswordText("Reset Password");
         } else if (action === "delete") {
           await deleteAccount();
-        }
-         else if (action === "cnicEdit") {
-          setCnicEditText("Hide CNIC Images")
-            setIdPassword("")
-            setEditCnicVisible(true);
-            setEditShowCnicPasswordModal(false)
+        } else if (action === "cnicEdit") {
+          setCnicEditText("Hide CNIC Images");
+          setIdPassword("");
+          setEditCnicVisible(true);
+          setEditShowCnicPasswordModal(false);
         }
       } else {
         showToast("error", data.message, 3000, "top-right");
@@ -174,15 +179,23 @@ function ProfileSetting() {
       setIdPassword("");
     }
   };
-  const openEditShowCnicPasswordModal = ()=>{
-       if (cnicEditText === "View CNIC Images") {
+  const openEditShowCnicPasswordModal = () => {
+    if (cnicEditText === "View CNIC Images") {
       setEditShowCnicPasswordModal(true);
     } else {
       setEditCnicVisible(false);
       setCnicEditText("View CNIC Images");
     }
+  };
+  const openUserEditModal = () => {
+    setName(currentUser?.name || "Loading...");
+    setCnic(currentUser?.cnic || "Loading...");
+    setAddress(currentUser?.address || "Loading...");
+    setEmail(currentUser?.email || "Loading...");
+    setContact(currentUser?.phone || "Loading...");
 
-  }
+    setUserEditModal(true);
+  };
 
   const deleteAccount = async () => {
     const confirmation = window.confirm("Do You want to delete account?");
@@ -307,7 +320,7 @@ function ProfileSetting() {
                       role="button"
                       className="ms-2"
                       style={{ cursor: "pointer", color: "#0d6efd" }}
-                      onClick={() => setUserEditModal(true)}
+                      onClick={openUserEditModal}
                     >
                       <i className="fas fa-edit"></i>
                     </span>
@@ -612,7 +625,7 @@ function ProfileSetting() {
                     className="form-control"
                     placeholder="Name"
                     id="name"
-                    //  value={name}
+                    value={name}
                     //  onChange={(e) => setName(e.target.value)}
                     required
                     minLength={2}
@@ -627,11 +640,16 @@ function ProfileSetting() {
                     className="form-control"
                     placeholder="xxxxx-xxxxxxx-x"
                     id="cnic"
-                    // value={cnic}
+                    value={cnic}
                     // onChange={(e) => setCnic(e.target.value)}
                     required
-                    readOnly
+                    disabled
+                     data-bs-toggle="tooltip"
+                    title="You cannot update this field"
                   />
+                  <span className="input-group-text bg-light">
+                    <i className="fas fa-lock"></i>
+                  </span>
                 </div>
 
                 {/* Contact */}
@@ -644,12 +662,17 @@ function ProfileSetting() {
                     className="form-control"
                     placeholder="Whatsapp Contact"
                     id="contact"
-                    // value={contact}
+                    value={contact}
                     // onChange={(e) => setContact(e.target.value)}
                     required
                     minLength={11}
-                    readOnly
+                    disabled
+                     data-bs-toggle="tooltip"
+                    title="You cannot update this field"
                   />
+                  <span className="input-group-text bg-light">
+                    <i className="fas fa-lock"></i>
+                  </span>
                 </div>
                 <div className="mb-3 input-group">
                   <span className="input-group-text bg-white">
@@ -660,7 +683,7 @@ function ProfileSetting() {
                     className="form-control"
                     placeholder="Complete Address With City Name"
                     id="name"
-                    // value={address}
+                    value={address}
                     // onChange={(e) => setAddress(e.target.value)}
                     required
                     minLength={5}
@@ -677,11 +700,16 @@ function ProfileSetting() {
                     className="form-control"
                     placeholder="Email"
                     id="email"
-                    // value={email}
+                    value={email}
                     // onChange={(e) => setEmail(e.target.value)}
                     required
-                    readOnly
+                    disabled
+                    data-bs-toggle="tooltip"
+                    title="You cannot update this field"
                   />
+                  <span className="input-group-text bg-light">
+                    <i className="fas fa-lock"></i>
+                  </span>
                 </div>
 
                 <div className="d-flex justify-content-end mt-2">
@@ -845,7 +873,7 @@ function ProfileSetting() {
         </div>
       )}
 
-        {showEditCnicPasswordModal && (
+      {showEditCnicPasswordModal && (
         <div
           className="modal show d-block"
           tabIndex="-1"
@@ -858,7 +886,7 @@ function ProfileSetting() {
                 <button
                   type="button"
                   className="btn-close"
-                  onClick={()=> setEditShowCnicPasswordModal(false)}
+                  onClick={() => setEditShowCnicPasswordModal(false)}
                 ></button>
               </div>
 
@@ -880,7 +908,7 @@ function ProfileSetting() {
               <div className="modal-footer">
                 <button
                   className="btn btn-secondary"
-                  onClick={()=> setEditShowCnicPasswordModal(false)}
+                  onClick={() => setEditShowCnicPasswordModal(false)}
                 >
                   Cancel
                 </button>
