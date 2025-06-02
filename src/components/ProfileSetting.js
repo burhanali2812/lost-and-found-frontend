@@ -26,6 +26,13 @@ function ProfileSetting() {
   const [email, setEmail] = useState("");
   const [contact, setContact] = useState("");
   const [address, setAddress] = useState("");
+   const [profileImage, setProfileImage] = useState(null);
+   useEffect(() => {
+  if (currentUser) {
+    setContact(currentUser.phone || "Loading...");
+    setProfileImage(currentUser.profileImage || null);
+  }
+}, [currentUser]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -193,9 +200,19 @@ function ProfileSetting() {
     setAddress(currentUser?.address || "Loading...");
     setEmail(currentUser?.email || "Loading...");
     setContact(currentUser?.phone || "Loading...");
+    setProfileImage(currentUser.profileImage)
 
     setUserEditModal(true);
   };
+  const handleOnChange = (e) => {
+  const file = e.target.files[0];
+
+  if (file) {
+    const imageUrl = URL.createObjectURL(file);
+    setProfileImage(imageUrl);
+  }
+};
+
 
   const deleteAccount = async () => {
     const confirmation = window.confirm("Do You want to delete account?");
@@ -241,9 +258,9 @@ function ProfileSetting() {
             </div>
 
             <div className="d-flex flex-column align-items-center justify-content-center">
-              {currentUser?.profileImage ? (
+              {profileImage ? (
                 <img
-                  src={currentUser.profileImage}
+                  src={profileImage}
                   alt="Profile"
                   style={{
                     width: "110px",
@@ -554,9 +571,9 @@ function ProfileSetting() {
               </div>
 
               <div className="container d-flex flex-column align-items-center justify-content-center">
-                {currentUser?.profileImage ? (
+                {profileImage ? (
                   <img
-                    src={currentUser.profileImage}
+                    src={profileImage}
                     alt="Profile"
                     style={{
                       width: "110px",
@@ -605,17 +622,32 @@ function ProfileSetting() {
                     </>
                   )}
                 </span>
-                <div className="mb-3 input-group mt-2">
-                  <span className="input-group-text bg-white">
-                    <i className="fas fa-image"></i>
-                  </span>
+                <div className="mb-3 mt-2">
+                  <label htmlFor="picture" style={{ cursor: "pointer" }}>
+                    <div
+                      style={{
+                        width: "110px",
+                        height: "27px",
+                        border: "2px solid #343a40", // 2px dark border
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "8px", // optional: for rounded corners
+                      }}
+                    >
+                      <i className="fas fa-camera  text-dark"></i>
+                    </div>
+                  </label>
+
                   <input
                     type="file"
-                    className="form-control"
                     id="picture"
-                    // onChange={handleUploadImage}
+                    className="d-none"
+                    accept="image/*"
+                     onChange={handleOnChange}
                   />
                 </div>
+
                 <div className="mb-3 input-group">
                   <span className="input-group-text bg-white">
                     <i className="fas fa-user"></i>
@@ -626,12 +658,12 @@ function ProfileSetting() {
                     placeholder="Name"
                     id="name"
                     value={name}
-                      onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => setName(e.target.value)}
                     required
                     minLength={2}
                   />
                 </div>
-                 <div className="mb-3 input-group">
+                <div className="mb-3 input-group">
                   <span className="input-group-text bg-white">
                     <i className="fas fa-map-marker-alt"></i>
                   </span>
@@ -641,7 +673,7 @@ function ProfileSetting() {
                     placeholder="Complete Address With City Name"
                     id="name"
                     value={address}
-                     onChange={(e) => setAddress(e.target.value)}
+                    onChange={(e) => setAddress(e.target.value)}
                     required
                     minLength={5}
                   />
@@ -658,7 +690,7 @@ function ProfileSetting() {
                     value={cnic}
                     required
                     disabled
-                     data-bs-toggle="tooltip"
+                    data-bs-toggle="tooltip"
                     title="You cannot update this field"
                   />
                   <span className="input-group-text bg-light">
@@ -680,14 +712,13 @@ function ProfileSetting() {
                     required
                     minLength={11}
                     disabled
-                     data-bs-toggle="tooltip"
+                    data-bs-toggle="tooltip"
                     title="You cannot update this field"
                   />
                   <span className="input-group-text bg-light">
                     <i className="fas fa-lock"></i>
                   </span>
                 </div>
-               
 
                 {/* Email */}
                 <div className="mb-3 input-group">
@@ -700,7 +731,6 @@ function ProfileSetting() {
                     placeholder="Email"
                     id="email"
                     value={email}
-                  
                     required
                     disabled
                     data-bs-toggle="tooltip"
@@ -710,12 +740,12 @@ function ProfileSetting() {
                     <i className="fas fa-lock"></i>
                   </span>
                 </div>
-                </div>
-                <div className="container">
-
-               
-
-                <div className="d-flex justify-content-end mt-2" style={{marginRight: "17px"}}>
+              </div>
+              <div className="container">
+                <div
+                  className="d-flex justify-content-end mt-2"
+                  style={{ marginRight: "16px" }}
+                >
                   <button
                     className="btn btn-warning "
                     onClick={openEditShowCnicPasswordModal}
@@ -781,8 +811,7 @@ function ProfileSetting() {
                     </div>
                   </div>
                 </div>
-                 </div>
-              
+              </div>
 
               <div className="modal-footer">
                 <button
