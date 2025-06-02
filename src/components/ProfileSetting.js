@@ -136,6 +136,14 @@ function ProfileSetting() {
         } else if (action === "delete") {
           await deleteAccount();
         }
+         else if (action === "cnicEdit") {
+          setCnicEditText("Hide CNIC Images")
+            setIdPassword("")
+            setEditCnicVisible(true);
+            setEditShowCnicPasswordModal(false)
+
+          )
+        }
       } else {
         showToast("error", data.message, 3000, "top-right");
       }
