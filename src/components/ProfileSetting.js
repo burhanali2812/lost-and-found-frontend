@@ -711,19 +711,22 @@ function ProfileSetting() {
                   </span>
                 </div>
                 </div>
+                <div className="container">
 
-                <div className="d-flex justify-content-end mt-2 container">
+               
+
+                <div className="d-flex justify-content-end mt-2 " style={{marginRight: "40px"}}>
                   <button
-                    className="btn btn-warning btn-sm"
+                    className="btn btn-warning "
                     onClick={openEditShowCnicPasswordModal}
                   >
                     <i className="fas fa-id-card me-2"></i> {cnicEditText}
                   </button>
                 </div>
 
-                <div className=" mt-1 g-1 container d-flex flex-column align-items-center justify-content-center">
+                <div className=" mt-2 g-2 mb-3  d-flex flex-column align-items-center justify-content-center">
                   {/* Front CNIC */}
-                  <div className="col-12">
+                  <div className="col-md-10">
                     <div className="card shadow-sm border-0">
                       <div className="card-header bg-dark text-white fw-bold text-center">
                         Front Side of CNIC
@@ -751,7 +754,7 @@ function ProfileSetting() {
                   </div>
 
                   {/* Back CNIC */}
-                  <div className="col-12">
+                  <div className="col-10">
                     <div className="card shadow-sm border-0">
                       <div className="card-header bg-dark text-white fw-bold text-center">
                         Back Side of CNIC
@@ -778,6 +781,7 @@ function ProfileSetting() {
                     </div>
                   </div>
                 </div>
+                 </div>
               
 
               <div className="modal-footer">
