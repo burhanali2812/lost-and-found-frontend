@@ -726,7 +726,7 @@ function ProfileSetting() {
 
                 <div className=" mt-2 g-2 mb-3  d-flex flex-column align-items-center justify-content-center">
                   {/* Front CNIC */}
-                  <div className="col-md-10">
+                  <div className="col-11">
                     <div className="card shadow-sm border-0">
                       <div className="card-header bg-dark text-white fw-bold text-center">
                         Front Side of CNIC
@@ -754,7 +754,7 @@ function ProfileSetting() {
                   </div>
 
                   {/* Back CNIC */}
-                  <div className="col-10">
+                  <div className="col-11">
                     <div className="card shadow-sm border-0">
                       <div className="card-header bg-dark text-white fw-bold text-center">
                         Back Side of CNIC
