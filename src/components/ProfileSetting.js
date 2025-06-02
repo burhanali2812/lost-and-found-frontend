@@ -715,7 +715,7 @@ function ProfileSetting() {
 
                
 
-                <div className="d-flex justify-content-end mt-2 " style={{marginRight: "20px"}}>
+                <div className="d-flex justify-content-end mt-2" style={{marginRight: "17px"}}>
                   <button
                     className="btn btn-warning "
                     onClick={openEditShowCnicPasswordModal}
