@@ -141,8 +141,6 @@ function ProfileSetting() {
             setIdPassword("")
             setEditCnicVisible(true);
             setEditShowCnicPasswordModal(false)
-
-          )
         }
       } else {
         showToast("error", data.message, 3000, "top-right");
