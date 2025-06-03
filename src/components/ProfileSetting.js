@@ -724,38 +724,46 @@ function ProfileSetting() {
                     <i className="fas fa-lock"></i>
                   </span>
                 </div>
-             
-              <div className="mb-3 input-group">
-                <span className="input-group-text bg-white">
-                  {status === "Verified" ? (
-                    <i
-                      className="fas fa-check-circle"
-                      style={{ color: "#28a745" }}
-                    ></i> // Green check
-                  ) : (
-                    <i
-                      className="fas fa-times-circle"
-                      style={{ color: "#dc3545" }}
-                    ></i> // Red cross
-                  )}
-                </span>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Status"
-                  id="cnic"
-                  value={status}
-                  required
-                  disabled
-                  data-bs-toggle="tooltip"
-                  title="You cannot update this field"
-                />
-                <span className="input-group-text bg-light">
-                  <i className="fas fa-lock"></i>
-                </span>
+
+                <div className="mb-3 input-group">
+                  <span className="input-group-text bg-white">
+                    {status === "Verified" ? (
+                      <i
+                        className="fas fa-check-circle"
+                        style={{ color: "#28a745" }}
+                      ></i> // Green check
+                    ) : (
+                      <i
+                        className="fas fa-times-circle"
+                        style={{ color: "#dc3545" }}
+                      ></i> // Red cross
+                    )}
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Status"
+                    id="cnic"
+                    value={status}
+                    required
+                    disabled
+                    data-bs-toggle="tooltip"
+                    title="You cannot update this field"
+                  />
+                  <span className="input-group-text bg-light">
+                    <i className="fas fa-lock"></i>
+                  </span>
+                </div>
               </div>
-               </div>
               <div className="container">
+                 <div className="alert alert-info small mb-0">
+                    <strong>Note:</strong> To change your CNIC, please first
+                    click the
+                    <strong style={{ color: "#0d6efd", margin: "0 4px" }}>
+                      "View CNIC Images"
+                    </strong>{" "}
+                    button and enter your password to unlock access.
+                  </div>
                 <div
                   className="d-flex justify-content-end mt-2"
                   style={{ marginRight: "16px" }}
@@ -770,11 +778,43 @@ function ProfileSetting() {
 
                 <div className=" mt-2 gap-3 mb-3  d-flex flex-column align-items-center justify-content-center">
                   {/* Front CNIC */}
+                 
+
                   <div className="col-11">
                     <div className="card shadow-sm border-0">
                       <div className="card-header bg-dark text-white fw-bold text-center">
                         Front Side of CNIC
+                        {cnicEditVisible === true && (
+                          <>
+                            <label
+                              htmlFor="cnicFront"
+                              style={{ cursor: "pointer", marginLeft: "15px" }}
+                            >
+                              <i
+                                className="fas fa-sync-alt"
+                                style={{
+                                  color: "#0d6efd",
+                                  marginRight: "5px",
+                                }}
+                              ></i>
+                              <span
+                                style={{ color: "#0d6efd", fontWeight: "500" }}
+                              >
+                                Change
+                              </span>
+                            </label>
+
+                            <input
+                              type="file"
+                              id="cnicFront"
+                              accept="image/*"
+                              className="d-none"
+                              // onChange={handleCnicFrontChange} // your handler function
+                            />
+                          </>
+                        )}
                       </div>
+
                       <div className="card-body p-2">
                         {currentUser.frontCnic ? (
                           <div className="ratio ratio-4x3">
@@ -802,6 +842,35 @@ function ProfileSetting() {
                     <div className="card shadow-sm border-0">
                       <div className="card-header bg-dark text-white fw-bold text-center">
                         Back Side of CNIC
+                        {cnicEditVisible === true && (
+                          <>
+                            <label
+                              htmlFor="cnicback"
+                              style={{ cursor: "pointer", marginLeft: "15px" }}
+                            >
+                              <i
+                                className="fas fa-sync-alt"
+                                style={{
+                                  color: "#0d6efd",
+                                  marginRight: "5px",
+                                }}
+                              ></i>
+                              <span
+                                style={{ color: "#0d6efd", fontWeight: "500" }}
+                              >
+                                Change
+                              </span>
+                            </label>
+
+                            <input
+                              type="file"
+                              id="cnicFront"
+                              accept="image/*"
+                              className="d-none"
+                              // onChange={handleCnicFrontChange} // your handler function
+                            />
+                          </>
+                        )}
                       </div>
                       <div className="card-body p-2">
                         {currentUser.backCnic ? (
