@@ -29,10 +29,14 @@ function ProfileSetting() {
   const [status, setStatus] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
+  const [frontCnicImage, setFrontCnicImage] = useState(null);
+  const [backCnicImage, setBackCnicImage] = useState(null);
   useEffect(() => {
     if (currentUser) {
       setContact(currentUser.phone || "Loading...");
       setProfileImage(currentUser.profileImage || null);
+      setFrontCnicImage(currentUser.frontCnic || null)
+      setBackCnicImage(currentUser.backCnic || null)
     }
   }, [currentUser]);
 
@@ -216,6 +220,23 @@ function ProfileSetting() {
       setProfileImage(imageUrl);
     }
   };
+    const handleCnicFrontChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setFrontCnicImage(imageUrl);
+    }
+  };
+  const handleCnicBackChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setBackCnicImage(imageUrl);
+    }
+  };
+  
 
   const deleteAccount = async () => {
     const confirmation = window.confirm("Do You want to delete account?");
@@ -261,9 +282,9 @@ function ProfileSetting() {
             </div>
 
             <div className="d-flex flex-column align-items-center justify-content-center">
-              {profileImage ? (
+              {currentUser.profileImage ? (
                 <img
-                  src={profileImage}
+                  src={currentUser.profileImage}
                   alt="Profile"
                   style={{
                     width: "110px",
@@ -387,7 +408,7 @@ function ProfileSetting() {
                         {currentUser.frontCnic ? (
                           <div className="ratio ratio-4x3">
                             <img
-                              src={currentUser.frontCnic}
+                              src={currentUser.frontCnic }
                               alt="CNIC Front"
                               className="img-fluid rounded"
                               style={{
@@ -415,7 +436,7 @@ function ProfileSetting() {
                         {currentUser.backCnic ? (
                           <div className="ratio ratio-4x3">
                             <img
-                              src={currentUser.backCnic}
+                              src={currentUser.backCnic }
                               alt="CNIC Back"
                               className="img-fluid rounded"
                               style={{
@@ -809,17 +830,17 @@ function ProfileSetting() {
                               id="cnicFront"
                               accept="image/*"
                               className="d-none"
-                              // onChange={handleCnicFrontChange} // your handler function
+                               onChange={handleCnicFrontChange} // your handler function
                             />
                           </>
                         )}
                       </div>
 
                       <div className="card-body p-2">
-                        {currentUser.frontCnic ? (
+                        {frontCnicImage? (
                           <div className="ratio ratio-4x3">
                             <img
-                              src={currentUser.frontCnic}
+                              src={frontCnicImage}
                               alt="CNIC Front"
                               className="img-fluid rounded"
                               style={{
@@ -864,19 +885,19 @@ function ProfileSetting() {
 
                             <input
                               type="file"
-                              id="cnicFront"
+                              id="cnicBack"
                               accept="image/*"
                               className="d-none"
-                              // onChange={handleCnicFrontChange} // your handler function
+                              onChange={handleCnicBackChange} // your handler function
                             />
                           </>
                         )}
                       </div>
                       <div className="card-body p-2">
-                        {currentUser.backCnic ? (
+                        {backCnicImage ? (
                           <div className="ratio ratio-4x3">
                             <img
-                              src={currentUser.backCnic}
+                              src={backCnicImage}
                               alt="CNIC Back"
                               className="img-fluid rounded"
                               style={{
