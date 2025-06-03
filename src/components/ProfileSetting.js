@@ -26,13 +26,15 @@ function ProfileSetting() {
   const [email, setEmail] = useState("");
   const [contact, setContact] = useState("");
   const [address, setAddress] = useState("");
-   const [profileImage, setProfileImage] = useState(null);
-   useEffect(() => {
-  if (currentUser) {
-    setContact(currentUser.phone || "Loading...");
-    setProfileImage(currentUser.profileImage || null);
-  }
-}, [currentUser]);
+  const [status, setStatus] = useState("");
+  const [isHovered, setIsHovered] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  useEffect(() => {
+    if (currentUser) {
+      setContact(currentUser.phone || "Loading...");
+      setProfileImage(currentUser.profileImage || null);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -48,7 +50,6 @@ function ProfileSetting() {
           }
         );
         if (!response.ok) {
-          alert("Cannot Fetch Users");
           return;
         }
         const data = await response.json();
@@ -200,19 +201,21 @@ function ProfileSetting() {
     setAddress(currentUser?.address || "Loading...");
     setEmail(currentUser?.email || "Loading...");
     setContact(currentUser?.phone || "Loading...");
-    setProfileImage(currentUser.profileImage)
+    setProfileImage(currentUser?.profileImage);
+    setStatus(
+      currentUser.isVerified === "accepted" ? "Verified" : "Not Verified"
+    );
 
     setUserEditModal(true);
   };
   const handleOnChange = (e) => {
-  const file = e.target.files[0];
+    const file = e.target.files[0];
 
-  if (file) {
-    const imageUrl = URL.createObjectURL(file);
-    setProfileImage(imageUrl);
-  }
-};
-
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setProfileImage(imageUrl);
+    }
+  };
 
   const deleteAccount = async () => {
     const confirmation = window.confirm("Do You want to delete account?");
@@ -590,52 +593,32 @@ function ProfileSetting() {
                     style={{ marginBottom: "10px", marginTop: "15px" }}
                   ></i>
                 )}
-                <span
-                  className="badge d-inline-block"
-                  style={{
-                    backgroundColor:
-                      currentUser?.isVerified === "accepted"
-                        ? "#28a745"
-                        : "#dc3545",
-                    color: "white",
-                    padding: "6px 10px",
-                    fontSize: "0.8rem",
-                  }}
-                >
-                  {currentUser?.role === "admin" ? (
-                    <>
-                      <i className="fas fa-user-shield me-1"></i> Admin
-                    </>
-                  ) : (
-                    <>
-                      <i className="fas fa-user me-1"></i> User
-                    </>
-                  )}
-                  {" | "}
-                  {currentUser?.isVerified === "accepted" ? (
-                    <>
-                      <i className="fas fa-check-circle ms-1"></i> Verified
-                    </>
-                  ) : (
-                    <>
-                      <i className="fas fa-times-circle ms-1"></i> Not Verified
-                    </>
-                  )}
-                </span>
-                <div className="mb-3 mt-2">
+
+                <div className="mb-3">
                   <label htmlFor="picture" style={{ cursor: "pointer" }}>
                     <div
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
                       style={{
-                        width: "110px",
-                        height: "27px",
-                        border: "2px solid #343a40", // 2px dark border
+                        width: "40px",
+                        height: "40px",
+                        border: "2px solid #343a40",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: "8px", // optional: for rounded corners
+                        borderRadius: "50%",
+                        backgroundColor: isHovered ? "#343a40" : "transparent", // light blue on hover
+                        transform: isHovered ? "scale(1.1)" : "scale(1)",
+                        transition: "all 0.3s ease-in-out",
                       }}
                     >
-                      <i className="fas fa-camera  text-dark"></i>
+                      <i
+                        className="fas fa-camera"
+                        style={{
+                          color: isHovered ? "white" : "#343a40",
+                          transition: "color 0.3s ease-in-out",
+                        }}
+                      ></i>
                     </div>
                   </label>
 
@@ -644,7 +627,7 @@ function ProfileSetting() {
                     id="picture"
                     className="d-none"
                     accept="image/*"
-                     onChange={handleOnChange}
+                    onChange={handleOnChange}
                   />
                 </div>
 
@@ -678,6 +661,7 @@ function ProfileSetting() {
                     minLength={5}
                   />
                 </div>
+
                 <div className="mb-3 input-group">
                   <span className="input-group-text bg-white">
                     <i className="fas fa-id-card"></i>
@@ -740,7 +724,37 @@ function ProfileSetting() {
                     <i className="fas fa-lock"></i>
                   </span>
                 </div>
+             
+              <div className="mb-3 input-group">
+                <span className="input-group-text bg-white">
+                  {status === "Verified" ? (
+                    <i
+                      className="fas fa-check-circle"
+                      style={{ color: "#28a745" }}
+                    ></i> // Green check
+                  ) : (
+                    <i
+                      className="fas fa-times-circle"
+                      style={{ color: "#dc3545" }}
+                    ></i> // Red cross
+                  )}
+                </span>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Status"
+                  id="cnic"
+                  value={status}
+                  required
+                  disabled
+                  data-bs-toggle="tooltip"
+                  title="You cannot update this field"
+                />
+                <span className="input-group-text bg-light">
+                  <i className="fas fa-lock"></i>
+                </span>
               </div>
+               </div>
               <div className="container">
                 <div
                   className="d-flex justify-content-end mt-2"
