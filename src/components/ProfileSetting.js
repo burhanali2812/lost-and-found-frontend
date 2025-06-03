@@ -756,14 +756,14 @@ function ProfileSetting() {
                 </div>
               </div>
               <div className="container">
-                 <div className="alert alert-info small mb-0">
+                 {cnicEditVisible === false ?(<div className="alert alert-info small mb-0">
                     <strong>Note:</strong> To change your CNIC, please first
                     click the
                     <strong style={{ color: "#0d6efd", margin: "0 4px" }}>
                       "View CNIC Images"
                     </strong>{" "}
-                    button and enter your password to unlock access.
-                  </div>
+                     below button and enter your password to unlock access.
+                  </div>):("")}
                 <div
                   className="d-flex justify-content-end mt-2"
                   style={{ marginRight: "16px" }}
