@@ -793,12 +793,12 @@ function ProfileSetting() {
                               <i
                                 className="fas fa-sync-alt"
                                 style={{
-                                  color: "#0d6efd",
+                                  color: "#ffc107",
                                   marginRight: "5px",
                                 }}
                               ></i>
                               <span
-                                style={{ color: "#0d6efd", fontWeight: "500" }}
+                                style={{ color: "#ffc107", fontWeight: "500" }}
                               >
                                 Change
                               </span>
@@ -851,12 +851,12 @@ function ProfileSetting() {
                               <i
                                 className="fas fa-sync-alt"
                                 style={{
-                                  color: "#0d6efd",
+                                  color: "#ffc107",
                                   marginRight: "5px",
                                 }}
                               ></i>
                               <span
-                                style={{ color: "#0d6efd", fontWeight: "500" }}
+                                style={{ color: "#ffc107", fontWeight: "500" }}
                               >
                                 Change
                               </span>
