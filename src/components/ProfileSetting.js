@@ -34,7 +34,7 @@ function ProfileSetting() {
   useEffect(() => {
     if (currentUser) {
       setContact(currentUser.phone || "Loading...");
-      setProfileImage(currentUser.profileImage || null);
+      setProfileImage(currentUser?.profileImage || "loading");
       setFrontCnicImage(currentUser.frontCnic || null)
       setBackCnicImage(currentUser.backCnic || null)
     }
@@ -282,7 +282,7 @@ function ProfileSetting() {
             </div>
 
             <div className="d-flex flex-column align-items-center justify-content-center">
-              {currentUser.profileImage ? (
+              {currentUser?.profileImage ? (
                 <img
                   src={currentUser.profileImage}
                   alt="Profile"
