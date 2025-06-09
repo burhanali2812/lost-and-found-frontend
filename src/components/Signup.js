@@ -38,8 +38,7 @@ function Signup() {
   const [forgetEmail, setForgetEmail] = useState("");
   const [strength, setStrength] = useState("");
 
-
-    const checkPasswordStrength = (password) => {
+  const checkPasswordStrength = (password) => {
     if (password.length < 8) return "Weak";
     if (
       password.length >= 6 &&
@@ -132,20 +131,17 @@ function Signup() {
     }
   };
   useEffect(() => {
-    
     const cleanupModals = () => {
-      
-      const backdrops = document.querySelectorAll('.modal-backdrop');
-      backdrops.forEach(backdrop => backdrop.remove());
-      
-    
-      document.body.classList.remove('modal-open');
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-     const modals = document.querySelectorAll('.modal');
-      modals.forEach(modal => {
-        modal.style.display = 'none';
-        const modalInstance = window.bootstrap.Modal.getInstance(modal); 
+      const backdrops = document.querySelectorAll(".modal-backdrop");
+      backdrops.forEach((backdrop) => backdrop.remove());
+
+      document.body.classList.remove("modal-open");
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+      const modals = document.querySelectorAll(".modal");
+      modals.forEach((modal) => {
+        modal.style.display = "none";
+        const modalInstance = window.bootstrap.Modal.getInstance(modal);
         if (modalInstance) {
           modalInstance.hide();
           modalInstance.dispose();
@@ -159,7 +155,6 @@ function Signup() {
     // Optional: Also clean up when component unmounts
     return () => cleanupModals();
   }, []);
-
 
   const handleUploadImage = (e) => {
     const file = e.target.files[0];
@@ -265,23 +260,47 @@ function Signup() {
       showToast("warning", "Please complete the reCAPTCHA.", 3000, "top-right");
       return;
     }
+    try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/checkExistEmail",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, cnic }),
+        }
+      );
+       const data = await response.json();
+      if (response.ok) {
+        resetFormData();
 
-    resetFormData();
-
-    navigate("/email-OTP", {
-      state: {
-        profileImage: profileImageDB,
-        frontCnic: frontSideCnicDB,
-        backCnic: backSideCnicDB,
-        name,
-        email,
-        cnic,
-        address,
-        password,
-        phone: contact,
-        token: captchaValue,
-      },
-    });
+        navigate("/email-OTP", {
+          state: {
+            profileImage: profileImageDB,
+            frontCnic: frontSideCnicDB,
+            backCnic: backSideCnicDB,
+            name,
+            email,
+            cnic,
+            address,
+            password,
+            phone: contact,
+            token: captchaValue,
+          },
+        });
+      } else {
+        showToast(
+          "error",
+          data.message || "Email not found",
+          3000,
+          "top-right"
+        );
+      }
+    } catch (error) {
+      console.error("Error verifying email:", error);
+      showToast("error", "Something went wrong. Try again.", 3000, "top-right");
+    }
   };
 
   const openForgetPasswordModal = () => {
@@ -596,7 +615,7 @@ function Signup() {
                       placeholder="Password"
                       id="password"
                       value={password}
-                     onChange={handlePasswordChange}
+                      onChange={handlePasswordChange}
                       required
                       minLength={8}
                     />
@@ -613,47 +632,47 @@ function Signup() {
                       ></i>
                     </span>
                   </div>
-                   {password && (
-                  <div className="mb-2" style={{marginTop:"-10px"}}>
-                    {/* Strength Text */}
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                        color:
-                          strength === "Weak"
-                            ? "red"
-                            : strength === "Medium"
-                            ? "orange"
-                            : "green",
-                      }}
-                    >
-                      {strength} Password
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="progress mt-1" style={{ height: "5px" }}>
+                  {password && (
+                    <div className="mb-2" style={{ marginTop: "-10px" }}>
+                      {/* Strength Text */}
                       <div
-                        className="progress-bar"
-                        role="progressbar"
                         style={{
-                          width:
-                            strength === "Weak"
-                              ? "33%"
-                              : strength === "Medium"
-                              ? "66%"
-                              : "100%",
-                          backgroundColor:
+                          fontSize: "14px",
+                          fontWeight: "bold",
+                          color:
                             strength === "Weak"
                               ? "red"
                               : strength === "Medium"
                               ? "orange"
                               : "green",
                         }}
-                      ></div>
+                      >
+                        {strength} Password
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="progress mt-1" style={{ height: "5px" }}>
+                        <div
+                          className="progress-bar"
+                          role="progressbar"
+                          style={{
+                            width:
+                              strength === "Weak"
+                                ? "33%"
+                                : strength === "Medium"
+                                ? "66%"
+                                : "100%",
+                            backgroundColor:
+                              strength === "Weak"
+                                ? "red"
+                                : strength === "Medium"
+                                ? "orange"
+                                : "green",
+                          }}
+                        ></div>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                   {/* Confirm Password */}
                   <div className="mb-3 input-group">
