@@ -123,11 +123,19 @@ function Signup() {
         );
         setTimeout(() => {
             navigate("/user-verification");
-        }, 2000);
+        }, 1000);
         
-          console.log("admin");
         } else if (data.role === "user") {
-          navigate("/notification");
+           showToast(
+          "success",
+          "Login Successfully",
+          3000,
+          "top-right"
+        );
+        setTimeout(() => {
+            navigate("/notification");
+        }, 1000);
+         
         }
       } else {
         console.error("Login error:", data.message);
