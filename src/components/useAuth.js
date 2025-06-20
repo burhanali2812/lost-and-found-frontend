@@ -1,6 +1,7 @@
 import { useEffect} from 'react'
 import { useNavigate } from "react-router-dom";
-
+import { showToast } from "./Toastify2";
+import { ToastContainer } from "react-toastify";
 const useAuth = () => {
    
     const navigate = useNavigate();
@@ -18,7 +19,13 @@ const useAuth = () => {
 
             if (decoded.exp * 1000 < Date.now()) {
                 localStorage.removeItem("token");
-                alert("Login Expired, Please Login Again");
+                   showToast(
+                          "error",
+                          "Login Expired, Please Login Again",
+                          3000,
+                          "top-right"
+                        );
+              
                 navigate("/login-signup");
             }
         } catch (error) {
