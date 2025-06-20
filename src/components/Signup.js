@@ -99,6 +99,7 @@ function Signup() {
       const data = await response.json();
       if (response.ok) {
         setLoading(false);
+        
         if (isRemeber) {
           localStorage.setItem("token", data.token);
           localStorage.setItem("userId", data.userId);
@@ -114,7 +115,16 @@ function Signup() {
           localStorage.setItem("role", data.role);
         }
         if (data.role === "admin") {
-          navigate("/user-verification");
+           showToast(
+          "success",
+          "Login Successfully",
+          3000,
+          "top-right"
+        );
+        setTimeout(() => {
+            navigate("/user-verification");
+        }, 2000);
+        
           console.log("admin");
         } else if (data.role === "user") {
           navigate("/notification");
