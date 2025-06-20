@@ -37,6 +37,7 @@ function Signup() {
   const [captchaValue, setCaptchaValue] = useState(null);
   const [forgetEmail, setForgetEmail] = useState("");
   const [strength, setStrength] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const checkPasswordStrength = (password) => {
     if (password.length < 8) return "Weak";
@@ -77,6 +78,7 @@ function Signup() {
         return;
       }
     }
+    setLoading(true);
     try {
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/login",
@@ -96,6 +98,7 @@ function Signup() {
 
       const data = await response.json();
       if (response.ok) {
+        setLoading(false);
         if (isRemeber) {
           localStorage.setItem("token", data.token);
           localStorage.setItem("userId", data.userId);
@@ -271,7 +274,7 @@ function Signup() {
           body: JSON.stringify({ email, cnic }),
         }
       );
-       const data = await response.json();
+      const data = await response.json();
       if (response.ok) {
         resetFormData();
 
@@ -1021,10 +1024,26 @@ function Signup() {
                   </div>
 
                   <div className="d-grid mt-3">
-                    <button type="submit" className="btn btn-outline-light">
-                      <i className="fas fa-sign-in-alt me-2"></i>Login
+                    <button
+                      type="submit"
+                      className="btn btn-outline-light"
+                      disabled={loading}
+                    >
+                      <i className="fas fa-sign-in-alt me-2"></i>
+                      {loading ? (
+                        <>
+                          Verifying...
+                          <div
+                            className="spinner-border spinner-border-sm text-light ms-2"
+                            role="status"
+                          ></div>
+                        </>
+                      ) : (
+                        "Login"
+                      )}
                     </button>
                   </div>
+
                   <div className="text-end mt-3">
                     <button
                       type="button"

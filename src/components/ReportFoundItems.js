@@ -8,6 +8,7 @@ function ReportFoundItems() {
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
+  const [submit, setSubmit] = useState(true);
   const [date, setDate] = useState("");
   const [images, setImages] = useState(Array(4).fill(null));
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -725,6 +726,7 @@ function ReportFoundItems() {
       alert("Description empty");
       return;
     }
+    setSubmit(false);
 
     await new Promise((resolve) => setTimeout(resolve, 100));
     const formattedDate = new Date(date).toISOString().split("T")[0];
@@ -761,6 +763,7 @@ function ReportFoundItems() {
       const data = await response.json();
 
       if (response.ok) {
+        setSubmit(true);
         console.log("Item added successfully:", data);
         alert("Item added successfully:", data);
         setSelectedCategory("");
@@ -1077,8 +1080,20 @@ function ReportFoundItems() {
           <button
             className="btn btn-outline-success px-4 py-2"
             onClick={handleOnClick}
+            disabled={!submit}
           >
-            <i className="fas fa-clipboard-check me-2"></i> Report Found Item
+            <i className="fas fa-clipboard-check me-2"></i>
+            {submit === true ? (
+              "Report Found Item"
+            ) : (
+              <>
+                Submitting...
+                <div
+                  className="spinner-border spinner-border-sm text-success ms-2"
+                  role="status"
+                ></div>
+              </>
+            )}
           </button>
         </div>
       </div>

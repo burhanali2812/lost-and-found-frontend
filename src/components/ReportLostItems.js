@@ -11,6 +11,8 @@ function ReportLostItems() {
   const [images, setImages] = useState(Array(4).fill(null));
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState(Array(4).fill(null));
+   const [submit, setSubmit] = useState(true);
+   
 
   //const token = useAuth();
   const userId = localStorage.getItem("userId");
@@ -653,6 +655,7 @@ function ReportLostItems() {
   const handleOnClick = async (e) => {
     e.preventDefault();
 
+
     if (!date) {
       alert("Please select a date before saving.");
       return;
@@ -688,6 +691,7 @@ function ReportLostItems() {
       alert("No files selected.");
       return;
     }
+      setSubmit(false)
 
     await new Promise((resolve) => setTimeout(resolve, 100));
     const formattedDate = new Date(date).toISOString().split("T")[0];
@@ -734,6 +738,7 @@ function ReportLostItems() {
       const data = await response.json();
 
       if (response.ok) {
+          setSubmit(true)
         console.log("Item added successfully:", data);
         alert("Item added successfully:", data);
         // localStorage.setItem("selectedCity", selectedCity);
@@ -1053,12 +1058,25 @@ function ReportLostItems() {
         </div>
 
         {/* Submit Button */}
-        <div className="col-md-12 d-flex justify-content-end  end-0 mb-1">
+        
+        <div className="col-md-12 d-flex justify-content-end end-0 mb-1">
           <button
-            className="btn btn-outline-secondary px-4 py-2"
+            className="btn btn-outline-success px-4 py-2"
             onClick={handleOnClick}
+            disabled={!submit}
           >
-            <i className="fas fa-clipboard-check me-2"></i> Report Lost Item
+            <i className="fas fa-clipboard-check me-2"></i>
+            {submit === true ? (
+              "Report Lost Item"
+            ) : (
+              <>
+                Submitting...
+                <div
+                  className="spinner-border spinner-border-sm text-success ms-2"
+                  role="status"
+                ></div>
+              </>
+            )}
           </button>
         </div>
       </div>
