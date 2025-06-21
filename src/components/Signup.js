@@ -138,6 +138,7 @@ function Signup() {
          
         }
       } else {
+        setLoading(false);
         console.error("Login error:", data.message);
         showToast("error", `Login Failed: ${data.message}`, 3000, "top-right");
       }
