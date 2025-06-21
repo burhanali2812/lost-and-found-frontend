@@ -1236,7 +1236,7 @@ function Signup() {
           tabIndex="-1"
           style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
         >
-          <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "370px", width: "100%" }} >
+          <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "370px" }} >
             <div
               className="modal-content text-white"
               style={{
@@ -1277,7 +1277,7 @@ function Signup() {
                           width: "75px",
                           height: "75px",
                           borderRadius: "50%",
-                          border: "8px solid white",
+                          border: "6px solid white",
                           backgroundColor: "transparent",
                           color: "#ffc107",
                           fontSize: "32px",
