@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import React from "react";
 import { showToast } from "./Toastify2";
 import { ToastContainer } from "react-toastify";
@@ -38,6 +38,12 @@ function Signup() {
   const [forgetEmail, setForgetEmail] = useState("");
   const [strength, setStrength] = useState("");
   const [loading, setLoading] = useState(false);
+  const [signupState, setSignupState] = useState(false);
+
+  const [canResend, setCanResend] = useState(false);
+  const [otp, setOtp] = useState(new Array(6).fill(""));
+  const [timer, setTimer] = useState(120);
+  const inputRefs = useRef([]);
 
   const checkPasswordStrength = (password) => {
     if (password.length < 8) return "Weak";
@@ -99,7 +105,7 @@ function Signup() {
       const data = await response.json();
       if (response.ok) {
         setLoading(false);
-        
+
         if (isRemeber) {
           localStorage.setItem("token", data.token);
           localStorage.setItem("userId", data.userId);
@@ -115,27 +121,15 @@ function Signup() {
           localStorage.setItem("role", data.role);
         }
         if (data.role === "admin") {
-           showToast(
-          "success",
-          "Login Successfully",
-          3000,
-          "top-right"
-        );
-        setTimeout(() => {
+          showToast("success", "Login Successfully", 3000, "top-right");
+          setTimeout(() => {
             navigate("/user-verification");
-        }, 1000);
-        
+          }, 1000);
         } else if (data.role === "user") {
-           showToast(
-          "success",
-          "Login Successfully",
-          3000,
-          "top-right"
-        );
-        setTimeout(() => {
+          showToast("success", "Login Successfully", 3000, "top-right");
+          setTimeout(() => {
             navigate("/notification");
-        }, 1000);
-         
+          }, 1000);
         }
       } else {
         setLoading(false);
@@ -411,6 +405,70 @@ function Signup() {
     setIsChecked("");
     setShowcPassword(null);
     setShowPassword(null);
+  };
+
+  const sendOTP = async () => {
+    try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/send-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: name, email: email }),
+        }
+      );
+      if (response.ok) {
+        setTimer(120);
+        setCanResend(false);
+      } else {
+        const data = await response.json();
+        showToast(
+          "error",
+          data.message || "Failed to send OTP",
+          3000,
+          "top-right"
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      showToast("error", "Network Error. Try again.", 3000, "top-right");
+    }
+  };
+
+  const handleResend = () => {
+    setLoading(true);
+    sendOTP();
+    setTimeout(() => {
+      setLoading(false); // Hide loader
+    }, 2000);
+    showToast("success", "OTP Resent!", 3000, "top-right");
+    setOtp(new Array(6).fill("")); // reset input boxes
+    inputRefs.current[0]?.focus();
+    setCanResend(false);
+  };
+
+  const handleChange = (element, index) => {
+    if (!/^[a-zA-Z0-9]?$/.test(element.value)) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = element.value.toUpperCase();
+    setOtp(newOtp);
+
+    if (element.value !== "" && inputRefs.current[index + 1]) {
+      inputRefs.current[index + 1].focus();
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (
+      e.key === "Backspace" &&
+      otp[index] === "" &&
+      inputRefs.current[index - 1]
+    ) {
+      inputRefs.current[index - 1].focus();
+    }
   };
 
   return (
@@ -723,181 +781,209 @@ function Signup() {
                       ></i>
                     </span>
                   </div>
-                  <div className="color-white">
-                    <hr
-                      className="my-4"
-                      style={{ borderTop: "3px solid white" }}
-                    />
 
-                    <div className="d-flex align-items-center text-white">
-                      <i
-                        className="fas fa-exclamation-circle me-2"
-                        style={{ fontSize: "20px", marginBottom: 35 }}
-                      ></i>
-                      <p>
-                        Your CNIC details are collected for identity
-                        verification purposes only and will not be shared
-                        publicly.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div
-                    className="d-flex justify-content-center"
-                    style={{ marginTop: 20 }}
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => setSignupState(true)}
+                    disabled={signupState} // Disable if empty
                   >
-                    <div
-                      style={{
-                        width: "375px",
-                        height: "240px",
-                        borderRadius: "3%",
-                        border: "3px solid white",
-                        marginBottom: "10px",
-                        backgroundColor: "#203a43",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        overflow: "hidden",
-                        fontSize: "100px",
-                        color: "white",
-                        flexDirection: "column",
-                        textAlign: "center",
-                      }}
-                    >
-                      {frontSideCnic ? (
-                        <img
-                          src={frontSideCnic}
-                          alt="Profile"
+                    Submit
+                  </button>
+
+                  <div>
+                    {signupState && (
+                      <>
+                        <div className="color-white">
+                          <hr
+                            className="my-4"
+                            style={{ borderTop: "3px solid white" }}
+                          />
+
+                          <div className="d-flex align-items-center text-white">
+                            <i
+                              className="fas fa-exclamation-circle me-2"
+                              style={{ fontSize: "20px", marginBottom: 35 }}
+                            ></i>
+                            <p>
+                              Your CNIC details are collected for identity
+                              verification purposes only and will not be shared
+                              publicly.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div
+                          className="d-flex justify-content-center"
+                          style={{ marginTop: 20 }}
+                        >
+                          <div
+                            style={{
+                              width: "375px",
+                              height: "240px",
+                              borderRadius: "3%",
+                              border: "3px solid white",
+                              marginBottom: "10px",
+                              backgroundColor: "#203a43",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              overflow: "hidden",
+                              fontSize: "100px",
+                              color: "white",
+                              flexDirection: "column",
+                              textAlign: "center",
+                            }}
+                          >
+                            {frontSideCnic ? (
+                              <img
+                                src={frontSideCnic}
+                                alt="Profile"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            ) : (
+                              <>
+                                <i className="fas fa-id-card"></i>
+                                <h5 className="my-2">
+                                  Upload Front Side of Cnic
+                                </h5>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="mb-3 input-group mt-2">
+                          <span className="input-group-text bg-white">
+                            <i className="fas fa-image"></i>
+                          </span>
+                          <input
+                            type="file"
+                            className="form-control"
+                            id="frontSideCnic"
+                            onChange={handleUploadFrontCinc}
+                          />
+                        </div>
+
+                        <div
+                          className="d-flex justify-content-center"
+                          style={{ marginTop: 20 }}
+                        >
+                          <div
+                            style={{
+                              width: "375px",
+                              height: "240px",
+                              borderRadius: "3%",
+                              border: "3px solid white",
+                              marginBottom: "10px",
+                              backgroundColor: "#203a43",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              overflow: "hidden",
+                              fontSize: "100px",
+                              color: "white",
+                              flexDirection: "column",
+                              textAlign: "center",
+                            }}
+                          >
+                            {backSideCnic ? (
+                              <img
+                                src={backSideCnic}
+                                alt="Profile"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            ) : (
+                              <>
+                                <i className="fas fa-id-card-alt"></i>
+                                <h5 className="my-2">
+                                  Upload Back Side of Cnic
+                                </h5>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="mb-3 input-group mt-2">
+                          <span className="input-group-text bg-white">
+                            <i className="fas fa-image"></i>
+                          </span>
+                          <input
+                            type="file"
+                            className="form-control"
+                            id="backSideCnic"
+                            onChange={handleUploadBackCnic}
+                          />
+                        </div>
+
+                        <div
+                          className="d-flex align-items-center text-white"
+                          style={{ marginTop: 30 }}
+                        >
+                          <i
+                            className="fas fa-exclamation-triangle me-2"
+                            style={{ fontSize: "20px", marginBottom: 65 }}
+                          ></i>
+                          <p>
+                            Please double-check your information. Submitting
+                            invalid data or fake documents will result in
+                            rejection.
+                          </p>
+                        </div>
+
+                        <div className="form-check text-white">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="termsCheckbox"
+                            checked={isChecked}
+                            onChange={(e) => setIsChecked(e.target.checked)}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="termsCheckbox"
+                          >
+                            I agree to the terms and conditions
+                          </label>
+                        </div>
+                        <div
+                          className="d-grid"
                           style={{
+                            marginTop: 20,
+                            display: "flex",
+                            justifyContent: "center",
                             width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
                           }}
-                        />
-                      ) : (
-                        <>
-                          <i className="fas fa-id-card"></i>
-                          <h5 className="my-2">Upload Front Side of Cnic</h5>
-                        </>
-                      )}
-                    </div>
+                        >
+                          <div style={{ width: "100%", maxWidth: "400px" }}>
+                            <ReCAPTCHA
+                              sitekey="6LcJTx4rAAAAAMLiXT1eAp_CGL3VLgeG3NaDokGh"
+                              onChange={handleCaptchaChange}
+                              style={{ width: "100%" }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Register Button */}
+                        <div className="d-grid" style={{ marginTop: 20 }}>
+                          <button
+                            type="submit"
+                            className="btn btn-outline-light"
+                          >
+                            <i className="fas fa-user-plus me-2"></i>Register
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
 
-                  <div className="mb-3 input-group mt-2">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-image"></i>
-                    </span>
-                    <input
-                      type="file"
-                      className="form-control"
-                      id="frontSideCnic"
-                      onChange={handleUploadFrontCinc}
-                    />
-                  </div>
-
-                  <div
-                    className="d-flex justify-content-center"
-                    style={{ marginTop: 20 }}
-                  >
-                    <div
-                      style={{
-                        width: "375px",
-                        height: "240px",
-                        borderRadius: "3%",
-                        border: "3px solid white",
-                        marginBottom: "10px",
-                        backgroundColor: "#203a43",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        overflow: "hidden",
-                        fontSize: "100px",
-                        color: "white",
-                        flexDirection: "column",
-                        textAlign: "center",
-                      }}
-                    >
-                      {backSideCnic ? (
-                        <img
-                          src={backSideCnic}
-                          alt="Profile"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        <>
-                          <i className="fas fa-id-card-alt"></i>
-                          <h5 className="my-2">Upload Back Side of Cnic</h5>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="mb-3 input-group mt-2">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-image"></i>
-                    </span>
-                    <input
-                      type="file"
-                      className="form-control"
-                      id="backSideCnic"
-                      onChange={handleUploadBackCnic}
-                    />
-                  </div>
-
-                  <div
-                    className="d-flex align-items-center text-white"
-                    style={{ marginTop: 30 }}
-                  >
-                    <i
-                      className="fas fa-exclamation-triangle me-2"
-                      style={{ fontSize: "20px", marginBottom: 65 }}
-                    ></i>
-                    <p>
-                      Please double-check your information. Submitting invalid
-                      data or fake documents will result in rejection.
-                    </p>
-                  </div>
-
-                  <div className="form-check text-white">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="termsCheckbox"
-                      checked={isChecked}
-                      onChange={(e) => setIsChecked(e.target.checked)}
-                    />
-                    <label className="form-check-label" htmlFor="termsCheckbox">
-                      I agree to the terms and conditions
-                    </label>
-                  </div>
-                  <div
-                    className="d-grid"
-                    style={{
-                      marginTop: 20,
-                      display: "flex",
-                      justifyContent: "center",
-                      width: "100%",
-                    }}
-                  >
-                    <div style={{ width: "100%", maxWidth: "400px" }}>
-                      <ReCAPTCHA
-                        sitekey="6LcJTx4rAAAAAMLiXT1eAp_CGL3VLgeG3NaDokGh"
-                        onChange={handleCaptchaChange}
-                        style={{ width: "100%" }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Register Button */}
-                  <div className="d-grid" style={{ marginTop: 20 }}>
-                    <button type="submit" className="btn btn-outline-light">
-                      <i className="fas fa-user-plus me-2"></i>Register
-                    </button>
-                  </div>
                   <div className="text-center mt-2">
                     <p className="text-white">
                       Already have an account?{" "}
@@ -1143,6 +1229,141 @@ function Signup() {
           </div>
         </div>
       </div>
+
+      {signupState && (
+        <div
+          className="modal show d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "400px", height: "40px" }} >
+            <div
+              className="modal-content text-white"
+              style={{
+                background: "linear-gradient(45deg, #0f2027, #203a43, #2c5364)",
+              }}
+            >
+              <div className="modal-header">
+                <h5 className="modal-title">VERIFY OTP</h5>
+                <button
+                  type="button"
+                  className="btn-close btn-close-white"
+                  onClick={() => setSignupState(false)}
+                ></button>
+              </div>
+
+              <div className="modal-body">
+                <p style={{ opacity: 0.85, fontSize: "0.9rem" }}>
+                  We've sent a One-Time Password (OTP) to your registered email.
+                  Enter it below to verify your identity.
+                </p>
+                <p
+                  style={{
+                    opacity: 0.7,
+                    fontSize: "0.9rem",
+                    marginTop: "6px",
+                    textAlign: "center"
+                  }}
+                >
+                  <i className="fas fa-clock me-1"></i> OTP will expire in
+                </p>
+
+                <div className="text-center mt-2">
+                  {!canResend ? (
+                    <div className="d-flex justify-content-center align-items-center">
+                      <div
+                        className="mt-1"
+                        style={{
+                          width: "75px",
+                          height: "75px",
+                          borderRadius: "50%",
+                          border: "8px solid white",
+                          backgroundColor: "transparent",
+                          color: "#ffc107",
+                          fontSize: "32px",
+                          fontWeight: "bold",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {timer % 120}
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="mt-2">
+                        <span
+                          className="text-warning"
+                          style={{
+                            cursor: "pointer",
+                            fontWeight: "bold",
+                            fontSize: "1.05rem",
+                          }}
+                          onClick={handleResend}
+                        >
+                          <i className="fas fa-paper-plane me-2"></i> Resend OTP
+                        </span>
+                      </div>
+
+                      <div className="mt-2">
+                        <p
+                          className="text-light"
+                          style={{ fontSize: "0.9rem" }}
+                        >
+                          <i className="fas fa-info-circle me-2"></i> Didn't
+                          receive the OTP? Check your spam folder or try
+                          resending.
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="d-flex justify-content-center gap-2 mt-4">
+                  {otp.map((val, index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      maxLength="1"
+                      className="form-control text-center"
+                      style={{
+                        width: "35px",
+                        height: "40px",
+                        fontSize: "0.8rem",
+                        fontWeight: "bold",
+                        borderRadius: "3px",
+                        backgroundColor: "#f8f9fa",
+                        border: "1px solid #ced4da",
+                      }}
+                      value={otp[index]}
+                      ref={(el) => (inputRefs.current[index] = el)}
+                      onChange={(e) => handleChange(e.target, index)}
+                      onKeyDown={(e) => handleKeyDown(e, index)}
+                    />
+                  ))}
+                </div>
+
+                <div className="text-center mt-4">
+                  <button className="btn btn-outline-warning fw-bold d-flex align-items-center justify-content-center px-3 py-2 mx-auto btn-sm">
+                    <i className="fas fa-key me-2"></i> Verify OTP
+                  </button>
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setSignupState(false)}
+                >
+                  Cancel
+                </button>
+                <button className="btn btn-primary">Next</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
