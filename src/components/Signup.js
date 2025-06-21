@@ -549,59 +549,7 @@ function Signup() {
                   }}
                 >
                   {/* Profile Image */}
-                  <div
-                    className="d-flex justify-content-center"
-                    style={{ marginTop: 50 }}
-                  >
-                    <div
-                      style={{
-                        width: "125px",
-                        height: "150px",
-                        borderRadius: "5%",
-                        border: "3px solid white",
-                        marginBottom: "10px",
-                        backgroundColor: "#203a43",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        overflow: "hidden",
-                        fontSize: "80px",
-                        color: "white",
-                      }}
-                    >
-                      {profileImage ? (
-                        <img
-                          src={profileImage}
-                          alt="Profile"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        <>
-                          <i className="fas fa-user"></i>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <p style={{ textAlign: "center", color: "yellow" }}>
-                    Recommended image size: 125 × 150 pixels
-                  </p>
-
-                  {/* Upload Picture */}
-                  <div className="mb-3 input-group mt-2">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-image"></i>
-                    </span>
-                    <input
-                      type="file"
-                      className="form-control"
-                      id="picture"
-                      onChange={handleUploadImage}
-                    />
-                  </div>
+                 
 
                   {/* Name */}
                   <div className="mb-3 input-group">
@@ -812,6 +760,59 @@ function Signup() {
                             </p>
                           </div>
                         </div>
+                         <div
+                    className="d-flex justify-content-center"
+                    style={{ marginTop: 50 }}
+                  >
+                    <div
+                      style={{
+                        width: "125px",
+                        height: "150px",
+                        borderRadius: "5%",
+                        border: "3px solid white",
+                        marginBottom: "10px",
+                        backgroundColor: "#203a43",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        overflow: "hidden",
+                        fontSize: "80px",
+                        color: "white",
+                      }}
+                    >
+                      {profileImage ? (
+                        <img
+                          src={profileImage}
+                          alt="Profile"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <>
+                          <i className="fas fa-user"></i>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <p style={{ textAlign: "center", color: "yellow" }}>
+                    Recommended image size: 125 × 150 pixels
+                  </p>
+
+                  {/* Upload Picture */}
+                  <div className="mb-3 input-group mt-2">
+                    <span className="input-group-text bg-white">
+                      <i className="fas fa-image"></i>
+                    </span>
+                    <input
+                      type="file"
+                      className="form-control"
+                      id="picture"
+                      onChange={handleUploadImage}
+                    />
+                  </div>
 
                         <div
                           className="d-flex justify-content-center"
@@ -1236,7 +1237,9 @@ function Signup() {
           tabIndex="-1"
           style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
         >
-          <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "370px" }} >
+          <div className="modal-dialog modal-dialog-centered" style={{  width: "90vw",
+    maxWidth: "370px", // limit on large screens
+    margin: "auto", }} >
             <div
               className="modal-content text-white"
               style={{
@@ -1328,11 +1331,11 @@ function Signup() {
                       maxLength="1"
                       className="form-control text-center"
                       style={{
-                        width: "35px",
+                        width: "36px",
                         height: "40px",
-                        fontSize: "0.8rem",
+                        fontSize: "0.7rem",
                         fontWeight: "bold",
-                        borderRadius: "3px",
+                        borderRadius: "1px",
                         backgroundColor: "#f8f9fa",
                         border: "1px solid #ced4da",
                       }}
