@@ -423,6 +423,19 @@ function Signup() {
       if (response.ok) {
         setTimer(10);
         setCanResend(false);
+        setLoading(false);
+        const id = setInterval(() => {
+          setTimer((prev) => {
+            if (prev <= 1) {
+              clearInterval(id);
+              setCanResend(true);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+
+        setIntervalId(id);
       } else {
         const data = await response.json();
         showToast(
@@ -440,9 +453,7 @@ function Signup() {
 
   const handleResend = () => {
     sendOTP();
-    setTimeout(() => {
-      setLoading(false); // Hide loader
-    }, 2000);
+    setTimeout(() => {}, 2000);
     showToast("success", "OTP Resent!", 3000, "top-right");
     setOtp(new Array(6).fill("")); // reset input boxes
     inputRefs.current[0]?.focus();
@@ -470,37 +481,59 @@ function Signup() {
       inputRefs.current[index - 1].focus();
     }
   };
- const sendOTpWithModal = async () => {
-  if (email === "") {
-    showToast("warning", "Empty Email Field", 3000, "top-right");
-    return;
-  }
-  if (name === "") {
-    showToast("warning", "Empty name Field", 3000, "top-right");
-    return;
-  }
-  await sendOTP();
-  inputRefs.current[0]?.focus();
-  setSignupState(true);
-
-  if (timer === 0) {
-    setCanResend(true);
-    return;
-  }
-
-  const id = setInterval(() => {
-    setTimer((prev) => {
-      if (prev <= 1) {
-        clearInterval(id);
-        setCanResend(true);
-        return 0;
+  const getOtpValue = () => otp.join("");
+  const verifyOTP = async () => {
+    setLoading(true);
+    const enteredOtp = getOtpValue();
+    try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/verify-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email, otp: enteredOtp }),
+        }
+      );
+      const data = await response.json(); // Get server response
+      if (response.ok) {
+        showToast("success", "OTP Verified Successfully!", 3000, "top-right");
+      } else {
+        showToast(
+          "error",
+          data.message || "Invalid OTP. Please try again.",
+          3000,
+          "top-right"
+        );
       }
-      return prev - 1;
-    });
-  }, 1000);
+    } catch (error) {
+      console.error("Error:", error);
+      showToast("error", "Network Error. Try again.", 3000, "top-right");
+    }
+    setLoading(false);
+  };
+  const sendOTpWithModal = async () => {
+    if (email === "") {
+      showToast("warning", "Empty Email Field", 3000, "top-right");
+      return;
+    }
+    if (name === "") {
+      showToast("warning", "Empty name Field", 3000, "top-right");
+      return;
+    }
+    setLoading(true);
+    await sendOTP();
+    inputRefs.current[0]?.focus();
+    setSignupState(true);
 
-  setIntervalId(id); // Save to state
-};
+    if (timer === 0) {
+      setCanResend(true);
+      return;
+    }
+
+    // Save to state
+  };
 
   return (
     <>
@@ -760,14 +793,26 @@ function Signup() {
                     </span>
                   </div>
 
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={sendOTpWithModal}
-                    disabled={signupState} // Disable if empty
-                  >
-                    Submit
-                  </button>
+                  <div className="col-md-12 d-flex justify-content-end end-0 mb-1">
+                    <button
+                      className="btn btn-outline-light"
+                      onClick={sendOTpWithModal}
+                      disabled={loading}
+                    >
+                      <i className="fas fa-key me-2"></i>
+                      {loading === false ? (
+                        "Generate OTP"
+                      ) : (
+                        <>
+                          Generating OTP...
+                          <div
+                            className="spinner-border spinner-border-sm text-light ms-2"
+                            role="status"
+                          ></div>
+                        </>
+                      )}
+                    </button>
+                  </div>
 
                   <div>
                     {signupState && (
@@ -1383,7 +1428,7 @@ function Signup() {
                 </div>
 
                 <div className="text-center mt-4">
-                  <button className="btn btn-outline-warning fw-bold d-flex align-items-center justify-content-center px-3 py-2 mx-auto btn-sm">
+                  <button className="btn btn-outline-warning fw-bold d-flex align-items-center justify-content-center px-3 py-2 mx-auto btn-sm" onClick={verifyOTP}>
                     <i className="fas fa-key me-2"></i> Verify OTP
                   </button>
                 </div>
