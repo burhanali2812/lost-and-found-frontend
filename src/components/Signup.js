@@ -41,6 +41,10 @@ function Signup() {
   const [signupState, setSignupState] = useState(false);
 
   const [canResend, setCanResend] = useState(false);
+  const [contentToggle, setContentToggle] = useState(false);
+    const [verifyLoading, setVerifyLoading] = useState(false);
+  
+
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [timer, setTimer] = useState(10);
   const inputRefs = useRef([]);
@@ -483,7 +487,7 @@ function Signup() {
   };
   const getOtpValue = () => otp.join("");
   const verifyOTP = async () => {
-    setLoading(true);
+    setVerifyLoading(true);
     const enteredOtp = getOtpValue();
     try {
       const response = await fetch(
@@ -499,6 +503,9 @@ function Signup() {
       const data = await response.json(); // Get server response
       if (response.ok) {
         showToast("success", "OTP Verified Successfully!", 3000, "top-right");
+        setSignupState(false);
+        setContentToggle(true);
+        setVerifyLoading(false)
       } else {
         showToast(
           "error",
@@ -531,8 +538,6 @@ function Signup() {
       setCanResend(true);
       return;
     }
-
-    // Save to state
   };
 
   return (
@@ -614,208 +619,215 @@ function Signup() {
                 >
                   {/* Profile Image */}
 
-                  {/* Name */}
-                  <div className="mb-3 input-group">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-user"></i>
-                    </span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Name"
-                      id="name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                      minLength={2}
-                    />
-                  </div>
-                  <div className="mb-3 input-group">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-id-card"></i>
-                    </span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="xxxxx-xxxxxxx-x"
-                      id="cnic"
-                      value={cnic}
-                      onChange={(e) => setCnic(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  {/* Contact */}
-                  <div className="mb-3 input-group">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-phone"></i>
-                    </span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Whatsapp Contact"
-                      id="contact"
-                      value={contact}
-                      onChange={(e) => setContact(e.target.value)}
-                      required
-                      minLength={11}
-                    />
-                  </div>
-                  <div className="mb-3 input-group">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-map-marker-alt"></i>
-                    </span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Complete Address With City Name"
-                      id="name"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      required
-                      minLength={5}
-                    />
-                  </div>
-
-                  {/* Email */}
-                  <div className="mb-3 input-group">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-envelope"></i>
-                    </span>
-                    <input
-                      type="email"
-                      className="form-control"
-                      placeholder="Email"
-                      id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  {/* Password */}
-
-                  <div className="mb-3 input-group">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-lock"></i>
-                    </span>
-
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      className="form-control"
-                      placeholder="Password"
-                      id="password"
-                      value={password}
-                      onChange={handlePasswordChange}
-                      required
-                      minLength={8}
-                    />
-
-                    <span
-                      className="input-group-text bg-white"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      <i
-                        className={`fas ${
-                          showPassword ? "fa-eye-slash" : "fa-eye"
-                        }`}
-                      ></i>
-                    </span>
-                  </div>
-                  {password && (
-                    <div className="mb-2" style={{ marginTop: "-10px" }}>
-                      {/* Strength Text */}
-                      <div
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "bold",
-                          color:
-                            strength === "Weak"
-                              ? "red"
-                              : strength === "Medium"
-                              ? "orange"
-                              : "green",
-                        }}
-                      >
-                        {strength} Password
+                  {!contentToggle && (
+                    <>
+                      {/* Name */}
+                      <div className="mb-3 input-group">
+                        <span className="input-group-text bg-white">
+                          <i className="fas fa-user"></i>
+                        </span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Name"
+                          id="name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          required
+                          minLength={2}
+                        />
+                      </div>
+                      <div className="mb-3 input-group">
+                        <span className="input-group-text bg-white">
+                          <i className="fas fa-id-card"></i>
+                        </span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="xxxxx-xxxxxxx-x"
+                          id="cnic"
+                          value={cnic}
+                          onChange={(e) => setCnic(e.target.value)}
+                          required
+                        />
                       </div>
 
-                      {/* Progress Bar */}
-                      <div className="progress mt-1" style={{ height: "5px" }}>
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{
-                            width:
-                              strength === "Weak"
-                                ? "33%"
-                                : strength === "Medium"
-                                ? "66%"
-                                : "100%",
-                            backgroundColor:
-                              strength === "Weak"
-                                ? "red"
-                                : strength === "Medium"
-                                ? "orange"
-                                : "green",
-                          }}
-                        ></div>
+                      {/* Contact */}
+                      <div className="mb-3 input-group">
+                        <span className="input-group-text bg-white">
+                          <i className="fas fa-phone"></i>
+                        </span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Whatsapp Contact"
+                          id="contact"
+                          value={contact}
+                          onChange={(e) => setContact(e.target.value)}
+                          required
+                          minLength={11}
+                        />
                       </div>
-                    </div>
+                      <div className="mb-3 input-group">
+                        <span className="input-group-text bg-white">
+                          <i className="fas fa-map-marker-alt"></i>
+                        </span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Complete Address With City Name"
+                          id="name"
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                          required
+                          minLength={5}
+                        />
+                      </div>
+
+                      {/* Email */}
+                      <div className="mb-3 input-group">
+                        <span className="input-group-text bg-white">
+                          <i className="fas fa-envelope"></i>
+                        </span>
+                        <input
+                          type="email"
+                          className="form-control"
+                          placeholder="Email"
+                          id="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                        />
+                      </div>
+
+                      {/* Password */}
+
+                      <div className="mb-3 input-group">
+                        <span className="input-group-text bg-white">
+                          <i className="fas fa-lock"></i>
+                        </span>
+
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          className="form-control"
+                          placeholder="Password"
+                          id="password"
+                          value={password}
+                          onChange={handlePasswordChange}
+                          required
+                          minLength={8}
+                        />
+
+                        <span
+                          className="input-group-text bg-white"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          <i
+                            className={`fas ${
+                              showPassword ? "fa-eye-slash" : "fa-eye"
+                            }`}
+                          ></i>
+                        </span>
+                      </div>
+                      {password && (
+                        <div className="mb-2" style={{ marginTop: "-10px" }}>
+                          {/* Strength Text */}
+                          <div
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              color:
+                                strength === "Weak"
+                                  ? "red"
+                                  : strength === "Medium"
+                                  ? "orange"
+                                  : "green",
+                            }}
+                          >
+                            {strength} Password
+                          </div>
+
+                          {/* Progress Bar */}
+                          <div
+                            className="progress mt-1"
+                            style={{ height: "5px" }}
+                          >
+                            <div
+                              className="progress-bar"
+                              role="progressbar"
+                              style={{
+                                width:
+                                  strength === "Weak"
+                                    ? "33%"
+                                    : strength === "Medium"
+                                    ? "66%"
+                                    : "100%",
+                                backgroundColor:
+                                  strength === "Weak"
+                                    ? "red"
+                                    : strength === "Medium"
+                                    ? "orange"
+                                    : "green",
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Confirm Password */}
+                      <div className="mb-3 input-group">
+                        <span className="input-group-text bg-white">
+                          <i className="fas fa-lock"></i>
+                        </span>
+                        <input
+                          type={showcPassword ? "text" : "password"}
+                          className="form-control"
+                          placeholder="Confirm Password"
+                          id="confirmPassword"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          required
+                          minLength={8}
+                        />
+                        <span
+                          className="input-group-text bg-white"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => setShowcPassword(!showcPassword)}
+                        >
+                          <i
+                            className={`fas ${
+                              showcPassword ? "fa-eye-slash" : "fa-eye"
+                            }`}
+                          ></i>
+                        </span>
+                      </div>
+
+                      <div className="col-md-12 d-flex justify-content-end end-0 mb-1">
+                        <button
+                          className="btn btn-outline-light"
+                          onClick={sendOTpWithModal}
+                          disabled={loading}
+                        >
+                          <i className="fas fa-key me-2"></i>
+                          {loading === false ? (
+                            "Generate OTP"
+                          ) : (
+                            <>
+                              Generating OTP...
+                              <div
+                                className="spinner-border spinner-border-sm text-light ms-2"
+                                role="status"
+                              ></div>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </>
                   )}
 
-                  {/* Confirm Password */}
-                  <div className="mb-3 input-group">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-lock"></i>
-                    </span>
-                    <input
-                      type={showcPassword ? "text" : "password"}
-                      className="form-control"
-                      placeholder="Confirm Password"
-                      id="confirmPassword"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                      minLength={8}
-                    />
-                    <span
-                      className="input-group-text bg-white"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => setShowcPassword(!showcPassword)}
-                    >
-                      <i
-                        className={`fas ${
-                          showcPassword ? "fa-eye-slash" : "fa-eye"
-                        }`}
-                      ></i>
-                    </span>
-                  </div>
-
-                  <div className="col-md-12 d-flex justify-content-end end-0 mb-1">
-                    <button
-                      className="btn btn-outline-light"
-                      onClick={sendOTpWithModal}
-                      disabled={loading}
-                    >
-                      <i className="fas fa-key me-2"></i>
-                      {loading === false ? (
-                        "Generate OTP"
-                      ) : (
-                        <>
-                          Generating OTP...
-                          <div
-                            className="spinner-border spinner-border-sm text-light ms-2"
-                            role="status"
-                          ></div>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
                   <div>
-                    {signupState && (
+                    {contentToggle && (
                       <>
                         <div className="color-white">
                           <hr
@@ -1426,10 +1438,25 @@ function Signup() {
                     />
                   ))}
                 </div>
+                
 
                 <div className="text-center mt-4">
-                  <button className="btn btn-outline-warning fw-bold d-flex align-items-center justify-content-center px-3 py-2 mx-auto btn-sm" onClick={verifyOTP}>
-                    <i className="fas fa-key me-2"></i> Verify OTP
+                  <button
+                    className="btn btn-outline-warning fw-bold d-flex align-items-center justify-content-center px-3 py-2 mx-auto btn-sm"
+                    onClick={verifyOTP}
+                  >
+                    <i className="fas fa-key me-2"></i> 
+                     {verifyLoading === false ? (
+                            "Verify OTP"
+                          ) : (
+                            <>
+                              Verifying OTP...
+                              <div
+                                className="spinner-border spinner-border-sm text-dark ms-2"
+                                role="status"
+                              ></div>
+                            </>
+                          )}
                   </button>
                 </div>
               </div>
