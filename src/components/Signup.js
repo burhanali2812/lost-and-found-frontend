@@ -41,8 +41,10 @@ function Signup() {
   const [signupState, setSignupState] = useState(false);
 
   const [canResend, setCanResend] = useState(false);
-  const [contentToggle, setContentToggle] = useState(false);
+  const [cnicToggle, setCnicToggle] = useState(false);
+  const [personalToggle, setPersonalToggle] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
+  const [enterPasswordFields, setEnterPasswordFields] = useState(false);
 
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [timer, setTimer] = useState(10);
@@ -503,7 +505,7 @@ function Signup() {
       if (response.ok) {
         showToast("success", "OTP Verified Successfully!", 3000, "top-right");
         setSignupState(false);
-        setContentToggle(true);
+        setCnicToggle(true);
         setVerifyLoading(false);
       } else {
         setVerifyLoading(false);
@@ -525,8 +527,6 @@ function Signup() {
       email,
       name,
       contact,
-      password,
-      confirmPassword,
       cnic,
       address,
     ];
@@ -536,6 +536,8 @@ function Signup() {
     }
 
     setLoading(true);
+    setPersonalToggle(true)
+    setSignupState(true)
     await sendOTP();
     inputRefs.current[0]?.focus();
     setSignupState(true);
@@ -545,6 +547,11 @@ function Signup() {
       return;
     }
   };
+
+  const handleCloseCnicOpenPassword = ()=>{
+    setCnicToggle(false);
+    setEnterPasswordFields(true)
+  }
 
   return (
     <>
@@ -625,7 +632,7 @@ function Signup() {
                 >
                   {/* Profile Image */}
 
-                  {!contentToggle && (
+                  {!personalToggle && (
                     <>
                       {/* Name */}
                       <p
@@ -641,6 +648,13 @@ function Signup() {
                       >
                         <i className="fas fa-user-circle"></i>
                         PERSONAL INFORMATION
+                      </p>
+                      <p
+                        style={{ opacity: 0.8, fontSize: "1.1rem" }}
+                        className="text-center"
+                      >
+                        Enter your details to join and report or claim lost
+                        items.
                       </p>
 
                       <div className="mb-3 input-group">
@@ -722,109 +736,8 @@ function Signup() {
                       </div>
 
                       {/* Password */}
-
-                      <div className="mb-3 input-group">
-                        <span className="input-group-text bg-white">
-                          <i className="fas fa-lock"></i>
-                        </span>
-
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          className="form-control"
-                          placeholder="Password"
-                          id="password"
-                          value={password}
-                          onChange={handlePasswordChange}
-                          required
-                          minLength={8}
-                        />
-
-                        <span
-                          className="input-group-text bg-white"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          <i
-                            className={`fas ${
-                              showPassword ? "fa-eye-slash" : "fa-eye"
-                            }`}
-                          ></i>
-                        </span>
-                      </div>
-                      {password && (
-                        <div className="mb-2" style={{ marginTop: "-10px" }}>
-                          {/* Strength Text */}
-                          <div
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: "bold",
-                              color:
-                                strength === "Weak"
-                                  ? "red"
-                                  : strength === "Medium"
-                                  ? "orange"
-                                  : "green",
-                            }}
-                          >
-                            {strength} Password
-                          </div>
-
-                          {/* Progress Bar */}
-                          <div
-                            className="progress mt-1"
-                            style={{ height: "5px" }}
-                          >
-                            <div
-                              className="progress-bar"
-                              role="progressbar"
-                              style={{
-                                width:
-                                  strength === "Weak"
-                                    ? "33%"
-                                    : strength === "Medium"
-                                    ? "66%"
-                                    : "100%",
-                                backgroundColor:
-                                  strength === "Weak"
-                                    ? "red"
-                                    : strength === "Medium"
-                                    ? "orange"
-                                    : "green",
-                              }}
-                            ></div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Confirm Password */}
-                      <div className="mb-3 input-group">
-                        <span className="input-group-text bg-white">
-                          <i className="fas fa-lock"></i>
-                        </span>
-                        <input
-                          type={showcPassword ? "text" : "password"}
-                          className="form-control"
-                          placeholder="Confirm Password"
-                          id="confirmPassword"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          required
-                          minLength={8}
-                        />
-                        <span
-                          className="input-group-text bg-white"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => setShowcPassword(!showcPassword)}
-                        >
-                          <i
-                            className={`fas ${
-                              showcPassword ? "fa-eye-slash" : "fa-eye"
-                            }`}
-                          ></i>
-                        </span>
-                      </div>
-
-                      <div className="col-md-12 d-flex justify-content-end end-0 mb-1">
+                        
+                      <div className="d-grid">
                         <button
                           className="btn btn-outline-light"
                           onClick={sendOTpWithModal}
@@ -832,7 +745,7 @@ function Signup() {
                         >
                           {loading === false ? (
                             <>
-                              Next
+                              	Let’s Verify Your Email
                               <i className="fas fa-angle-double-right ms-1"></i>
                             </>
                           ) : (
@@ -850,7 +763,7 @@ function Signup() {
                   )}
 
                   <div>
-                    {contentToggle && (
+                    {cnicToggle && (
                       <>
                         <p
                           style={{
@@ -865,6 +778,13 @@ function Signup() {
                         >
                           <i className="fas fa-folder"></i>
                           DOCUMENTS UPLOAD
+                        </p>
+                        <p
+                          style={{ opacity: 0.8, fontSize: "1.1rem" }}
+                          className="text-center"
+                        >
+                          Please upload your profile picture and CNIC to
+                          continue.
                         </p>
 
                         <div
@@ -1059,64 +979,201 @@ function Signup() {
                           </p>
                         </div>
 
-                        <div className="form-check text-white">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="termsCheckbox"
-                            checked={isChecked}
-                            onChange={(e) => setIsChecked(e.target.checked)}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="termsCheckbox"
-                          >
-                            I agree to the terms and conditions
-                          </label>
-                        </div>
-                        <div
-                          className="d-grid"
-                          style={{
-                            marginTop: 20,
-                            display: "flex",
-                            justifyContent: "center",
-                            width: "100%",
-                          }}
-                        >
-                          <div style={{ width: "100%", maxWidth: "400px" }}>
-                            <ReCAPTCHA
-                              sitekey="6LcJTx4rAAAAAMLiXT1eAp_CGL3VLgeG3NaDokGh"
-                              onChange={handleCaptchaChange}
-                              style={{ width: "100%" }}
-                            />
-                          </div>
-                        </div>
-
                         {/* Register Button */}
                         <div className="d-grid" style={{ marginTop: 20 }}>
                           <button
                             type="submit"
                             className="btn btn-outline-light"
+                            onClick={handleCloseCnicOpenPassword}
                           >
-                            <i className="fas fa-user-plus me-2"></i>Register
+                            <i className="fas fa-lock me-2"></i>Set Your Password
                           </button>
                         </div>
                       </>
                     )}
                   </div>
-
-                  <div className="text-center mt-2">
-                    <p className="text-white">
-                      Already have an account?{" "}
-                      <Link
-                        to="/login-signup"
-                        className="text-decoration-none"
-                        onClick={handleAlreadyLogin}
+                  {enterPasswordFields && (
+                    <>
+                      <p
+                        style={{
+                          fontSize: "1.1rem",
+                          fontWeight: "bold",
+                          letterSpacing: "1px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "8px",
+                        }}
                       >
-                        Login
-                      </Link>
-                    </p>
-                  </div>
+                        <i className="fas fa-lock"></i>
+                        GENERATE PASSWORD
+                      </p>
+                      <p
+                        style={{ opacity: 0.8, fontSize: "1.1rem" }}
+                        className="text-center"
+                      >
+                        Just a step away! Please generate your password to
+                        smoothly login.
+                      </p>
+                      <div className="mb-3 input-group">
+                        <span className="input-group-text bg-white">
+                          <i className="fas fa-lock"></i>
+                        </span>
+
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          className="form-control"
+                          placeholder="Password"
+                          id="password"
+                          value={password}
+                          onChange={handlePasswordChange}
+                          required
+                          minLength={8}
+                        />
+
+                        <span
+                          className="input-group-text bg-white"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          <i
+                            className={`fas ${
+                              showPassword ? "fa-eye-slash" : "fa-eye"
+                            }`}
+                          ></i>
+                        </span>
+                      </div>
+                      {password && (
+                        <div className="mb-2" style={{ marginTop: "-10px" }}>
+                          {/* Strength Text */}
+                          <div
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              color:
+                                strength === "Weak"
+                                  ? "red"
+                                  : strength === "Medium"
+                                  ? "orange"
+                                  : "green",
+                            }}
+                          >
+                            {strength} Password
+                          </div>
+
+                          {/* Progress Bar */}
+                          <div
+                            className="progress mt-1"
+                            style={{ height: "5px" }}
+                          >
+                            <div
+                              className="progress-bar"
+                              role="progressbar"
+                              style={{
+                                width:
+                                  strength === "Weak"
+                                    ? "33%"
+                                    : strength === "Medium"
+                                    ? "66%"
+                                    : "100%",
+                                backgroundColor:
+                                  strength === "Weak"
+                                    ? "red"
+                                    : strength === "Medium"
+                                    ? "orange"
+                                    : "green",
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Confirm Password */}
+                      <div className="mb-3 input-group">
+                        <span className="input-group-text bg-white">
+                          <i className="fas fa-lock"></i>
+                        </span>
+                        <input
+                          type={showcPassword ? "text" : "password"}
+                          className="form-control"
+                          placeholder="Confirm Password"
+                          id="confirmPassword"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          required
+                          minLength={8}
+                        />
+                        <span
+                          className="input-group-text bg-white"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => setShowcPassword(!showcPassword)}
+                        >
+                          <i
+                            className={`fas ${
+                              showcPassword ? "fa-eye-slash" : "fa-eye"
+                            }`}
+                          ></i>
+                        </span>
+                      </div>
+                      <div className="form-check text-white">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="termsCheckbox"
+                          checked={isChecked}
+                          onChange={(e) => setIsChecked(e.target.checked)}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="termsCheckbox"
+                        >
+                          I agree to the terms and conditions
+                        </label>
+                      </div>
+                      <div
+                        className="d-grid"
+                        style={{
+                          marginTop: 20,
+                          display: "flex",
+                          justifyContent: "center",
+                          width: "100%",
+                        }}
+                      >
+                        <div style={{ width: "100%", maxWidth: "400px" }}>
+                          <ReCAPTCHA
+                            sitekey="6LcJTx4rAAAAAMLiXT1eAp_CGL3VLgeG3NaDokGh"
+                            onChange={handleCaptchaChange}
+                            style={{ width: "100%" }}
+                          />
+                        </div>
+                      </div>
+
+                       <div className="d-grid" style={{ marginTop: 20 }}>
+                          <button
+                            type="submit"
+                            className="btn btn-outline-light"
+                            onClick={handleCloseCnicOpenPassword}
+                          >
+                            <i className="fas fa-user-plus me-2"></i>You’re All Set! Create Account
+                          </button>
+                        </div>
+                    </>
+                  )}
+
+                  {enterPasswordFields || cnicToggle ? null : (
+                    <div className="text-center mt-2">
+                      <p className="text-white">
+                        Already have an account?{" "}
+                        <Link
+                          to="/login-signup"
+                          className="text-decoration-none"
+                          onClick={handleAlreadyLogin}
+                        >
+                          Login
+                        </Link>
+                      </p>
+                    </div>
+                  )}
                 </form>
               </>
             ) : (
