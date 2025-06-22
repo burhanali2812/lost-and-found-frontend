@@ -521,14 +521,20 @@ function Signup() {
     setLoading(false);
   };
   const sendOTpWithModal = async () => {
-    if (email === "") {
-      showToast("warning", "Empty Email Field", 3000, "top-right");
+    const fields = [
+      email,
+      name,
+      contact,
+      password,
+      confirmPassword,
+      cnic,
+      address,
+    ];
+    if (fields.some((field) => field === "")) {
+      showToast("warning", "All Fields Are Required", 3000, "top-right");
       return;
     }
-    if (name === "") {
-      showToast("warning", "Empty name Field", 3000, "top-right");
-      return;
-    }
+
     setLoading(true);
     await sendOTP();
     inputRefs.current[0]?.focus();
@@ -624,7 +630,7 @@ function Signup() {
                       {/* Name */}
                       <p
                         style={{
-                          fontSize: "1.2rem",
+                          fontSize: "1.1rem",
                           fontWeight: "bold",
                           letterSpacing: "1px",
                           display: "flex",
@@ -824,9 +830,11 @@ function Signup() {
                           onClick={sendOTpWithModal}
                           disabled={loading}
                         >
-                          <i className="fas fa-key me-2"></i>
                           {loading === false ? (
-                            "Generate OTP"
+                            <>
+                              Next
+                              <i className="fas fa-angle-double-right ms-1"></i>
+                            </>
                           ) : (
                             <>
                               Generating OTP...
@@ -844,22 +852,21 @@ function Signup() {
                   <div>
                     {contentToggle && (
                       <>
-                       <p
-                        style={{
-                          fontSize: "1.2rem",
-                          fontWeight: "bold",
-                          letterSpacing: "1px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "8px",
-                        }}
-                      >
-                        <i className="fas fa-folder"></i>
-                        DOCUMENTS UPLOAD
-                      </p>
+                        <p
+                          style={{
+                            fontSize: "1.1rem",
+                            fontWeight: "bold",
+                            letterSpacing: "1px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <i className="fas fa-folder"></i>
+                          DOCUMENTS UPLOAD
+                        </p>
 
-                      
                         <div
                           className="d-flex justify-content-center"
                           style={{ marginTop: 20 }}
@@ -913,7 +920,7 @@ function Signup() {
                             onChange={handleUploadImage}
                           />
                         </div>
-                          <div className="color-white">
+                        <div className="color-white">
                           <div className="d-flex align-items-center text-white">
                             <i
                               className="fas fa-exclamation-circle me-2"
