@@ -42,8 +42,7 @@ function Signup() {
 
   const [canResend, setCanResend] = useState(false);
   const [contentToggle, setContentToggle] = useState(false);
-    const [verifyLoading, setVerifyLoading] = useState(false);
-  
+  const [verifyLoading, setVerifyLoading] = useState(false);
 
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [timer, setTimer] = useState(10);
@@ -505,9 +504,9 @@ function Signup() {
         showToast("success", "OTP Verified Successfully!", 3000, "top-right");
         setSignupState(false);
         setContentToggle(true);
-        setVerifyLoading(false)
+        setVerifyLoading(false);
       } else {
-        setVerifyLoading(false)
+        setVerifyLoading(false);
         showToast(
           "error",
           data.message || "Invalid OTP. Please try again.",
@@ -623,20 +622,20 @@ function Signup() {
                   {!contentToggle && (
                     <>
                       {/* Name */}
-                    <p
-  style={{
-    fontSize: "1.1rem",
-    fontWeight: "bold",
-    letterSpacing: "1px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "8px",
-  }}
->
-  <i className="fas fa-user-circle"></i>
-  PERSONAL INFORMATION
-</p>
+                      <p
+                        style={{
+                          fontSize: "1.2rem",
+                          fontWeight: "bold",
+                          letterSpacing: "1px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        <i className="fas fa-user-circle"></i>
+                        PERSONAL INFORMATION
+                      </p>
 
                       <div className="mb-3 input-group">
                         <span className="input-group-text bg-white">
@@ -845,27 +844,25 @@ function Signup() {
                   <div>
                     {contentToggle && (
                       <>
-                        <div className="color-white">
-                          <hr
-                            className="my-4"
-                            style={{ borderTop: "3px solid white" }}
-                          />
+                       <p
+                        style={{
+                          fontSize: "1.2rem",
+                          fontWeight: "bold",
+                          letterSpacing: "1px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        <i className="fas fa-folder"></i>
+                        DOCUMENTS UPLOAD
+                      </p>
 
-                          <div className="d-flex align-items-center text-white">
-                            <i
-                              className="fas fa-exclamation-circle me-2"
-                              style={{ fontSize: "20px", marginBottom: 35 }}
-                            ></i>
-                            <p>
-                              Your CNIC details are collected for identity
-                              verification purposes only and will not be shared
-                              publicly.
-                            </p>
-                          </div>
-                        </div>
+                      
                         <div
                           className="d-flex justify-content-center"
-                          style={{ marginTop: 50 }}
+                          style={{ marginTop: 20 }}
                         >
                           <div
                             style={{
@@ -916,10 +913,23 @@ function Signup() {
                             onChange={handleUploadImage}
                           />
                         </div>
+                          <div className="color-white">
+                          <div className="d-flex align-items-center text-white">
+                            <i
+                              className="fas fa-exclamation-circle me-2"
+                              style={{ fontSize: "20px", marginBottom: 45 }}
+                            ></i>
+                            <p>
+                              Your CNIC details are collected for identity
+                              verification purposes only and will not be shared
+                              publicly.
+                            </p>
+                          </div>
+                        </div>
 
                         <div
                           className="d-flex justify-content-center"
-                          style={{ marginTop: 20 }}
+                          style={{ marginTop: 10 }}
                         >
                           <div
                             style={{
@@ -1454,25 +1464,24 @@ function Signup() {
                     />
                   ))}
                 </div>
-                
 
                 <div className="text-center mt-4">
                   <button
                     className="btn btn-outline-warning fw-bold d-flex align-items-center justify-content-center px-3 py-2 mx-auto btn-sm"
                     onClick={verifyOTP}
                   >
-                    <i className="fas fa-key me-2"></i> 
-                     {verifyLoading === false ? (
-                            "Verify OTP"
-                          ) : (
-                            <>
-                              Verifying OTP...
-                              <div
-                                className="spinner-border spinner-border-sm text-dark ms-2"
-                                role="status"
-                              ></div>
-                            </>
-                          )}
+                    <i className="fas fa-key me-2"></i>
+                    {verifyLoading === false ? (
+                      "Verify OTP"
+                    ) : (
+                      <>
+                        Verifying OTP...
+                        <div
+                          className="spinner-border spinner-border-sm text-dark ms-2"
+                          role="status"
+                        ></div>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
