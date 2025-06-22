@@ -507,6 +507,7 @@ function Signup() {
         setContentToggle(true);
         setVerifyLoading(false)
       } else {
+        setVerifyLoading(false)
         showToast(
           "error",
           data.message || "Invalid OTP. Please try again.",
@@ -622,6 +623,21 @@ function Signup() {
                   {!contentToggle && (
                     <>
                       {/* Name */}
+                    <p
+  style={{
+    fontSize: "1.1rem",
+    fontWeight: "bold",
+    letterSpacing: "1px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "8px",
+  }}
+>
+  <i className="fas fa-user-circle"></i>
+  PERSONAL INFORMATION
+</p>
+
                       <div className="mb-3 input-group">
                         <span className="input-group-text bg-white">
                           <i className="fas fa-user"></i>
