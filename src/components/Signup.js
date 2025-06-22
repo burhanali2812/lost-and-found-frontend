@@ -42,8 +42,9 @@ function Signup() {
 
   const [canResend, setCanResend] = useState(false);
   const [otp, setOtp] = useState(new Array(6).fill(""));
-  const [timer, setTimer] = useState(120);
+  const [timer, setTimer] = useState(10);
   const inputRefs = useRef([]);
+  const [intervalId, setIntervalId] = useState(null);
 
   const checkPasswordStrength = (password) => {
     if (password.length < 8) return "Weak";
@@ -420,7 +421,7 @@ function Signup() {
         }
       );
       if (response.ok) {
-        setTimer(120);
+        setTimer(10);
         setCanResend(false);
       } else {
         const data = await response.json();
@@ -438,7 +439,6 @@ function Signup() {
   };
 
   const handleResend = () => {
-    setLoading(true);
     sendOTP();
     setTimeout(() => {
       setLoading(false); // Hide loader
@@ -470,6 +470,37 @@ function Signup() {
       inputRefs.current[index - 1].focus();
     }
   };
+ const sendOTpWithModal = async () => {
+  if (email === "") {
+    showToast("warning", "Empty Email Field", 3000, "top-right");
+    return;
+  }
+  if (name === "") {
+    showToast("warning", "Empty name Field", 3000, "top-right");
+    return;
+  }
+  await sendOTP();
+  inputRefs.current[0]?.focus();
+  setSignupState(true);
+
+  if (timer === 0) {
+    setCanResend(true);
+    return;
+  }
+
+  const id = setInterval(() => {
+    setTimer((prev) => {
+      if (prev <= 1) {
+        clearInterval(id);
+        setCanResend(true);
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+
+  setIntervalId(id); // Save to state
+};
 
   return (
     <>
@@ -549,7 +580,6 @@ function Signup() {
                   }}
                 >
                   {/* Profile Image */}
-                 
 
                   {/* Name */}
                   <div className="mb-3 input-group">
@@ -733,7 +763,7 @@ function Signup() {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    onClick={() => setSignupState(true)}
+                    onClick={sendOTpWithModal}
                     disabled={signupState} // Disable if empty
                   >
                     Submit
@@ -760,59 +790,59 @@ function Signup() {
                             </p>
                           </div>
                         </div>
-                         <div
-                    className="d-flex justify-content-center"
-                    style={{ marginTop: 50 }}
-                  >
-                    <div
-                      style={{
-                        width: "125px",
-                        height: "150px",
-                        borderRadius: "5%",
-                        border: "3px solid white",
-                        marginBottom: "10px",
-                        backgroundColor: "#203a43",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        overflow: "hidden",
-                        fontSize: "80px",
-                        color: "white",
-                      }}
-                    >
-                      {profileImage ? (
-                        <img
-                          src={profileImage}
-                          alt="Profile"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        <>
-                          <i className="fas fa-user"></i>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <p style={{ textAlign: "center", color: "yellow" }}>
-                    Recommended image size: 125 × 150 pixels
-                  </p>
+                        <div
+                          className="d-flex justify-content-center"
+                          style={{ marginTop: 50 }}
+                        >
+                          <div
+                            style={{
+                              width: "125px",
+                              height: "150px",
+                              borderRadius: "5%",
+                              border: "3px solid white",
+                              marginBottom: "10px",
+                              backgroundColor: "#203a43",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              overflow: "hidden",
+                              fontSize: "80px",
+                              color: "white",
+                            }}
+                          >
+                            {profileImage ? (
+                              <img
+                                src={profileImage}
+                                alt="Profile"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            ) : (
+                              <>
+                                <i className="fas fa-user"></i>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <p style={{ textAlign: "center", color: "yellow" }}>
+                          Recommended image size: 125 × 150 pixels
+                        </p>
 
-                  {/* Upload Picture */}
-                  <div className="mb-3 input-group mt-2">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-image"></i>
-                    </span>
-                    <input
-                      type="file"
-                      className="form-control"
-                      id="picture"
-                      onChange={handleUploadImage}
-                    />
-                  </div>
+                        {/* Upload Picture */}
+                        <div className="mb-3 input-group mt-2">
+                          <span className="input-group-text bg-white">
+                            <i className="fas fa-image"></i>
+                          </span>
+                          <input
+                            type="file"
+                            className="form-control"
+                            id="picture"
+                            onChange={handleUploadImage}
+                          />
+                        </div>
 
                         <div
                           className="d-flex justify-content-center"
@@ -1237,9 +1267,14 @@ function Signup() {
           tabIndex="-1"
           style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
         >
-          <div className="modal-dialog modal-dialog-centered" style={{  width: "90vw",
-    maxWidth: "370px", // limit on large screens
-    margin: "auto", }} >
+          <div
+            className="modal-dialog modal-dialog-centered"
+            style={{
+              width: "90vw", // 90% of the viewport width
+              maxWidth: "370px", // limit on large screens
+              margin: "auto",
+            }}
+          >
             <div
               className="modal-content text-white"
               style={{
@@ -1265,7 +1300,7 @@ function Signup() {
                     opacity: 0.7,
                     fontSize: "0.9rem",
                     marginTop: "6px",
-                    textAlign: "center"
+                    textAlign: "center",
                   }}
                 >
                   <i className="fas fa-clock me-1"></i> OTP will expire in
