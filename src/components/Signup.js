@@ -486,14 +486,19 @@ function Signup() {
       );
       const data = await response2.json();
       if (response2.ok) {
-         setLoading(false);
-       await sendOTP();
-    inputRefs.current[0]?.focus();
+              setLoading(false);
 
-    if (timer === 0) {
-      setCanResend(true);
-      return;
-    }
+          try {
+        await sendOTP();
+        inputRefs.current[0]?.focus();
+
+        if (timer === 0) {
+          setCanResend(true);
+        }
+      } catch (otpError) {
+        console.error("Error sending OTP:", otpError);
+        showToast("error", "Failed to send OTP. Please try again.", 3000, "top-right");
+      }
       } else {
         showToast(
           "error",
@@ -508,10 +513,6 @@ function Signup() {
       console.error("Error verifying email:", error);
       showToast("error", "Something went wrong. Try again.", 3000, "top-right");
     }
-
-   
-
-   
   };
 
    const handleCloseCnicOpenPassword =async () => {
