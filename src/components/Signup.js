@@ -45,6 +45,7 @@ function Signup() {
   const [personalToggle, setPersonalToggle] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [enterPasswordFields, setEnterPasswordFields] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null || "0000");
 
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [timer, setTimer] = useState(10);
@@ -422,13 +423,14 @@ function Signup() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name: name, email: email }),
+          body: JSON.stringify({ email: email, name: name }),
         }
       );
       if (response.ok) {
         setTimer(10);
         setCanResend(false);
         setLoading(false);
+        setSignupState(true);
 
         const id = setInterval(() => {
           setTimer((prev) => {
@@ -443,6 +445,7 @@ function Signup() {
 
         setIntervalId(id);
       } else {
+        setLoading(false);
         const data = await response.json();
         showToast(
           "error",
@@ -452,6 +455,7 @@ function Signup() {
         );
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error:", error);
       showToast("error", "Network Error. Try again.", 3000, "top-right");
     }
@@ -545,6 +549,7 @@ function Signup() {
         }
       );
       const data = await response.json();
+      setCurrentUserId(data.userId);
       if (response.ok) {
         showToast(
           "success",
@@ -576,7 +581,6 @@ function Signup() {
 
     await sendOTP();
     inputRefs.current[0]?.focus();
-    setSignupState(true);
 
     if (timer === 0) {
       setCanResend(true);
@@ -588,6 +592,74 @@ function Signup() {
     setCnicToggle(false);
     setEnterPasswordFields(true);
   };
+
+  const handleUploadImages = async () => {
+    const formData = new FormData();
+    if (profileImageDB) formData.append("profileImage", profileImageDB);
+    if (frontSideCnicDB) formData.append("frontCnic", frontSideCnicDB);
+    if (backSideCnicDB) formData.append("backCnic", backSideCnicDB);
+    if (currentUserId) formData.append("userId", currentUserId);
+
+     try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/signup/step2",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showToast("success", "User Registered Successfully", 3000, "top-right");
+      } else {
+        showToast("error", data.message || "Signup failed", 3000, "top-right");
+      }
+    } catch (error) {
+      console.error("Error Uploading User:", error);
+      showToast("error", "Network or Server Error", 3000, "top-right");
+    }
+  };
+  const handlePasswordGenerated = async ()=>{
+    await handleUploadImages();
+
+     try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/signup/step3",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId : currentUserId,
+            password: password
+          }),
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        showToast(
+          "success",
+          "Account Created Successfully!",
+          3000,
+          "top-right"
+        );
+      } else {
+        showToast(
+          "error",
+          data.message || "Please try again.",
+          3000,
+          "top-right"
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      showToast("error", "Network Error. Try again.", 3000, "top-right");
+    }
+    
+  }
 
   return (
     <>
@@ -1168,7 +1240,7 @@ function Signup() {
                         <button
                           type="submit"
                           className="btn btn-outline-light"
-                          onClick={handleCloseCnicOpenPassword}
+                          onClick={handlePasswordGenerated}
                         >
                           <i className="fas fa-user-plus me-2"></i>Finish Signup
                         </button>
