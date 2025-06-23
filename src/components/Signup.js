@@ -589,6 +589,7 @@ function Signup() {
   };
 
   const handleCloseCnicOpenPassword =async () => {
+    setLoading(true)
    await handleUploadImages();
   };
 
@@ -612,12 +613,15 @@ function Signup() {
 
       if (response.ok) {
         showToast("success", "User Registered Successfully", 3000, "top-right");
+        setLoading(false)
          setCnicToggle(false);
     setEnterPasswordFields(true);
       } else {
+        setLoading(false)
         showToast("error", data.message || "Signup failed", 3000, "top-right");
       }
     } catch (error) {
+      setLoading(false)
       console.error("Error Uploading User:", error);
       showToast("error", "Network or Server Error", 3000, "top-right");
     }
@@ -1080,9 +1084,24 @@ function Signup() {
                             type="submit"
                             className="btn btn-outline-light"
                             onClick={handleCloseCnicOpenPassword}
+                            disabled={loading}
                           >
-                            <i className="fas fa-eye me-2"></i>Continue to
-                            Password
+
+                             {loading === false ? (
+                            <>
+                               Continue to Password
+                               <i className="fas fa-eye me-2"></i>
+                            </>
+                          ) : (
+                            <>
+                              Uploading documents...
+                              <div
+                                className="spinner-border spinner-border-sm text-dark ms-2"
+                                role="status"
+                              ></div>
+                            </>
+                          )}
+                          
                           </button>
                         </div>
                       </>
