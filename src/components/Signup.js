@@ -735,7 +735,7 @@ function Signup() {
                 </div>
 
                 <form
-                  onSubmit={handleRegister}
+                  //onSubmit={handleRegister}
                   className="container text-white p-3 rounded"
                   style={{
                     backgroundColor: "rgba(255, 255, 255, 0.05)",
