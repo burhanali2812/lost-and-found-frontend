@@ -588,9 +588,8 @@ function Signup() {
     }
   };
 
-  const handleCloseCnicOpenPassword = () => {
-    setCnicToggle(false);
-    setEnterPasswordFields(true);
+  const handleCloseCnicOpenPassword =async () => {
+   await handleUploadImages();
   };
 
   const handleUploadImages = async () => {
@@ -613,6 +612,8 @@ function Signup() {
 
       if (response.ok) {
         showToast("success", "User Registered Successfully", 3000, "top-right");
+         setCnicToggle(false);
+    setEnterPasswordFields(true);
       } else {
         showToast("error", data.message || "Signup failed", 3000, "top-right");
       }
@@ -622,7 +623,7 @@ function Signup() {
     }
   };
   const handlePasswordGenerated = async ()=>{
-    await handleUploadImages();
+    //await handleUploadImages();
 
      try {
       const response = await fetch(
