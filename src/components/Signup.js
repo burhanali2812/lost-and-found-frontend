@@ -1088,7 +1088,7 @@ function Signup() {
                           <button
                             type="submit"
                             className="btn btn-outline-light"
-                            onClick={handleUploadImages}
+                            onClick={handleCloseCnicOpenPassword}
                             disabled={loading}
                           >
 
