@@ -435,10 +435,13 @@ function Signup() {
       showToast("error", "Network Error. Try again.", 3000, "top-right");
     }
   };
-  const sendOTpWithModal = async () => {
+  const sendOTpWithModal = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     const fields = [email, name, contact, cnic, address];
     if (fields.some((field) => field === "")) {
       showToast("warning", "All Fields Are Required", 3000, "top-right");
+      setLoading(false);
       return;
     }
       const cnicPattern = /^\d{5}-\d{7}-\d{1}$/;
@@ -448,11 +451,13 @@ function Signup() {
         "Please enter a valid CNIC number in the format xxxxx-xxxxxxx-x",
         3000
       );
+      setLoading(false);
       return;
     }
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       showToast("error", "Please enter a valid email address", 3000);
+      setLoading(false);
       return;
     }
     
@@ -464,11 +469,12 @@ function Signup() {
         3000,
         "top-right"
       );
+      setLoading(false);
       return false;
     }
 
      try {
-      const response = await fetch(
+      const response2 = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/checkExistEmail",
         {
           method: "POST",
@@ -478,9 +484,9 @@ function Signup() {
           body: JSON.stringify({ email, cnic }),
         }
       );
-      const data = await response.json();
-      if (response.ok) {
-         setLoading(true);
+      const data = await response2.json();
+      if (response2.ok) {
+         setLoading(false);
        await sendOTP();
     inputRefs.current[0]?.focus();
 
@@ -495,8 +501,10 @@ function Signup() {
           3000,
           "top-right"
         );
+        setLoading(false);
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error verifying email:", error);
       showToast("error", "Something went wrong. Try again.", 3000, "top-right");
     }
