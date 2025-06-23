@@ -429,6 +429,7 @@ function Signup() {
         setTimer(10);
         setCanResend(false);
         setLoading(false);
+      
         const id = setInterval(() => {
           setTimer((prev) => {
             if (prev <= 1) {
@@ -507,8 +508,10 @@ function Signup() {
         setSignupState(false);
         setCnicToggle(true);
         setVerifyLoading(false);
+            setPersonalToggle(true)
       } else {
         setVerifyLoading(false);
+ 
         showToast(
           "error",
           data.message || "Invalid OTP. Please try again.",
@@ -536,8 +539,7 @@ function Signup() {
     }
 
     setLoading(true);
-    setPersonalToggle(true)
-    setSignupState(true)
+  
     await sendOTP();
     inputRefs.current[0]?.focus();
     setSignupState(true);
@@ -648,13 +650,6 @@ function Signup() {
                       >
                         <i className="fas fa-user-circle"></i>
                         PERSONAL INFORMATION
-                      </p>
-                      <p
-                        style={{ opacity: 0.8, fontSize: "1.1rem" }}
-                        className="text-center"
-                      >
-                        Enter your details to join and report or claim lost
-                        items.
                       </p>
 
                       <div className="mb-3 input-group">
@@ -779,13 +774,7 @@ function Signup() {
                           <i className="fas fa-folder"></i>
                           DOCUMENTS UPLOAD
                         </p>
-                        <p
-                          style={{ opacity: 0.8, fontSize: "1.1rem" }}
-                          className="text-center"
-                        >
-                          Please upload your profile picture and CNIC to
-                          continue.
-                        </p>
+                       
 
                         <div
                           className="d-flex justify-content-center"
@@ -1007,13 +996,6 @@ function Signup() {
                       >
                         <i className="fas fa-lock"></i>
                         GENERATE PASSWORD
-                      </p>
-                      <p
-                        style={{ opacity: 0.8, fontSize: "1.1rem" }}
-                        className="text-center"
-                      >
-                        Just a step away! Please generate your password to
-                        smoothly login.
                       </p>
                       <div className="mb-3 input-group">
                         <span className="input-group-text bg-white">
