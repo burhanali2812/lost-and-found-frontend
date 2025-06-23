@@ -640,7 +640,8 @@ function Signup() {
           },
           body: JSON.stringify({
             userId : currentUserId,
-            password: password
+            password: password,
+            token: captchaValue,
           }),
         }
       );
@@ -1091,7 +1092,7 @@ function Signup() {
                              {loading === false ? (
                             <>
                                Continue to Password
-                               <i className="fas fa-eye me-2"></i>
+                               <i className="fas fa-eye ms-2"></i>
                             </>
                           ) : (
                             <>
