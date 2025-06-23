@@ -429,7 +429,7 @@ function Signup() {
         setTimer(10);
         setCanResend(false);
         setLoading(false);
-      
+
         const id = setInterval(() => {
           setTimer((prev) => {
             if (prev <= 1) {
@@ -502,16 +502,17 @@ function Signup() {
           body: JSON.stringify({ email: email, otp: enteredOtp }),
         }
       );
-      const data = await response.json(); // Get server response
+      const data = await response.json();
       if (response.ok) {
+        await handlePersonalInformation();
         showToast("success", "OTP Verified Successfully!", 3000, "top-right");
         setSignupState(false);
         setCnicToggle(true);
         setVerifyLoading(false);
-            setPersonalToggle(true)
+        setPersonalToggle(true);
       } else {
         setVerifyLoading(false);
- 
+
         showToast(
           "error",
           data.message || "Invalid OTP. Please try again.",
@@ -525,21 +526,54 @@ function Signup() {
     }
     setLoading(false);
   };
+  const handlePersonalInformation = async () => {
+    try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/signup/step1",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            phone: contact,
+            cnic: cnic,
+            address: address,
+          }),
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        showToast(
+          "success",
+          "Personal Information save Successfully!",
+          3000,
+          "top-right"
+        );
+      } else {
+        showToast(
+          "error",
+          data.message || "Please try again.",
+          3000,
+          "top-right"
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      showToast("error", "Network Error. Try again.", 3000, "top-right");
+    }
+  };
   const sendOTpWithModal = async () => {
-    const fields = [
-      email,
-      name,
-      contact,
-      cnic,
-      address,
-    ];
+    const fields = [email, name, contact, cnic, address];
     if (fields.some((field) => field === "")) {
       showToast("warning", "All Fields Are Required", 3000, "top-right");
       return;
     }
 
     setLoading(true);
-  
+
     await sendOTP();
     inputRefs.current[0]?.focus();
     setSignupState(true);
@@ -550,10 +584,10 @@ function Signup() {
     }
   };
 
-  const handleCloseCnicOpenPassword = ()=>{
+  const handleCloseCnicOpenPassword = () => {
     setCnicToggle(false);
-    setEnterPasswordFields(true)
-  }
+    setEnterPasswordFields(true);
+  };
 
   return (
     <>
@@ -731,7 +765,7 @@ function Signup() {
                       </div>
 
                       {/* Password */}
-                        
+
                       <div className="d-grid">
                         <button
                           className="btn btn-outline-light"
@@ -740,7 +774,7 @@ function Signup() {
                         >
                           {loading === false ? (
                             <>
-                              	Let’s Verify Your Email
+                              Let’s Verify Your Email
                               <i className="fas fa-angle-double-right ms-1"></i>
                             </>
                           ) : (
@@ -774,7 +808,6 @@ function Signup() {
                           <i className="fas fa-folder"></i>
                           DOCUMENTS UPLOAD
                         </p>
-                       
 
                         <div
                           className="d-flex justify-content-center"
@@ -975,7 +1008,8 @@ function Signup() {
                             className="btn btn-outline-light"
                             onClick={handleCloseCnicOpenPassword}
                           >
-                            <i className="fas fa-lock me-2"></i>Set Your Password
+                            <i className="fas fa-eye me-2"></i>Continue to
+                            Password
                           </button>
                         </div>
                       </>
@@ -1130,15 +1164,15 @@ function Signup() {
                         </div>
                       </div>
 
-                       <div className="d-grid" style={{ marginTop: 20 }}>
-                          <button
-                            type="submit"
-                            className="btn btn-outline-light"
-                            onClick={handleCloseCnicOpenPassword}
-                          >
-                            <i className="fas fa-user-plus me-2"></i>You’re All Set! Create Account
-                          </button>
-                        </div>
+                      <div className="d-grid" style={{ marginTop: 20 }}>
+                        <button
+                          type="submit"
+                          className="btn btn-outline-light"
+                          onClick={handleCloseCnicOpenPassword}
+                        >
+                          <i className="fas fa-user-plus me-2"></i>Finish Signup
+                        </button>
+                      </div>
                     </>
                   )}
 
