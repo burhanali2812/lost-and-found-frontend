@@ -557,7 +557,7 @@ function Signup() {
           "success",
           "Personal Information save Successfully!",
           3000,
-          "top-right"
+          "bottom-center"
         );
       } else {
         showToast(
@@ -590,10 +590,12 @@ function Signup() {
     }
   };
 
-  // const handleCloseCnicOpenPassword =async () => {
+   const handleCloseCnicOpenPassword =async () => {
     
-  //  await handleUploadImages();
-  // };
+    await handleUploadImages();
+   setCnicToggle(false);
+    setEnterPasswordFields(true);
+   };
 
   const handleUploadImages = async () => {
     setLoading(true)
@@ -615,10 +617,9 @@ function Signup() {
       const data = await response.json();
 
       if (response.ok) {
-        showToast("success", "User Registered Successfully", 3000, "top-right");
+        showToast("success", "Documents Uploaded Successfully", 3000, "top-right");
         setLoading(false)
-         setCnicToggle(false);
-    setEnterPasswordFields(true);
+        
       } else {
         setLoading(false)
         showToast("error", data.message || "Signup failed", 3000, "top-right");
