@@ -588,12 +588,13 @@ function Signup() {
     }
   };
 
-  const handleCloseCnicOpenPassword =async () => {
-    setLoading(true)
-   await handleUploadImages();
-  };
+  // const handleCloseCnicOpenPassword =async () => {
+    
+  //  await handleUploadImages();
+  // };
 
   const handleUploadImages = async () => {
+    setLoading(true)
     const formData = new FormData();
     if (profileImageDB) formData.append("profileImage", profileImageDB);
     if (frontSideCnicDB) formData.append("frontCnic", frontSideCnicDB);
@@ -1083,7 +1084,7 @@ function Signup() {
                           <button
                             type="submit"
                             className="btn btn-outline-light"
-                            onClick={handleCloseCnicOpenPassword}
+                            onClick={handleUploadImages}
                             disabled={loading}
                           >
 
