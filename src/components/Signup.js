@@ -4,6 +4,7 @@ import { showToast } from "./Toastify2";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import imageCompression from 'browser-image-compression';
 
 import "./Signup.css";
 
@@ -179,51 +180,28 @@ function Signup() {
     return () => cleanupModals();
   }, []);
 
-  const handleUploadImage = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const sizeInMB = file.size / (1024 * 1024); // Convert bytes to MB
-  console.log(`${file.name} size: ${sizeInMB.toFixed(2)} MB`);
+  const compressAndSetImage = async (e, setPreview, setFileState) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-  if (sizeInMB > 5) {
-    alert(`${file.name} is too large. Please upload files under 5MB.`);
-    return false;
-  }
-
-      setProfileImage(URL.createObjectURL(file));
-      setProfileImageDB(file);
-    }
+  const options = {
+    maxSizeMB: 0.5,
+    maxWidthOrHeight: 800,
+    useWebWorker: true,
   };
-  const handleUploadFrontCinc = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const sizeInMB = file.size / (1024 * 1024); // Convert bytes to MB
-  console.log(`${file.name} size: ${sizeInMB.toFixed(2)} MB`);
 
-  if (sizeInMB > 5) {
-    alert(`${file.name} is too large. Please upload files under 5MB.`);
-    return false;
+  try {
+    const compressedFile = await imageCompression(file, options);
+    console.log("Original:", file.size / 1024 / 1024, "MB");
+    console.log("Compressed:", compressedFile.size / 1024 / 1024, "MB");
+
+    setPreview(URL.createObjectURL(compressedFile));
+    setFileState(compressedFile);
+  } catch (error) {
+    console.error("Compression failed:", error);
   }
+};
 
-      setFrontSideCnic(URL.createObjectURL(file));
-      setFrontSideCnicDB(file);
-    }
-  };
-  const handleUploadBackCnic = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const sizeInMB = file.size / (1024 * 1024); // Convert bytes to MB
-  console.log(`${file.name} size: ${sizeInMB.toFixed(2)} MB`);
-
-  if (sizeInMB > 5) {
-    alert(`${file.name} is too large. Please upload files under 5MB.`);
-    return false;
-  }
-
-      setBackSideCnic(URL.createObjectURL(file));
-      setBackSideCnicDB(file);
-    }
-  };
   const handlesetActionSignIn = () => {
     setAction("signin");
   };
@@ -962,7 +940,7 @@ function Signup() {
                             type="file"
                             className="form-control"
                             id="picture"
-                            onChange={handleUploadImage}
+                            onChange={(e) => compressAndSetImage(e, setProfileImage, setProfileImageDB)}
                           />
                         </div>
                         <div className="color-white">
@@ -1030,7 +1008,7 @@ function Signup() {
                             type="file"
                             className="form-control"
                             id="frontSideCnic"
-                            onChange={handleUploadFrontCinc}
+                            onChange={(e) => compressAndSetImage(e, setFrontSideCnic, setFrontSideCnicDB)}
                           />
                         </div>
 
@@ -1085,7 +1063,7 @@ function Signup() {
                             type="file"
                             className="form-control"
                             id="backSideCnic"
-                            onChange={handleUploadBackCnic}
+                            onChange={(e) => compressAndSetImage(e, setBackSideCnic, setBackSideCnicDB)}
                           />
                         </div>
 
