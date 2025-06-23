@@ -182,6 +182,14 @@ function Signup() {
   const handleUploadImage = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const sizeInMB = file.size / (1024 * 1024); // Convert bytes to MB
+  console.log(`${file.name} size: ${sizeInMB.toFixed(2)} MB`);
+
+  if (sizeInMB > 5) {
+    alert(`${file.name} is too large. Please upload files under 5MB.`);
+    return false;
+  }
+
       setProfileImage(URL.createObjectURL(file));
       setProfileImageDB(file);
     }
@@ -189,6 +197,14 @@ function Signup() {
   const handleUploadFrontCinc = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const sizeInMB = file.size / (1024 * 1024); // Convert bytes to MB
+  console.log(`${file.name} size: ${sizeInMB.toFixed(2)} MB`);
+
+  if (sizeInMB > 5) {
+    alert(`${file.name} is too large. Please upload files under 5MB.`);
+    return false;
+  }
+
       setFrontSideCnic(URL.createObjectURL(file));
       setFrontSideCnicDB(file);
     }
@@ -196,6 +212,14 @@ function Signup() {
   const handleUploadBackCnic = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const sizeInMB = file.size / (1024 * 1024); // Convert bytes to MB
+  console.log(`${file.name} size: ${sizeInMB.toFixed(2)} MB`);
+
+  if (sizeInMB > 5) {
+    alert(`${file.name} is too large. Please upload files under 5MB.`);
+    return false;
+  }
+
       setBackSideCnic(URL.createObjectURL(file));
       setBackSideCnicDB(file);
     }
