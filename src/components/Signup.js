@@ -208,126 +208,6 @@ function Signup() {
   const handlesetActionSignUp = () => {
     setAction("signup");
   };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    const cnicPattern = /^\d{5}-\d{7}-\d{1}$/;
-    if (!cnicPattern.test(cnic)) {
-      showToast(
-        "error",
-        "Please enter a valid CNIC number in the format xxxxx-xxxxxxx-x",
-        3000
-      );
-      return;
-    }
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-      showToast("error", "Please enter a valid email address", 3000);
-      return;
-    }
-    if (password !== confirmPassword) {
-      showToast(
-        "warning",
-        "Confirm Password Does Not Match",
-        3000,
-        "top-right"
-      );
-      return;
-    }
-    const phoneRegex = /^[0-9]{11}$/;
-    if (!phoneRegex.test(contact)) {
-      showToast(
-        "warning",
-        "Please enter a valid 11-digit phone number..",
-        3000,
-        "top-right"
-      );
-      return false;
-    }
-    if (!profileImage) {
-      showToast(
-        "warning",
-        "Please upload your profile picture.",
-        3000,
-        "top-right"
-      );
-      return false;
-    }
-    if (!frontSideCnic) {
-      showToast(
-        "warning",
-        "Please upload the front side of your CNIC",
-        3000,
-        "top-right"
-      );
-      return false;
-    }
-    if (!backSideCnic) {
-      showToast(
-        "warning",
-        "Please upload the back side of your CNIC.",
-        3000,
-        "top-right"
-      );
-      return false;
-    }
-    if (!isChecked) {
-      showToast(
-        "warning",
-        "Please agree to the terms and conditions.",
-        3000,
-        "top-right"
-      );
-      return;
-    }
-
-    if (!captchaValue) {
-      showToast("warning", "Please complete the reCAPTCHA.", 3000, "top-right");
-      return;
-    }
-    try {
-      const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/checkExistEmail",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, cnic }),
-        }
-      );
-      const data = await response.json();
-      if (response.ok) {
-        resetFormData();
-
-        navigate("/email-OTP", {
-          state: {
-            profileImage: profileImageDB,
-            frontCnic: frontSideCnicDB,
-            backCnic: backSideCnicDB,
-            name,
-            email,
-            cnic,
-            address,
-            password,
-            phone: contact,
-            token: captchaValue,
-          },
-        });
-      } else {
-        showToast(
-          "error",
-          data.message || "Email not found",
-          3000,
-          "top-right"
-        );
-      }
-    } catch (error) {
-      console.error("Error verifying email:", error);
-      showToast("error", "Something went wrong. Try again.", 3000, "top-right");
-    }
-  };
-
   const openForgetPasswordModal = () => {
     const modalElement = document.getElementById("forgetPasswordModal");
 
@@ -397,24 +277,7 @@ function Signup() {
     }
   };
 
-  const resetFormData = () => {
-    setProfileImage(null);
-    setFrontSideCnic(null);
-    setProfileImageDB(null);
-    setBackSideCnic(null);
-    setFrontSideCnicDB(null);
-    setBackSideCnicDB(null);
-    setName("");
-    setEmail("");
-    setContact("");
-    setPassword("");
-    setConfirmPassword("");
-    setCnic("");
-    setAddress("");
-    setIsChecked("");
-    setShowcPassword(null);
-    setShowPassword(null);
-  };
+
 
   const sendOTP = async () => {
     try {
@@ -578,16 +441,69 @@ function Signup() {
       showToast("warning", "All Fields Are Required", 3000, "top-right");
       return;
     }
+      const cnicPattern = /^\d{5}-\d{7}-\d{1}$/;
+    if (!cnicPattern.test(cnic)) {
+      showToast(
+        "error",
+        "Please enter a valid CNIC number in the format xxxxx-xxxxxxx-x",
+        3000
+      );
+      return;
+    }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      showToast("error", "Please enter a valid email address", 3000);
+      return;
+    }
+    
+    const phoneRegex = /^[0-9]{11}$/;
+    if (!phoneRegex.test(contact)) {
+      showToast(
+        "warning",
+        "Please enter a valid 11-digit phone number..",
+        3000,
+        "top-right"
+      );
+      return false;
+    }
 
-    setLoading(true);
-
-    await sendOTP();
+     try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/checkExistEmail",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, cnic }),
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+         setLoading(true);
+       await sendOTP();
     inputRefs.current[0]?.focus();
 
     if (timer === 0) {
       setCanResend(true);
       return;
     }
+      } else {
+        showToast(
+          "error",
+          data.message || "Email not found",
+          3000,
+          "top-right"
+        );
+      }
+    } catch (error) {
+      console.error("Error verifying email:", error);
+      showToast("error", "Something went wrong. Try again.", 3000, "top-right");
+    }
+
+   
+
+   
   };
 
    const handleCloseCnicOpenPassword =async () => {
@@ -599,6 +515,34 @@ function Signup() {
 
   const handleUploadImages = async () => {
     setLoading(true)
+    if (!profileImage) {
+      showToast(
+        "warning",
+        "Please upload your profile picture.",
+        3000,
+        "top-right"
+      );
+      return false;
+    }
+    if (!frontSideCnic) {
+      showToast(
+        "warning",
+        "Please upload the front side of your CNIC",
+        3000,
+        "top-right"
+      );
+      return false;
+    }
+    if (!backSideCnic) {
+      showToast(
+        "warning",
+        "Please upload the back side of your CNIC.",
+        3000,
+        "top-right"
+      );
+      return false;
+    }
+   
     const formData = new FormData();
     if (profileImageDB) formData.append("profileImage", profileImageDB);
     if (frontSideCnicDB) formData.append("frontCnic", frontSideCnicDB);
@@ -631,8 +575,32 @@ function Signup() {
     }
   };
   const handlePasswordGenerated = async (e)=>{
+         e.preventDefault();
     setLoading(true)
-     e.preventDefault();
+    if (password !== confirmPassword) {
+      showToast(
+        "warning",
+        "Confirm Password Does Not Match",
+        3000,
+        "top-right"
+      );
+      setLoading(false)
+      return;
+    }
+      if (!captchaValue) {
+      showToast("warning", "Please complete the reCAPTCHA.", 3000, "top-right");
+      return;
+    }
+     if (!isChecked) {
+      showToast(
+        "warning",
+        "Please agree to the terms and conditions.",
+        3000,
+        "top-right"
+      );
+      return;
+    }
+
      try {
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/signup/step3",
@@ -1271,11 +1239,13 @@ function Signup() {
                         >
                           {loading === false ? (
                             <>
-                              Finish Signup
-                               <i className="fas fa-user-plus ms-2"></i>
+                             
+                               <i className="fas fa-user-plus me-2"></i>
+                                Finish Signup
                             </>
                           ) : (
                             <>
+                            <i className="fas fa-user-plus me-2"></i>
                               Finishing up...
                               <div
                                 className="spinner-border spinner-border-sm text-light ms-2"
