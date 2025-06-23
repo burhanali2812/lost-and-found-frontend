@@ -630,9 +630,9 @@ function Signup() {
       showToast("error", "Network or Server Error", 3000, "top-right");
     }
   };
-  const handlePasswordGenerated = async ()=>{
-    //await handleUploadImages();
-
+  const handlePasswordGenerated = async (e)=>{
+    setLoading(true)
+     e.preventDefault();
      try {
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/signup/step3",
@@ -650,6 +650,7 @@ function Signup() {
       );
       const data = await response.json();
       if (response.ok) {
+        setLoading(false)
         showToast(
           "success",
           "Account Created Successfully!",
@@ -1266,8 +1267,23 @@ function Signup() {
                           type="submit"
                           className="btn btn-outline-light"
                           onClick={handlePasswordGenerated}
+                          disabled = {loading}
                         >
-                          <i className="fas fa-user-plus me-2"></i>Finish Signup
+                          {loading === false ? (
+                            <>
+                              Finish Signup
+                               <i className="fas fa-user-plus ms-2"></i>
+                            </>
+                          ) : (
+                            <>
+                              Finishing up...
+                              <div
+                                className="spinner-border spinner-border-sm text-light ms-2"
+                                role="status"
+                              ></div>
+                            </>
+                          )}
+                    
                         </button>
                       </div>
                     </>
