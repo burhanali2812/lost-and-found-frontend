@@ -1718,7 +1718,7 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
         borderTopRightRadius: "20px",
       }}
     >
-      <div className="offcanvas-body position-relative text-center d-flex flex-column justify-content-center align-items-center px-3">
+      <div className="offcanvas-body position-relative text-center d-flex flex-column justify-content-center align-items-center ">
         {/* Close Button */}
         <button
           className="btn-close position-absolute"
