@@ -4,8 +4,9 @@ import { showToast } from "./Toastify2";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import imageCompression from 'browser-image-compression';
-
+import imageCompression from "browser-image-compression";
+import Lottie from "lottie-react";
+import successAnimation from "./success.json"
 import "./Signup.css";
 
 import ReCAPTCHA from "react-google-recaptcha";
@@ -40,7 +41,8 @@ function Signup() {
   const [strength, setStrength] = useState("");
   const [loading, setLoading] = useState(false);
   const [signupState, setSignupState] = useState(false);
-
+  
+const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
   const [canResend, setCanResend] = useState(false);
   const [cnicToggle, setCnicToggle] = useState(false);
   const [personalToggle, setPersonalToggle] = useState(false);
@@ -181,26 +183,26 @@ function Signup() {
   }, []);
 
   const compressAndSetImage = async (e, setPreview, setFileState) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-  const options = {
-    maxSizeMB: 0.6,
-    maxWidthOrHeight:800,
-    useWebWorker: true,
+    const options = {
+      maxSizeMB: 0.6,
+      maxWidthOrHeight: 800,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      console.log("Original:", file.size / 1024 / 1024, "MB");
+      console.log("Compressed:", compressedFile.size / 1024 / 1024, "MB");
+
+      setPreview(URL.createObjectURL(compressedFile));
+      setFileState(compressedFile);
+    } catch (error) {
+      console.error("Compression failed:", error);
+    }
   };
-
-  try {
-    const compressedFile = await imageCompression(file, options);
-    console.log("Original:", file.size / 1024 / 1024, "MB");
-    console.log("Compressed:", compressedFile.size / 1024 / 1024, "MB");
-
-    setPreview(URL.createObjectURL(compressedFile));
-    setFileState(compressedFile);
-  } catch (error) {
-    console.error("Compression failed:", error);
-  }
-};
 
   const handlesetActionSignIn = () => {
     setAction("signin");
@@ -276,8 +278,9 @@ function Signup() {
       showToast("error", "Something went wrong. Try again.", 3000, "top-right");
     }
   };
-
-
+  const handleLoginRedirect = ()=>{
+    navigate("/login-signup")
+  }
 
   const sendOTP = async () => {
     try {
@@ -444,7 +447,7 @@ function Signup() {
       setLoading(false);
       return;
     }
-      const cnicPattern = /^\d{5}-\d{7}-\d{1}$/;
+    const cnicPattern = /^\d{5}-\d{7}-\d{1}$/;
     if (!cnicPattern.test(cnic)) {
       showToast(
         "error",
@@ -460,7 +463,7 @@ function Signup() {
       setLoading(false);
       return;
     }
-    
+
     const phoneRegex = /^[0-9]{11}$/;
     if (!phoneRegex.test(contact)) {
       showToast(
@@ -473,7 +476,7 @@ function Signup() {
       return;
     }
 
-     try {
+    try {
       const response2 = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/checkExistEmail",
         {
@@ -486,20 +489,24 @@ function Signup() {
       );
       const data = await response2.json();
       if (response2.ok) {
-              
-          try {
-        await sendOTP();
-       // setSignupState(true);
-        setLoading(false);
-        inputRefs.current[0]?.focus();
+        try {
+          await sendOTP();
+          // setSignupState(true);
+          setLoading(false);
+          inputRefs.current[0]?.focus();
 
-        if (timer === 0) {
-          setCanResend(true);
+          if (timer === 0) {
+            setCanResend(true);
+          }
+        } catch (otpError) {
+          console.error("Error sending OTP:", otpError);
+          showToast(
+            "error",
+            "Failed to send OTP. Please try again.",
+            3000,
+            "top-right"
+          );
         }
-      } catch (otpError) {
-        console.error("Error sending OTP:", otpError);
-        showToast("error", "Failed to send OTP. Please try again.", 3000, "top-right");
-      }
       } else {
         showToast(
           "error",
@@ -516,15 +523,14 @@ function Signup() {
     }
   };
 
-   const handleCloseCnicOpenPassword =async () => {
-    
+  const handleCloseCnicOpenPassword = async () => {
     await handleUploadImages();
-   setCnicToggle(false);
+    setCnicToggle(false);
     setEnterPasswordFields(true);
-   };
+  };
 
   const handleUploadImages = async () => {
-    setLoading(true)
+    setLoading(true);
     if (!profileImage) {
       showToast(
         "warning",
@@ -532,7 +538,7 @@ function Signup() {
         3000,
         "top-right"
       );
-      setLoading(false)
+      setLoading(false);
       return;
     }
     if (!frontSideCnic) {
@@ -542,7 +548,7 @@ function Signup() {
         3000,
         "top-right"
       );
-      setLoading(false)
+      setLoading(false);
       return;
     }
     if (!backSideCnic) {
@@ -552,17 +558,17 @@ function Signup() {
         3000,
         "top-right"
       );
-      setLoading(false)
+      setLoading(false);
       return;
     }
-   
+
     const formData = new FormData();
     if (profileImageDB) formData.append("profileImage", profileImageDB);
     if (frontSideCnicDB) formData.append("frontCnic", frontSideCnicDB);
     if (backSideCnicDB) formData.append("backCnic", backSideCnicDB);
     if (currentUserId) formData.append("userId", currentUserId);
 
-     try {
+    try {
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/signup/step2",
         {
@@ -574,22 +580,26 @@ function Signup() {
       const data = await response.json();
 
       if (response.ok) {
-        showToast("success", "Documents Uploaded Successfully", 3000, "top-right");
-        setLoading(false)
-        
+        showToast(
+          "success",
+          "Documents Uploaded Successfully",
+          3000,
+          "top-right"
+        );
+        setLoading(false);
       } else {
-        setLoading(false)
+        setLoading(false);
         showToast("error", data.message || "Signup failed", 3000, "top-right");
       }
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       console.error("Error Uploading User:", error);
       showToast("error", "Network or Server Error", 3000, "top-right");
     }
   };
-  const handlePasswordGenerated = async (e)=>{
-         e.preventDefault();
-    setLoading(true)
+  const handlePasswordGenerated = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     if (password !== confirmPassword) {
       showToast(
         "warning",
@@ -597,16 +607,16 @@ function Signup() {
         3000,
         "top-right"
       );
-      setLoading(false)
+      setLoading(false);
       return;
     }
-      if (!captchaValue) {
+    if (!captchaValue) {
       showToast("warning", "Please complete the reCAPTCHA.", 3000, "top-right");
-       setLoading(false)
+      setLoading(false);
       return;
     }
-     if (!isChecked) {
-       setLoading(false)
+    if (!isChecked) {
+      setLoading(false);
       showToast(
         "warning",
         "Please agree to the terms and conditions.",
@@ -616,7 +626,7 @@ function Signup() {
       return;
     }
 
-     try {
+    try {
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/signup/step3",
         {
@@ -625,7 +635,7 @@ function Signup() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId : currentUserId,
+            userId: currentUserId,
             password: password,
             token: captchaValue,
           }),
@@ -633,7 +643,8 @@ function Signup() {
       );
       const data = await response.json();
       if (response.ok) {
-        setLoading(false)
+        setLoading(false);
+        setAccountCreateAnimation(true)
         showToast(
           "success",
           "Account Created Successfully!",
@@ -641,7 +652,7 @@ function Signup() {
           "top-right"
         );
       } else {
-        setLoading(false)
+        setLoading(false);
         showToast(
           "error",
           data.message || "Please try again.",
@@ -650,12 +661,11 @@ function Signup() {
         );
       }
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       console.error("Error:", error);
       showToast("error", "Network Error. Try again.", 3000, "top-right");
     }
-    
-  }
+  };
 
   return (
     <>
@@ -927,7 +937,13 @@ function Signup() {
                             type="file"
                             className="form-control"
                             id="picture"
-                            onChange={(e) => compressAndSetImage(e, setProfileImage, setProfileImageDB)}
+                            onChange={(e) =>
+                              compressAndSetImage(
+                                e,
+                                setProfileImage,
+                                setProfileImageDB
+                              )
+                            }
                           />
                         </div>
                         <div className="color-white">
@@ -995,7 +1011,13 @@ function Signup() {
                             type="file"
                             className="form-control"
                             id="frontSideCnic"
-                            onChange={(e) => compressAndSetImage(e, setFrontSideCnic, setFrontSideCnicDB)}
+                            onChange={(e) =>
+                              compressAndSetImage(
+                                e,
+                                setFrontSideCnic,
+                                setFrontSideCnicDB
+                              )
+                            }
                           />
                         </div>
 
@@ -1050,7 +1072,13 @@ function Signup() {
                             type="file"
                             className="form-control"
                             id="backSideCnic"
-                            onChange={(e) => compressAndSetImage(e, setBackSideCnic, setBackSideCnicDB)}
+                            onChange={(e) =>
+                              compressAndSetImage(
+                                e,
+                                setBackSideCnic,
+                                setBackSideCnicDB
+                              )
+                            }
                           />
                         </div>
 
@@ -1077,22 +1105,20 @@ function Signup() {
                             onClick={handleCloseCnicOpenPassword}
                             disabled={loading}
                           >
-
-                             {loading === false ? (
-                            <>
-                               Continue to Password
-                               <i className="fas fa-eye ms-2"></i>
-                            </>
-                          ) : (
-                            <>
-                              Uploading documents...
-                              <div
-                                className="spinner-border spinner-border-sm text-dark ms-2"
-                                role="status"
-                              ></div>
-                            </>
-                          )}
-                          
+                            {loading === false ? (
+                              <>
+                                Continue to Password
+                                <i className="fas fa-eye ms-2"></i>
+                              </>
+                            ) : (
+                              <>
+                                Uploading documents...
+                                <div
+                                  className="spinner-border spinner-border-sm text-dark ms-2"
+                                  role="status"
+                                ></div>
+                              </>
+                            )}
                           </button>
                         </div>
                       </>
@@ -1252,17 +1278,16 @@ function Signup() {
                           type="submit"
                           className="btn btn-outline-light"
                           onClick={handlePasswordGenerated}
-                          disabled = {loading}
+                          disabled={loading}
                         >
                           {loading === false ? (
                             <>
-                             
-                               <i className="fas fa-user-plus me-2"></i>
-                                Finish Signup
+                              <i className="fas fa-user-plus me-2"></i>
+                              Finish Signup
                             </>
                           ) : (
                             <>
-                            <i className="fas fa-user-plus me-2"></i>
+                              <i className="fas fa-user-plus me-2"></i>
                               Finishing up...
                               <div
                                 className="spinner-border spinner-border-sm text-light ms-2"
@@ -1270,7 +1295,6 @@ function Signup() {
                               ></div>
                             </>
                           )}
-                    
                         </button>
                       </div>
                     </>
@@ -1678,6 +1702,32 @@ function Signup() {
             </div>
           </div>
         </div>
+      )}
+
+      {accountCreateAnimation && (
+        <>
+          <div
+            className={`modal fade ${accountCreateAnimation ? "show d-block" : ""}`}
+            tabIndex="-1"
+          >
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content text-center p-4">
+                <Lottie
+                  animationData={successAnimation}
+                  loop={false}
+                  style={{ height: 200 }}
+                />
+                <h5 className="mt-3">Account Created Successfully!</h5>
+                <button
+                  onClick={handleLoginRedirect}
+                  className="btn btn-success mt-3"
+                >
+                  Go to Login
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </>
   );
