@@ -1734,9 +1734,9 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
         />
 
         {/* Message */}
-        <h5 className="mt-3 text-success">Welcome to Lost & Found!</h5>
-        <p className="text-muted small mb-2" style={{ maxWidth: 320 }}>
-          Thanks for joining! You can now report and find lost items easily.
+        <h4 className="mt-3 text-success">🎉 Account Created Successfully!</h4>
+       <p className="mt-3 px-4" style={{ maxWidth: "600px" }}>
+          Thank you for signing up! We're excited to have you as part of our <strong>Lost and Found</strong> community.
         </p>
 
         {/* Button */}
