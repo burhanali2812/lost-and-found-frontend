@@ -1740,12 +1740,14 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
         </p>
 
         {/* Button */}
-        <button
-          onClick={handleLoginRedirect}
-          className="btn btn-success mt-2"
-        >
-          Go to Login
-        </button>
+      <button
+  onClick={handleLoginRedirect}
+  className="btn btn-outline-success mt-2 d-flex align-items-center gap-2"
+>
+  <i className="fas fa-sign-in-alt"></i>
+  Go to Login
+</button>
+
       </div>
     </div>
 
