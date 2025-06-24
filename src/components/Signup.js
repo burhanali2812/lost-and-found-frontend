@@ -486,10 +486,11 @@ function Signup() {
       );
       const data = await response2.json();
       if (response2.ok) {
-              setLoading(false);
+              
           try {
         await sendOTP();
-        setSignupState(true);
+       // setSignupState(true);
+        setLoading(false);
         inputRefs.current[0]?.focus();
 
         if (timer === 0) {
@@ -531,7 +532,8 @@ function Signup() {
         3000,
         "top-right"
       );
-      return false;
+      setLoading(false)
+      return;
     }
     if (!frontSideCnic) {
       showToast(
@@ -540,7 +542,8 @@ function Signup() {
         3000,
         "top-right"
       );
-      return false;
+      setLoading(false)
+      return;
     }
     if (!backSideCnic) {
       showToast(
@@ -549,7 +552,8 @@ function Signup() {
         3000,
         "top-right"
       );
-      return false;
+      setLoading(false)
+      return;
     }
    
     const formData = new FormData();
@@ -598,9 +602,11 @@ function Signup() {
     }
       if (!captchaValue) {
       showToast("warning", "Please complete the reCAPTCHA.", 3000, "top-right");
+       setLoading(false)
       return;
     }
      if (!isChecked) {
+       setLoading(false)
       showToast(
         "warning",
         "Please agree to the terms and conditions.",
@@ -635,6 +641,7 @@ function Signup() {
           "top-right"
         );
       } else {
+        setLoading(false)
         showToast(
           "error",
           data.message || "Please try again.",
@@ -643,6 +650,7 @@ function Signup() {
         );
       }
     } catch (error) {
+      setLoading(false)
       console.error("Error:", error);
       showToast("error", "Network Error. Try again.", 3000, "top-right");
     }
