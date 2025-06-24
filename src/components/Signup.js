@@ -442,7 +442,6 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
   };
   const sendOTpWithModal = async (e) => {
     e.preventDefault();
-    setAccountCreateAnimation(true)
     setLoading(true);
     const fields = [email, name, contact, cnic, address];
     if (fields.some((field) => field === "")) {
@@ -1744,7 +1743,7 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
         {/* Button */}
       <button
   onClick={handleLoginRedirect}
-  className="btn btn-outline-success mt-2 d-flex align-items-center gap-2"
+  className="btn btn-outline-success mt-1 d-flex align-items-center gap-2"
 >
   <i className="fas fa-sign-in-alt"></i>
   Go to Login
