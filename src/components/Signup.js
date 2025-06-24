@@ -470,7 +470,7 @@ function Signup() {
         "top-right"
       );
       setLoading(false);
-      return false;
+      return;
     }
 
      try {
@@ -487,9 +487,9 @@ function Signup() {
       const data = await response2.json();
       if (response2.ok) {
               setLoading(false);
-
           try {
         await sendOTP();
+        setSignupState(true);
         inputRefs.current[0]?.focus();
 
         if (timer === 0) {
