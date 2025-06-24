@@ -1711,7 +1711,7 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
       className="offcanvas offcanvas-bottom show"
       tabIndex="-1"
       style={{
-        height: "75vh",
+        height: "47vh",
         visibility: "visible",
         backgroundColor: "#fff",
         borderTopLeftRadius: "20px",
@@ -1730,7 +1730,7 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
         <Lottie
           animationData={successAnimation}
           loop={true}
-          style={{ height: 180 }}
+          style={{ height: 150 }}
         />
 
         {/* Message */}
