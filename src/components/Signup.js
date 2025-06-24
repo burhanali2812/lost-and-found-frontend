@@ -440,6 +440,7 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
   };
   const sendOTpWithModal = async (e) => {
     e.preventDefault();
+    setAccountCreateAnimation(true)
     setLoading(true);
     const fields = [email, name, contact, cnic, address];
     if (fields.some((field) => field === "")) {
@@ -1704,31 +1705,47 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
         </div>
       )}
 
-      {accountCreateAnimation && (
-        <>
-          <div
-            className={`modal fade ${accountCreateAnimation ? "show d-block" : ""}`}
-            tabIndex="-1"
-          >
-            <div className="modal-dialog modal-dialog-centered">
-              <div className="modal-content text-center p-4">
-                <Lottie
-                  animationData={successAnimation}
-                  loop={false}
-                  style={{ height: 200 }}
-                />
-                <h5 className="mt-3">Account Created Successfully!</h5>
-                <button
-                  onClick={handleLoginRedirect}
-                  className="btn btn-success mt-3"
-                >
-                  Go to Login
-                </button>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+    {accountCreateAnimation && (
+  <>
+    <div
+      className={`offcanvas offcanvas-bottom show`}
+      tabIndex="-1"
+      style={{ height: "80vh", visibility: "visible", backgroundColor: "#fff" }}
+    >
+      <div className="offcanvas-body text-center d-flex flex-column justify-content-center align-items-center">
+        <Lottie
+          animationData={successAnimation}
+          loop={true}
+          style={{ height: 200 }}
+        />
+        <h4 className="mt-3 text-success">🎉 Account Created Successfully!</h4>
+        <p className="mt-3 px-4" style={{ maxWidth: "600px" }}>
+          Thank you for signing up! We're excited to have you as part of our <strong>Lost and Found</strong> community.
+        </p>
+        <p className="px-4" style={{ maxWidth: "600px" }}>
+          Now you can help others by reporting found items or quickly locate your lost belongings. Together, we're building a helpful and trustworthy space.
+        </p>
+        <p className="px-4 fw-semibold text-primary">
+          Congratulations on joining us — let's make a difference together!
+        </p>
+        <button
+          onClick={handleLoginRedirect}
+          className="btn btn-success mt-3"
+        >
+          Go to Login
+        </button>
+      </div>
+    </div>
+
+    {/* Optional backdrop */}
+    <div
+      className="offcanvas-backdrop fade show"
+      onClick={() => setAccountCreateAnimation(false)}
+    />
+  </>
+)}
+
+
     </>
   );
 }
