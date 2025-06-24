@@ -279,6 +279,8 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
     }
   };
   const handleLoginRedirect = ()=>{
+    handlesetActionSignIn()
+    setAccountCreateAnimation(false)
     navigate("/login-signup")
   }
 
