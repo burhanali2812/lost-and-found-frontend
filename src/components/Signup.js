@@ -185,8 +185,8 @@ function Signup() {
   if (!file) return;
 
   const options = {
-    maxSizeMB: 0.2,
-    maxWidthOrHeight: 450,
+    maxSizeMB: 0.6,
+    maxWidthOrHeight:800,
     useWebWorker: true,
   };
 
