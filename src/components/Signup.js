@@ -1705,45 +1705,58 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
         </div>
       )}
 
-    {accountCreateAnimation && (
+   {accountCreateAnimation && (
   <>
     <div
-      className={`offcanvas offcanvas-bottom show`}
+      className="offcanvas offcanvas-bottom show"
       tabIndex="-1"
-      style={{ height: "80vh", visibility: "visible", backgroundColor: "#fff" }}
+      style={{
+        height: "75vh",
+        visibility: "visible",
+        backgroundColor: "#fff",
+        borderTopLeftRadius: "20px",
+        borderTopRightRadius: "20px",
+      }}
     >
-      <div className="offcanvas-body text-center d-flex flex-column justify-content-center align-items-center">
+      <div className="offcanvas-body position-relative text-center d-flex flex-column justify-content-center align-items-center px-3">
+        {/* Close Button */}
+        <button
+          className="btn-close position-absolute"
+          style={{ top: 10, right: 15 }}
+          onClick={() => setAccountCreateAnimation(false)}
+        ></button>
+
+        {/* Animation */}
         <Lottie
           animationData={successAnimation}
           loop={true}
-          style={{ height: 200 }}
+          style={{ height: 180 }}
         />
-        <h4 className="mt-3 text-success">🎉 Account Created Successfully!</h4>
-        <p className="mt-3 px-4" style={{ maxWidth: "600px" }}>
-          Thank you for signing up! We're excited to have you as part of our <strong>Lost and Found</strong> community.
+
+        {/* Message */}
+        <h5 className="mt-3 text-success">Welcome to Lost & Found!</h5>
+        <p className="text-muted small mb-2" style={{ maxWidth: 320 }}>
+          Thanks for joining! You can now report and find lost items easily.
         </p>
-        <p className="px-4" style={{ maxWidth: "600px" }}>
-          Now you can help others by reporting found items or quickly locate your lost belongings. Together, we're building a helpful and trustworthy space.
-        </p>
-        <p className="px-4 fw-semibold text-primary">
-          Congratulations on joining us — let's make a difference together!
-        </p>
+
+        {/* Button */}
         <button
           onClick={handleLoginRedirect}
-          className="btn btn-success mt-3"
+          className="btn btn-success mt-2"
         >
           Go to Login
         </button>
       </div>
     </div>
 
-    {/* Optional backdrop */}
+    {/* Backdrop */}
     <div
       className="offcanvas-backdrop fade show"
       onClick={() => setAccountCreateAnimation(false)}
     />
   </>
 )}
+
 
 
     </>
