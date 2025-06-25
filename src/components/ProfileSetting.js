@@ -28,6 +28,8 @@ function ProfileSetting() {
   const [address, setAddress] = useState("");
   const [status, setStatus] = useState("");
   const [isHovered, setIsHovered] = useState(false);
+  const [loadingPassword, setLoadingPassword] = useState(false);
+  
   const [profileImage, setProfileImage] = useState(null);
   const [frontCnicImage, setFrontCnicImage] = useState(null);
   const [backCnicImage, setBackCnicImage] = useState(null);
@@ -67,6 +69,7 @@ function ProfileSetting() {
     getUser();
   }, [userId]);
   const resetPassword = async () => {
+    setLoadingPassword(true)
     const token = localStorage.getItem("resetToken");
 
     if (newPassword !== confirmPassword) {
@@ -76,6 +79,7 @@ function ProfileSetting() {
         3000,
         "top-right"
       );
+      setLoadingPassword(false)
       return;
     }
     try {
@@ -93,6 +97,7 @@ function ProfileSetting() {
         }
       );
       if (response.ok) {
+        setLoadingPassword(false)
         showToast(
           "success",
           "Password changed successfully!",
@@ -104,15 +109,18 @@ function ProfileSetting() {
         setResetPasswordText("Verify");
         setIdPassword("");
       } else {
+        setLoadingPassword(false)
         showToast("error", "Error changing password!", 3000, "top-right");
       }
     } catch (error) {
+      setLoadingPassword(false)
       console.error("Error Uploading User:", error);
       showToast("error", "Network or Server Error", 3000, "top-right");
     }
   };
 
   const verifyPassword = async (action) => {
+    setLoadingPassword(true)
     if (resetPasswordText === "Reset Password") {
       resetPassword();
       return;
@@ -141,6 +149,7 @@ function ProfileSetting() {
       const data = await response.json();
 
       if (response.ok) {
+        setLoadingPassword(false)
         showToast("success", data.message, 3000, "top-right");
         if (action === "cnic") {
           setIdPassword("");
@@ -160,9 +169,11 @@ function ProfileSetting() {
           setEditShowCnicPasswordModal(false);
         }
       } else {
+        setLoadingPassword(false)
         showToast("error", data.message, 3000, "top-right");
       }
     } catch (error) {
+      setLoadingPassword(false)
       console.error("Error:", error);
       showToast("error", "Network Error. Try again.", 3000, "top-right");
     }
@@ -518,8 +529,23 @@ function ProfileSetting() {
                 <button
                   className="btn btn-primary"
                   onClick={() => verifyPassword("cnic")}
+                  disabled={loadingPassword}
                 >
-                  Verify
+                  {loadingPassword === false ? (
+                  <>
+                    Submit
+                    <i className="fas fa-paper-plane ms-2"></i>
+                  </>
+                ) : (
+                  <>
+                    Verifying...
+                    <div
+                      className="spinner-border spinner-border-sm text-dark ms-2"
+                      role="status"
+                    ></div>
+                  </>
+                )}
+                  
                 </button>
               </div>
             </div>

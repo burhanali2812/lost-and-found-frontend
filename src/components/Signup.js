@@ -40,8 +40,8 @@ function Signup() {
   const [forgetEmail, setForgetEmail] = useState("");
   const [strength, setStrength] = useState("");
   const [loading, setLoading] = useState(false);
-   const [forgetloading, setForgetloading] = useState(false);
-  
+  const [forgetloading, setForgetloading] = useState(false);
+
   const [signupState, setSignupState] = useState(false);
 
   const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
@@ -56,6 +56,8 @@ function Signup() {
   const [timer, setTimer] = useState(60);
   const inputRefs = useRef([]);
   const [intervalId, setIntervalId] = useState(null);
+  const [progress, setProgress] = useState(0);
+  
 
   const checkPasswordStrength = (password) => {
     if (password.length < 8) return "Weak";
@@ -434,6 +436,7 @@ function Signup() {
       const data = await response.json();
       setCurrentUserId(data.userId);
       if (response.ok) {
+        setProgress(50)
         showToast(
           "success",
           "Personal Information save Successfully!",
@@ -506,6 +509,7 @@ function Signup() {
       if (response2.ok) {
         try {
           await sendOTP();
+          setProgress(25)
           // setSignupState(true);
           setLoading(false);
           inputRefs.current[0]?.focus();
@@ -595,6 +599,7 @@ function Signup() {
       const data = await response.json();
 
       if (response.ok) {
+        setProgress(75)
         showToast(
           "success",
           "Documents Uploaded Successfully",
@@ -660,6 +665,7 @@ function Signup() {
       if (response.ok) {
         setLoading(false);
         setAccountCreateAnimation(true);
+        setProgress(100)
         showToast(
           "success",
           "Account Created Successfully!",
@@ -744,6 +750,27 @@ function Signup() {
                   >
                     SIGN UP
                   </h1>
+                 {
+                  progress === 0 ? (""):(
+                     <div
+                    className="progress"
+                    role="progressbar"
+                    aria-label="Example with label"
+                    aria-valuenow="25"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    style={{ height: "11px" }} // sets overall height
+                  >
+                    <div
+                      className="progress-bar bg-warning text-black fw-bold"
+                      style={{ width: `${progress}%`, height: "11px", fontSize: "10px" }}
+                    >
+                      {`${progress}%`}
+                    </div>
+                  </div>
+                  )
+                 }
+
                   <p style={{ opacity: 0.8, fontSize: "1.1rem" }}>
                     Join our Lost and Found community! Create your account to
                     easily report and claim lost items.
