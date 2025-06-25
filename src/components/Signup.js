@@ -1699,7 +1699,6 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
                 >
                   Cancel
                 </button>
-                <button className="btn btn-primary">Next</button>
               </div>
             </div>
           </div>
