@@ -1723,7 +1723,7 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
         <button
           className="btn-close position-absolute"
           style={{ top: 10, right: 15 }}
-          onClick={() => setAccountCreateAnimation(false)}
+          onClick={handleLoginRedirect}
         ></button>
 
         {/* Animation */}
