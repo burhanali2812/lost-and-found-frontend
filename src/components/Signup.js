@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import imageCompression from "browser-image-compression";
 import Lottie from "lottie-react";
-import successAnimation from "./success.json"
+import successAnimation from "./success.json";
 import "./Signup.css";
 
 import ReCAPTCHA from "react-google-recaptcha";
@@ -40,9 +40,11 @@ function Signup() {
   const [forgetEmail, setForgetEmail] = useState("");
   const [strength, setStrength] = useState("");
   const [loading, setLoading] = useState(false);
-  const [signupState, setSignupState] = useState(false);
+   const [forgetloading, setForgetloading] = useState(false);
   
-const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
+  const [signupState, setSignupState] = useState(false);
+
+  const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
   const [canResend, setCanResend] = useState(false);
   const [cnicToggle, setCnicToggle] = useState(false);
   const [personalToggle, setPersonalToggle] = useState(false);
@@ -51,7 +53,7 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null || "0000");
 
   const [otp, setOtp] = useState(new Array(6).fill(""));
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(60);
   const inputRefs = useRef([]);
   const [intervalId, setIntervalId] = useState(null);
 
@@ -223,8 +225,16 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
   };
 
   const verifyForgetPassword = async () => {
+    setForgetloading(true);
     if (!forgetEmail.trim()) {
       showToast("error", "Email is required", 3000, "top-right");
+      setForgetloading(false);
+      return;
+    }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(forgetEmail)) {
+      showToast("error", "Please enter a valid email address", 3000);
+      setForgetloading(false);
       return;
     }
 
@@ -243,6 +253,7 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
       const data = await response.json();
 
       if (response.ok && data.success) {
+        setForgetloading(false);
         showToast("success", "User Email Verified!", 3000, "top-right");
 
         // Forcefully hide modal
@@ -266,6 +277,7 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
           });
         }, 500); // wait 500ms to let modal hide animation finish
       } else {
+        setForgetloading(false);
         showToast(
           "error",
           data.message || "Email not found",
@@ -274,15 +286,16 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
         );
       }
     } catch (error) {
+      setForgetloading(false);
       console.error("Error verifying email:", error);
       showToast("error", "Something went wrong. Try again.", 3000, "top-right");
     }
   };
-  const handleLoginRedirect = ()=>{
-    handlesetActionSignIn()
-    setAccountCreateAnimation(false)
-    navigate("/login-signup")
-  }
+  const handleLoginRedirect = () => {
+    handlesetActionSignIn();
+    setAccountCreateAnimation(false);
+    navigate("/login-signup");
+  };
 
   const sendOTP = async () => {
     try {
@@ -297,7 +310,7 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
         }
       );
       if (response.ok) {
-        setTimer(10);
+        setTimer(60);
         setCanResend(false);
         setLoading(false);
         setSignupState(true);
@@ -646,7 +659,7 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
       const data = await response.json();
       if (response.ok) {
         setLoading(false);
-        setAccountCreateAnimation(true)
+        setAccountCreateAnimation(true);
         showToast(
           "success",
           "Account Created Successfully!",
@@ -1541,9 +1554,22 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
                 type="button"
                 className="btn btn-primary"
                 onClick={verifyForgetPassword}
-                disabled={!forgetEmail.trim()} // Disable if empty
+                disabled={forgetloading} // Disable if empty
               >
-                Submit
+                {forgetloading === false ? (
+                  <>
+                    Submit
+                    <i className="fas fa-paper-plane ms-2"></i>
+                  </>
+                ) : (
+                  <>
+                    Verifying...
+                    <div
+                      className="spinner-border spinner-border-sm text-dark ms-2"
+                      role="status"
+                    ></div>
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -1705,62 +1731,61 @@ const [accountCreateAnimation, setAccountCreateAnimation] = useState(false);
         </div>
       )}
 
-   {accountCreateAnimation && (
-  <>
-    <div
-      className="offcanvas offcanvas-bottom show"
-      tabIndex="-1"
-      style={{
-        height: "47vh",
-        visibility: "visible",
-        backgroundColor: "#fff",
-        borderTopLeftRadius: "20px",
-        borderTopRightRadius: "20px",
-      }}
-    >
-      <div className="offcanvas-body position-relative text-center d-flex flex-column justify-content-center align-items-center ">
-        {/* Close Button */}
-        <button
-          className="btn-close position-absolute"
-          style={{ top: 10, right: 15 }}
-          onClick={handleLoginRedirect}
-        ></button>
+      {accountCreateAnimation && (
+        <>
+          <div
+            className="offcanvas offcanvas-bottom show"
+            tabIndex="-1"
+            style={{
+              height: "47vh",
+              visibility: "visible",
+              backgroundColor: "#fff",
+              borderTopLeftRadius: "20px",
+              borderTopRightRadius: "20px",
+            }}
+          >
+            <div className="offcanvas-body position-relative text-center d-flex flex-column justify-content-center align-items-center ">
+              {/* Close Button */}
+              <button
+                className="btn-close position-absolute"
+                style={{ top: 10, right: 15 }}
+                onClick={handleLoginRedirect}
+              ></button>
 
-        {/* Animation */}
-        <Lottie
-          animationData={successAnimation}
-          loop={true}
-          style={{ height: 150 }}
-        />
+              {/* Animation */}
+              <Lottie
+                animationData={successAnimation}
+                loop={true}
+                style={{ height: 150 }}
+              />
 
-        {/* Message */}
-        <h4 className="mt-3 text-success">🎉 Account Created Successfully!</h4>
-       <p className="mt-3 px-4" style={{ maxWidth: "600px" }}>
-          Thank you for signing up! We're excited to have you as part of our <strong>Lost and Found</strong> community.
-        </p>
+              {/* Message */}
+              <h4 className="mt-3 text-success">
+                🎉 Account Created Successfully!
+              </h4>
+              <p className="mt-3 px-4" style={{ maxWidth: "600px" }}>
+                Thank you for signing up! We're excited to have you as part of
+                our <strong>Lost and Found</strong> community.
+              </p>
 
-        {/* Button */}
-      <button
-  onClick={handleLoginRedirect}
-  className="btn btn-outline-success mt-1 d-flex align-items-center gap-2"
->
-  <i className="fas fa-sign-in-alt"></i>
-  Go to Login
-</button>
+              {/* Button */}
+              <button
+                onClick={handleLoginRedirect}
+                className="btn btn-outline-success mt-1 d-flex align-items-center gap-2"
+              >
+                <i className="fas fa-sign-in-alt"></i>
+                Go to Login
+              </button>
+            </div>
+          </div>
 
-      </div>
-    </div>
-
-    {/* Backdrop */}
-    <div
-      className="offcanvas-backdrop fade show"
-      onClick={() => setAccountCreateAnimation(false)}
-    />
-  </>
-)}
-
-
-
+          {/* Backdrop */}
+          <div
+            className="offcanvas-backdrop fade show"
+            onClick={() => setAccountCreateAnimation(false)}
+          />
+        </>
+      )}
     </>
   );
 }
