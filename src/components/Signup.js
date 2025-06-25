@@ -673,12 +673,7 @@ function Signup() {
         setEnterPasswordFields(false)
         personalToggle(false);
 
-        showToast(
-          "success",
-          "Account Created Successfully!",
-          3000,
-          "top-right"
-        );
+        
       } else {
         setLoading(false);
         showToast(
