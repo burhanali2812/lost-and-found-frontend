@@ -671,7 +671,7 @@ function Signup() {
         setAccountCreateAnimation(true);
         setProgress(100)
         setEnterPasswordFields(false)
-        personalToggle(true);
+        personalToggle(false);
 
         showToast(
           "success",
