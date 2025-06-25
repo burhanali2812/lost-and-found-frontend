@@ -80,6 +80,10 @@ function Signup() {
     e.preventDefault();
     setAction("signin");
   };
+   const handleDontHaveAccount = (e) => {
+    e.preventDefault();
+    setAction("signup");
+  };
   const handleCaptchaChange = (value) => {
     setCaptchaValue(value);
   };
@@ -666,6 +670,7 @@ function Signup() {
         setLoading(false);
         setAccountCreateAnimation(true);
         setProgress(100)
+        handleDontHaveAccount();
         showToast(
           "success",
           "Account Created Successfully!",
@@ -1343,7 +1348,7 @@ function Signup() {
                   )}
 
                   {enterPasswordFields || cnicToggle ? null : (
-                    <div className="text-center mt-2">
+                    <div className="text-center mt-3">
                       <p className="text-white">
                         Already have an account?{" "}
                         <Link
@@ -1351,7 +1356,7 @@ function Signup() {
                           className="text-decoration-none"
                           onClick={handleAlreadyLogin}
                         >
-                          Login
+                          Sign in
                         </Link>
                       </p>
                     </div>
@@ -1450,7 +1455,7 @@ function Signup() {
                   )}
 
                   {/* Password field */}
-                  <div className="mb-3 input-group">
+                  <div className=" input-group">
                     <span className="input-group-text bg-white">
                       <i className="fas fa-lock"></i>
                     </span>
@@ -1474,6 +1479,17 @@ function Signup() {
                         }`}
                       ></i>
                     </span>
+                  </div>
+                  
+                  <div className="text-end mt-1">
+                    <button
+                      type="button"
+                      className="btn btn-link text-white-50 fw-semibold p-0 m-0"
+                      style={{ fontSize: "0.9rem" }}
+                      onClick={openForgetPasswordModal}
+                    >
+                      Forgot Password?
+                    </button>
                   </div>
                   <div className="form-check text-white">
                     <input
@@ -1509,16 +1525,18 @@ function Signup() {
                     </button>
                   </div>
 
-                  <div className="text-end mt-3">
-                    <button
-                      type="button"
-                      className="btn btn-link text-white-50 fw-semibold p-0 m-0"
-                      style={{ fontSize: "0.9rem" }}
-                      onClick={openForgetPasswordModal}
-                    >
-                      Forgot Password?
-                    </button>
-                  </div>
+                   <div className="text-center mt-3">
+                      <p className="text-white">
+                        Don't have an account?{" "}
+                        <Link
+                          to="/login-signup"
+                          className="text-decoration-none"
+                          onClick={handleDontHaveAccount}
+                        >
+                          Sign up
+                        </Link>
+                      </p>
+                    </div>
                 </form>
               </>
             )}
