@@ -269,6 +269,9 @@ function ProfileSetting() {
         showToast("error", "Error Deleting Account", 3000, "top-right");
         return;
       }
+        localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
       showToast("success", "Account Deleted SuccessFully", 3000, "top-right");
       setTimeout(() => {
         navigate("/login-signup");
