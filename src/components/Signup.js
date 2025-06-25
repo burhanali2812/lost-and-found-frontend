@@ -670,7 +670,9 @@ function Signup() {
         setLoading(false);
         setAccountCreateAnimation(true);
         setProgress(100)
-        handleDontHaveAccount();
+        setEnterPasswordFields(false)
+        personalToggle(true);
+
         showToast(
           "success",
           "Account Created Successfully!",
@@ -1481,7 +1483,7 @@ function Signup() {
                     </span>
                   </div>
                   
-                  <div className="text-end mt-1">
+                  <div className="text-end mt-1 mb-1">
                     <button
                       type="button"
                       className="btn btn-link text-white-50 fw-semibold p-0 m-0"
