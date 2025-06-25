@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "./Toastify2";
 function EmailOTPManage() {
-  const [timer, setTimer] = useState(120); // 2 minutes in seconds
+  const [timer, setTimer] = useState(60); 
   const [canResend, setCanResend] = useState(false);
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [newPassword, setNewPassword] = useState("");
@@ -14,6 +14,7 @@ function EmailOTPManage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [Loading, setLoading] = useState(false);
+  const [loadingPassword, setLoadingPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showcPassword, setShowcPassword] = useState(false);
   const {
@@ -45,7 +46,7 @@ function EmailOTPManage() {
         }
       );
       if (response.ok) {
-        setTimer(120);
+        setTimer(60);
         setCanResend(false);
       } else {
         const data = await response.json();
@@ -225,6 +226,7 @@ function EmailOTPManage() {
     setStrength(checkPasswordStrength(value));
   };
   const passwordChnage = async () => {
+    setLoadingPassword(true)
     if (newPassword !== confirmPassword) {
       showToast(
         "warning",
@@ -232,10 +234,11 @@ function EmailOTPManage() {
         3000,
         "top-right"
       );
+       setLoadingPassword(false)
       return;
+     
     }
-    console.log("forgetToken", forgetToken);
-    console.log("newPassword", newPassword);
+
     try {
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/reset-password",
@@ -252,6 +255,7 @@ function EmailOTPManage() {
       );
       if (response.ok) {
         setLoading(false);
+        setLoadingPassword(false)
         showToast(
           "success",
           "Password changed successfully!",
@@ -263,10 +267,12 @@ function EmailOTPManage() {
         }, 1500);
       } else {
         setLoading(false);
+        setLoadingPassword(false)
         showToast("error", "Error changing password!", 3000, "top-right");
       }
     } catch (error) {
       setLoading(false);
+      setLoadingPassword(false)
       console.error("Error Uploading User:", error);
       showToast("error", "Network or Server Error", 3000, "top-right");
     }
@@ -555,8 +561,23 @@ function EmailOTPManage() {
                 type="button"
                 className="btn btn-primary"
                 onClick={passwordChnage}
+                disabled={loadingPassword}
               >
-                Submit
+                 {loadingPassword === false ? (
+                  <>
+                    Submit
+                    <i className="fas fa-paper-plane ms-2"></i>
+                  </>
+                ) : (
+                  <>
+                    Submitting...
+                    <div
+                      className="spinner-border spinner-border-sm text-dark ms-2"
+                      role="status"
+                    ></div>
+                  </>
+                )}
+                
               </button>
             </div>
           </div>
