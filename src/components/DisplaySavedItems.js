@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "./Toastify2";
+import save2 from "../images/save2.png"
 function DisplaySavedItems() {
   const [matchedItems, setMatchedItems] = useState([]);
   const [userItem, setUserItem] = useState([]);
@@ -87,7 +88,22 @@ function DisplaySavedItems() {
         {loading ? ( // Show loading state
           <p>Loading...</p>
         ) : matchedItems.length === 0 && userItem.length === 0 ? (
-          <p>No matched or saved items found.</p>
+          <>
+           <div className="d-flex justify-content-center mt-5">
+                 <img
+                   src={save2}
+                   alt="Notification"
+                   className="img-fluid"
+                   style={{ width: "100%", maxWidth: "500px" }}
+                 />
+                 
+               </div>
+          <div className="text-center fw-bold">
+            <h3 style={{opacity: "0.5"}}>No Saved Item Found</h3>
+          </div>
+          </>
+        
+               
         ) : (
           <>
             {matchedItems.map((item) => {

@@ -146,7 +146,7 @@ function ItemButtons({
           body: JSON.stringify({ isSaved: !save[id] }),
         }
       );
-        showToast("success", "Item save status updated successfully.", 3000, "top-right");
+        showToast("success", "Item saved successfully.", 3000, "top-right");
 
       onSave();
     } catch (error) {
