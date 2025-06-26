@@ -98,6 +98,8 @@ function Sidebar({
       );
       if (response.ok) {
         setLoading(false);
+        setFeedBackModal(false)
+        setFeedBack("")
         showToast("success", "Feedback sent successfully.", 3000, "top-right");
       } else {
         setLoading(false);
@@ -374,7 +376,9 @@ function Sidebar({
                 </Link>
               </li>
 
-              <li className="nav-item">
+              {
+                userData && userData.role === "user" && (
+                        <li className="nav-item">
                 <Link
                   className="nav-link text-white"
                   onClick={() => setFeedBackModal(true)}
@@ -385,6 +389,10 @@ function Sidebar({
                   )}
                 </Link>
               </li>
+                )
+              }
+
+          
 
               <li className="nav-item mt-3">
                 <button onClick={handleToast} className="btn btn-danger w-100">
@@ -468,7 +476,7 @@ function Sidebar({
                 <button
                   type="button"
                   className="btn-close"
-                  onClick={() => setFeedBackModal(true)}
+                  onClick={() => setFeedBackModal(false)}
                 ></button>
               </div>
 
