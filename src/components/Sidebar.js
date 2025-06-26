@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { showToast } from "./Toastify2";
+import { ToastContainer } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
 
 function Sidebar({
@@ -121,6 +122,7 @@ function Sidebar({
 
   return (
     <>
+    <ToastContainer/>
       <div className="d-flex vh-100">
         {isMobile && (
           <button
