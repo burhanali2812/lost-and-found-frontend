@@ -361,7 +361,7 @@ function ItemButtons({
                           title="WhatsApp"
                           onClick={handleWhatsapp}
                         >
-                          <i className="fa-brands fa-whatsapp me-1 fa-lg"></i>{" "}
+                          <i className="fa-brands fa-whatsapp me-1"></i>{" "}
                           WhatsApp
                         </button>
 
@@ -374,7 +374,7 @@ function ItemButtons({
                           title="Save"
                           onClick={() => handleSave(savedItem._id)}
                         >
-                          <i className="fa-solid fa-bookmark me-1 fa-lg"></i>
+                          <i className="fa-solid fa-bookmark me-1"></i>
                           {save[savedItem._id] ? " Saved" : "Save"}
                         </button>
 
@@ -383,7 +383,7 @@ function ItemButtons({
                           title="Delete"
                           onClick={() => handleDeleteItem(savedItem._id)}
                         >
-                          <i className="fa-solid fa-trash me-1 fa-lg"></i>{" "}
+                          <i className="fa-solid fa-trash me-1"></i>{" "}
                           Delete
                         </button>
                       </div>
@@ -503,7 +503,7 @@ function ItemButtons({
                             data-bs-dismiss="modal"
                             onClick={handleWhatsapp}
                           >
-                            <i className="fa-brands fa-whatsapp me-1 fa-lg"></i>
+                            <i className="fa-brands fa-whatsapp me-1"></i>
                             WhatsApp
                           </button>
                           <button
@@ -511,7 +511,7 @@ function ItemButtons({
                             className="btn btn-danger"
                             onClick={() => handleDeleteItem(savedItem._id)}
                           >
-                            <i className="fa-solid fa-trash me-1 fa-lg"></i>
+                            <i className="fa-solid fa-trash me-1"></i>
                             Delete
                           </button>
                         </div>

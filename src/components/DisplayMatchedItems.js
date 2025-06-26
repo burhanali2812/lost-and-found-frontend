@@ -97,7 +97,7 @@ function DisplayMatchedItems() {
                   key={item._id || item.itemId}
                   item={item}
                   savedItem={savedItem}
-                  onDelete={deleteSaveItem} // This might be undefined if no match
+                  onDelete={deleteSaveItem} 
                 />
               );
             })}

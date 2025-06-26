@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "./Toastify2";
-import save2 from "../images/save2.png"
+import match from "../images/match.jpg"
 function DisplaySavedItems() {
   const [matchedItems, setMatchedItems] = useState([]);
   const [userItem, setUserItem] = useState([]);
@@ -31,7 +31,7 @@ function DisplaySavedItems() {
 
       const data = await response.json();
       const userSavedItems = (data.saveditems || []).filter(
-        (item) => String(item.userId) === String(userId)
+        (item) => String(item.userId) === String(userId)&& !item.isDeleted
       );
       const filteredSaved = userSavedItems.filter(
         (item) => item.isSaved === true
@@ -91,7 +91,7 @@ function DisplaySavedItems() {
           <>
            <div className="d-flex justify-content-center mt-5">
                  <img
-                   src={save2}
+                   src={match}
                    alt="Notification"
                    className="img-fluid"
                    style={{ width: "100%", maxWidth: "500px" }}
@@ -99,7 +99,7 @@ function DisplaySavedItems() {
                  
                </div>
           <div className="text-center fw-bold">
-            <h3 style={{opacity: "0.5"}}>No Saved Item Found</h3>
+            <h3 style={{opacity: "0.5"}}>No Saved Or Matched Item Found</h3>
           </div>
           </>
         
