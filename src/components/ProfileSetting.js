@@ -200,7 +200,7 @@ function ProfileSetting() {
         const response = await fetch(
           "https://lost-and-found-backend-xi.vercel.app/auth/update-profile",
           {
-            method: "POST",
+            method: "PUT",
             body: formData,
           }
         );
@@ -294,30 +294,7 @@ function ProfileSetting() {
         console.error("Compression failed:", error);
       }
     };
-  const handleOnChange = (e) => {
-    const file = e.target.files[0];
 
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
-    }
-  };
-    const handleCnicFrontChange = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setFrontCnicImage(imageUrl);
-    }
-  };
-  const handleCnicBackChange = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setBackCnicImage(imageUrl);
-    }
-  };
   
 
   const deleteAccount = async () => {
