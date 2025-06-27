@@ -195,12 +195,20 @@ function ProfileSetting() {
       if (backSideCnicDB) formData.append("backCnic", backSideCnicDB);
       if (name) formData.append("name", name);
       if (address) formData.append("address", address);
+      console.log(profileImageDB,)
+      console.log(frontSideCnicDB,)
+      console.log(backSideCnicDB,)
+      console.log(name,)
+      console.log(address,)
 
       try {
         const response = await fetch(
           "https://lost-and-found-backend-xi.vercel.app/auth/update-profile",
           {
             method: "PUT",
+              headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
             body: formData,
           }
         );
