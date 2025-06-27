@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "./Toastify2";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import imageCompression from "browser-image-compression";
 function ProfileSetting() {
   const navigate = useNavigate();
@@ -192,7 +192,7 @@ function ProfileSetting() {
 
       try {
         const response = await fetch(
-          "https://lost-and-found-backend-xi.vercel.app/auth/signup/update-profile",
+          "https://lost-and-found-backend-xi.vercel.app/auth/update-profile",
           {
             method: "POST",
             body: formData,
