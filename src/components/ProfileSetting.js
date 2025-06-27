@@ -35,6 +35,9 @@ function ProfileSetting() {
   const [profileImage, setProfileImage] = useState(null);
   const [frontCnicImage, setFrontCnicImage] = useState(null);
   const [backCnicImage, setBackCnicImage] = useState(null);
+    const [profileImageDB, setProfileImageDB] = useState(null);
+    const [frontSideCnicDB, setFrontSideCnicDB] = useState(null);
+    const [backSideCnicDB, setBackSideCnicDB] = useState(null);
   useEffect(() => {
     if (currentUser) {
       setContact(currentUser.phone || "Loading...");
@@ -184,9 +187,9 @@ function ProfileSetting() {
    const handleUpdateData = async () => {
       setLoading(true);
       const formData = new FormData();
-      if (profileImage) formData.append("profileImage", profileImage);
-      if (frontCnicImage) formData.append("frontCnic", frontCnicImage);
-      if (backCnicImage) formData.append("backCnic", backCnicImage);
+      if (profileImageDB) formData.append("profileImage", profileImageDB);
+      if (frontSideCnicDB) formData.append("frontCnic", frontSideCnicDB);
+      if (backSideCnicDB) formData.append("backCnic", backSideCnicDB);
       if (name) formData.append("name", name);
       if (address) formData.append("address", address);
 
@@ -267,7 +270,7 @@ function ProfileSetting() {
 
 
 
-   const compressAndSetImage = async (e, setPreview) => {
+   const compressAndSetImage = async (e, setPreview, setFileState) => {
       const file = e.target.files[0];
       if (!file) return;
   
@@ -283,7 +286,7 @@ function ProfileSetting() {
         console.log("Compressed:", compressedFile.size / 1024 / 1024, "MB");
   
         setPreview(URL.createObjectURL(compressedFile));
-     //   setFileState(compressedFile);
+        setFileState(compressedFile);
       } catch (error) {
         console.error("Compression failed:", error);
       }
@@ -745,7 +748,8 @@ function ProfileSetting() {
                     onChange={(e) =>
                               compressAndSetImage(
                                 e,
-                                setProfileImage
+                                setProfileImage,
+                                setProfileImageDB
                               )}
                   />
                 </div>
@@ -931,7 +935,8 @@ function ProfileSetting() {
                                onChange={(e) =>
                               compressAndSetImage(
                                 e,
-                                setFrontCnicImage
+                                setFrontCnicImage,
+                                setFrontSideCnicDB
                               )} // your handler function
                             />
                           </>
@@ -993,7 +998,8 @@ function ProfileSetting() {
                               onChange={(e) =>
                               compressAndSetImage(
                                 e,
-                                setBackCnicImage
+                                setBackCnicImage,
+                                setBackSideCnicDB
                               )} // your handler function
                             />
                           </>
