@@ -24,7 +24,7 @@ function Sidebar({
   const [feedBack, setFeedBack] = useState("");
 
   const userId = localStorage.getItem("userId");
-  const userName = localStorage.getItem("userName");
+  let userName = "loading....";
   //const role = localStorage.getItem('role');
   const unreadCount = notification.filter((n) => !n.isRead).length;
 
@@ -56,6 +56,7 @@ function Sidebar({
         const data = await response.json();
         setProfilePicture(data.user.profileImage);
         setUserData(data.user);
+        userName = data.user.name
       } catch (error) {
         console.error("Error fetching profile image:", error);
       }
