@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "./Toastify2";
 import { useNavigate } from "react-router-dom";
+import imageCompression from "browser-image-compression";
 function ProfileSetting() {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
@@ -28,6 +29,7 @@ function ProfileSetting() {
   const [address, setAddress] = useState("");
   const [status, setStatus] = useState("");
   const [isHovered, setIsHovered] = useState(false);
+   const [loading, setLoading] = useState(false);
   const [loadingPassword, setLoadingPassword] = useState(false);
   
   const [profileImage, setProfileImage] = useState(null);
@@ -179,6 +181,45 @@ function ProfileSetting() {
     }
   };
 
+   const handleUpdateData = async () => {
+      setLoading(true);
+      const formData = new FormData();
+      if (profileImage) formData.append("profileImage", profileImage);
+      if (frontCnicImage) formData.append("frontCnic", frontCnicImage);
+      if (backCnicImage) formData.append("backCnic", backCnicImage);
+      if (name) formData.append("name", name);
+      if (address) formData.append("address", address);
+
+      try {
+        const response = await fetch(
+          "https://lost-and-found-backend-xi.vercel.app/auth/signup/update-profile",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          showToast(
+            "success",
+            "User Updated Successfully",
+            3000,
+            "top-right"
+          );
+          setLoading(false);
+        } else {
+          setLoading(false);
+          showToast("error", data.message || "Updating User Failed", 3000, "top-right");
+        }
+      } catch (error) {
+        setLoading(false);
+        console.error("Error Updating User:", error);
+        showToast("error", "Network or Server Error", 3000, "top-right");
+      }
+    };
+
   const openPasswordModal = () => {
     if (cnicText === "View CNIC Images") {
       setShowPasswordModal(true);
@@ -223,6 +264,30 @@ function ProfileSetting() {
 
     setUserEditModal(true);
   };
+
+
+
+   const compressAndSetImage = async (e, setPreview) => {
+      const file = e.target.files[0];
+      if (!file) return;
+  
+      const options = {
+        maxSizeMB: 0.6,
+        maxWidthOrHeight: 800,
+        useWebWorker: true,
+      };
+  
+      try {
+        const compressedFile = await imageCompression(file, options);
+        console.log("Original:", file.size / 1024 / 1024, "MB");
+        console.log("Compressed:", compressedFile.size / 1024 / 1024, "MB");
+  
+        setPreview(URL.createObjectURL(compressedFile));
+     //   setFileState(compressedFile);
+      } catch (error) {
+        console.error("Compression failed:", error);
+      }
+    };
   const handleOnChange = (e) => {
     const file = e.target.files[0];
 
@@ -677,7 +742,11 @@ function ProfileSetting() {
                     id="picture"
                     className="d-none"
                     accept="image/*"
-                    onChange={handleOnChange}
+                    onChange={(e) =>
+                              compressAndSetImage(
+                                e,
+                                setProfileImage
+                              )}
                   />
                 </div>
 
@@ -859,7 +928,11 @@ function ProfileSetting() {
                               id="cnicFront"
                               accept="image/*"
                               className="d-none"
-                               onChange={handleCnicFrontChange} // your handler function
+                               onChange={(e) =>
+                              compressAndSetImage(
+                                e,
+                                setFrontCnicImage
+                              )} // your handler function
                             />
                           </>
                         )}
@@ -917,7 +990,11 @@ function ProfileSetting() {
                               id="cnicBack"
                               accept="image/*"
                               className="d-none"
-                              onChange={handleCnicBackChange} // your handler function
+                              onChange={(e) =>
+                              compressAndSetImage(
+                                e,
+                                setBackCnicImage
+                              )} // your handler function
                             />
                           </>
                         )}
@@ -955,9 +1032,24 @@ function ProfileSetting() {
                 </button>
                 <button
                   className="btn btn-primary"
-                  onClick={() => verifyPassword("delete")}
+                  onClick={handleUpdateData}
+                  disabled={loading}
                 >
-                  Submit
+                   {loading === false ? (
+                  <>
+                    Submit
+                    <i className="fas fa-paper-plane ms-2"></i>
+                  </>
+                ) : (
+                  <>
+                    Updating...
+                    <div
+                      className="spinner-border spinner-border-sm text-dark ms-2"
+                      role="status"
+                    ></div>
+                  </>
+                )}
+                  
                 </button>
               </div>
             </div>
