@@ -50,8 +50,7 @@ function ProfileSetting() {
     }
   }, [currentUser]);
 
-  useEffect(() => {
-    const getUser = async () => {
+     const getUser = async () => {
       try {
         const response = await fetch(
           "https://lost-and-found-backend-xi.vercel.app/auth/getAllUser",
@@ -73,6 +72,8 @@ function ProfileSetting() {
         console.error("Error fetching Users:", error);
       }
     };
+  useEffect(() => {
+ 
 
     getUser();
   }, [userId]);
@@ -129,6 +130,7 @@ function ProfileSetting() {
 
   const verifyPassword = async (action) => {
     setLoadingPassword(true)
+    setLoading(true)
     if (resetPasswordText === "Reset Password") {
       resetPassword();
       return;
@@ -157,6 +159,7 @@ function ProfileSetting() {
       const data = await response.json();
 
       if (response.ok) {
+        setLoading(false)
         setLoadingPassword(false)
         showToast("success", data.message, 3000, "top-right");
         if (action === "cnic") {
@@ -177,10 +180,12 @@ function ProfileSetting() {
           setEditShowCnicPasswordModal(false);
         }
       } else {
+        setLoading(false)
         setLoadingPassword(false)
         showToast("error", data.message, 3000, "top-right");
       }
     } catch (error) {
+      setLoading(false)
       setLoadingPassword(false)
       console.error("Error:", error);
       showToast("error", "Network Error. Try again.", 3000, "top-right");
@@ -216,6 +221,7 @@ function ProfileSetting() {
         const data = await response.json();
   
         if (response.ok) {
+         await getUser()
           showToast(
             "success",
             "User Updated Successfully",
@@ -223,6 +229,7 @@ function ProfileSetting() {
             "top-right"
           );
           setLoading(false);
+          setUserEditModal(false)
         } else {
           setLoading(false);
           showToast("error", data.message || "Updating User Failed", 3000, "top-right");
@@ -307,6 +314,7 @@ function ProfileSetting() {
 
   const deleteAccount = async () => {
     const confirmation = window.confirm("Do You want to delete account?");
+    setLoading(true)
     if (!confirmation) {
       return;
     }
@@ -322,9 +330,11 @@ function ProfileSetting() {
       );
 
       if (!response.ok) {
+        setLoading(false)
         showToast("error", "Error Deleting Account", 3000, "top-right");
         return;
       }
+        setLoading(false)
         localStorage.removeItem("token");
     localStorage.removeItem("userId");
     localStorage.removeItem("userName");
@@ -333,6 +343,7 @@ function ProfileSetting() {
         navigate("/login-signup");
       }, 1500);
     } catch (error) {
+      setLoading(false)
       console.error("Error Deleting Account:", error);
     }
   };
@@ -654,8 +665,23 @@ function ProfileSetting() {
                 <button
                   className="btn btn-danger"
                   onClick={() => verifyPassword("delete")}
+                  disabled={loading}
                 >
-                  Delete Account permanently
+                   {loading === false ? (
+                  <>
+                    Delete Account permanently
+                    <i className="fas fa-trash ms-2"></i>
+                  </>
+                ) : (
+                  <>
+                    Deleting...
+                    <div
+                      className="spinner-border spinner-border-sm text-dark ms-2"
+                      role="status"
+                    ></div>
+                  </>
+                )}
+                  
                 </button>
               </div>
             </div>
@@ -1167,8 +1193,26 @@ function ProfileSetting() {
                 <button
                   className="btn btn-primary"
                   onClick={() => verifyPassword("cnicEdit")}
+                  disabled={
+                    loading
+                  }
                 >
-                  Verify
+                   {loading === false ? (
+                  <>
+                     Verify
+                    <i className="fa-solid fa-key ms-2"></i>
+                  </>
+                ) : (
+                  <>
+                    Verifying...
+                    <div
+                      className="spinner-border spinner-border-sm text-dark ms-2"
+                      role="status"
+                    ></div>
+                  </>
+                )}
+                  
+                 
                 </button>
               </div>
             </div>
