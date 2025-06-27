@@ -44,6 +44,9 @@ function ProfileSetting() {
       setProfileImage(currentUser?.profileImage || "loading");
       setFrontCnicImage(currentUser.frontCnic || null)
       setBackCnicImage(currentUser.backCnic || null)
+      setProfileImageDB(currentUser?.profileImage || "loading");
+      setFrontSideCnicDB(currentUser.frontCnic || null)
+      setBackSideCnicDB(currentUser.backCnic || null)
     }
   }, [currentUser]);
 
