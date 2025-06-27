@@ -26,6 +26,11 @@ function App() {
 
   const userId = localStorage.getItem("userId");
   const token = useAuth();
+   const [triggerSidebarEffect, setTriggerSidebarEffect] = useState(false);
+
+  const handleEditUser = () => {
+    setTriggerSidebarEffect(true); // this will notify Sidebar
+  };
 
   const getLostItems = async () => {
     try {
@@ -141,6 +146,8 @@ function App() {
               lostItems={lostItems}
               foundItems={foundItems}
               savedItem={savedItem}
+              triggerEffect={triggerSidebarEffect} 
+              setTriggerEffect={setTriggerSidebarEffect}
             >
               <Routes>
                 <Route
@@ -196,7 +203,7 @@ function App() {
                 />
                  <Route
                   path="/profileSetting"
-                  element={<ProfileSetting />}
+                  element={<ProfileSetting  editUser={handleEditUser} />}
                 />
               </Routes>
             </Sidebar>

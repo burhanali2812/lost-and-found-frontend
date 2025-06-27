@@ -10,6 +10,8 @@ function Sidebar({
   lostItems,
   foundItems,
   savedItem,
+  triggerEffect,
+  setTriggerEffect,
 }) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
@@ -34,11 +36,6 @@ function Sidebar({
       }
     };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
     const getProfileImage = async () => {
       try {
         const response = await fetch(
@@ -64,6 +61,18 @@ function Sidebar({
       }
     };
 
+    useEffect(() => {
+      if (triggerEffect) {
+        getProfileImage(); 
+        setTriggerEffect(false);
+      }
+    }, [triggerEffect]);
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
     getProfileImage();
   }, [userId]);
 
@@ -80,7 +89,7 @@ function Sidebar({
   const handleSendFeedBack = async () => {
     setLoading(true);
 
-    if(feedBack.trim() === ""){
+    if (feedBack.trim() === "") {
       setLoading(false);
       showToast("warning", "Please write your feedback", 3000, "top-right");
       return;
@@ -99,8 +108,8 @@ function Sidebar({
       );
       if (response.ok) {
         setLoading(false);
-        setFeedBackModal(false)
-        setFeedBack("")
+        setFeedBackModal(false);
+        setFeedBack("");
         showToast("success", "Feedback sent successfully.", 3000, "top-right");
       } else {
         setLoading(false);
@@ -122,7 +131,7 @@ function Sidebar({
 
   return (
     <>
-    <ToastContainer/>
+      <ToastContainer />
       <div className="d-flex vh-100">
         {isMobile && (
           <button
@@ -378,23 +387,19 @@ function Sidebar({
                 </Link>
               </li>
 
-              {
-                userData && userData.role === "user" && (
-                        <li className="nav-item">
-                <Link
-                  className="nav-link text-white"
-                  onClick={() => setFeedBackModal(true)}
-                >
-                  <i className="fa-solid fa-comment-dots"></i>{" "}
-                  {(!isMobile || showMobileMenu) && (
-                    <span className="ms-2">Give Feedback</span>
-                  )}
-                </Link>
-              </li>
-                )
-              }
-
-          
+              {userData && userData.role === "user" && (
+                <li className="nav-item">
+                  <Link
+                    className="nav-link text-white"
+                    onClick={() => setFeedBackModal(true)}
+                  >
+                    <i className="fa-solid fa-comment-dots"></i>{" "}
+                    {(!isMobile || showMobileMenu) && (
+                      <span className="ms-2">Give Feedback</span>
+                    )}
+                  </Link>
+                </li>
+              )}
 
               <li className="nav-item mt-3">
                 <button onClick={handleToast} className="btn btn-danger w-100">
@@ -500,14 +505,13 @@ function Sidebar({
                   Let us know what you think about our service. Your feedback
                   helps us improve and serve you better.
                 </p>
-               <textarea
-  className="form-control mb-3 shadow-sm"
-  placeholder="Enter your comment here..."
-  rows={4}
-  value={feedBack}
-  onChange={(e) => setFeedBack(e.target.value)}
-></textarea>
-
+                <textarea
+                  className="form-control mb-3 shadow-sm"
+                  placeholder="Enter your comment here..."
+                  rows={4}
+                  value={feedBack}
+                  onChange={(e) => setFeedBack(e.target.value)}
+                ></textarea>
               </div>
 
               <div className="modal-footer">
