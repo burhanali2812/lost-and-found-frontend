@@ -354,39 +354,37 @@ function ItemButtons({
                           </p>
                         </div>
                       </div>
+<div className="d-flex flex-wrap justify-content-center align-items-center gap-2 mt-2">
+  <button
+    className="btn btn-success btn-sm"
+    title="WhatsApp"
+    onClick={handleWhatsapp}
+  >
+    <i className="fa-brands fa-whatsapp me-1"></i> WhatsApp
+  </button>
 
-                      <div className="d-flex justify-content-center align-items-center gap-3 mt-2">
-                        <button
-                          className="btn btn-success "
-                          title="WhatsApp"
-                          onClick={handleWhatsapp}
-                        >
-                          <i className="fa-brands fa-whatsapp me-1"></i>{" "}
-                          WhatsApp
-                        </button>
+  <button
+    className={`btn btn-sm ${
+      save[savedItem._id]
+        ? "btn-outline-warning"
+        : "btn-warning"
+    }`}
+    title="Save"
+    onClick={() => handleSave(savedItem._id)}
+  >
+    <i className="fa-solid fa-bookmark me-1"></i>
+    {save[savedItem._id] ? "Saved" : "Save"}
+  </button>
 
-                        <button
-                          className={`${
-                            save[savedItem._id]
-                              ? "btn btn-outline-warning"
-                              : "btn btn-warning"
-                          } `}
-                          title="Save"
-                          onClick={() => handleSave(savedItem._id)}
-                        >
-                          <i className="fa-solid fa-bookmark me-1"></i>
-                          {save[savedItem._id] ? " Saved" : "Save"}
-                        </button>
+  <button
+    className="btn btn-danger btn-sm"
+    title="Delete"
+    onClick={() => handleDeleteItem(savedItem._id)}
+  >
+    <i className="fa-solid fa-trash me-1"></i> Delete
+  </button>
+</div>
 
-                        <button
-                          className="btn btn-danger"
-                          title="Delete"
-                          onClick={() => handleDeleteItem(savedItem._id)}
-                        >
-                          <i className="fa-solid fa-trash me-1"></i>{" "}
-                          Delete
-                        </button>
-                      </div>
 
                       <hr
                         className="my-3"
