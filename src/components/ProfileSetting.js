@@ -928,7 +928,7 @@ function ProfileSetting() {
                               style={{ cursor: "pointer", marginLeft: "15px" }}
                             >
                               <i
-                                className="fas fa-sync-alt"
+                                className="fas fa-camera"
                                 style={{
                                   color: "#ffc107",
                                   marginRight: "5px",
@@ -991,7 +991,7 @@ function ProfileSetting() {
                               style={{ cursor: "pointer", marginLeft: "15px" }}
                             >
                               <i
-                                className="fas fa-sync-alt"
+                                className="fas fa-camera"
                                 style={{
                                   color: "#ffc107",
                                   marginRight: "5px",
@@ -1006,7 +1006,7 @@ function ProfileSetting() {
 
                             <input
                               type="file"
-                              id="cnicBack"
+                              id="cnicback"
                               accept="image/*"
                               className="d-none"
                               onChange={(e) =>
