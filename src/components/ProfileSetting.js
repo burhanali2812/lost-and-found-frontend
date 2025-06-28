@@ -925,17 +925,17 @@ function ProfileSetting() {
                           <>
                             <label
                               htmlFor="cnicFront"
-                              style={{ cursor: "pointer", marginLeft: "15px" }}
+                              style={{ cursor: "pointer", marginLeft: "50px" }}
                             >
                               <i
-                                className="fas fa-camera"
+                                className="fas fa-camera text-primary"
                                 style={{
-                                  color: "#ffc107",
+                               
                                   marginRight: "5px",
                                 }}
                               ></i>
                               <span
-                                style={{ color: "#ffc107", fontWeight: "500" }}
+                                className="text-primary"
                               >
                                 Change
                               </span>
@@ -988,17 +988,17 @@ function ProfileSetting() {
                           <>
                             <label
                               htmlFor="cnicback"
-                              style={{ cursor: "pointer", marginLeft: "15px" }}
+                              style={{ cursor: "pointer", marginLeft: "50px" }}
                             >
                               <i
-                                className="fas fa-camera"
+                                className="fas fa-camera  text-primary"
                                 style={{
-                                  color: "#ffc107",
+                                 
                                   marginRight: "5px",
                                 }}
                               ></i>
                               <span
-                                style={{ color: "#ffc107", fontWeight: "500" }}
+                                className="text-primary"
                               >
                                 Change
                               </span>
