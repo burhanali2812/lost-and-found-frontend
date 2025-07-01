@@ -71,27 +71,27 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
   };
 
 
-   const getUpdatedFoundItem = async () => {
-    try {
-      const response = await fetch(
-        "https://lost-and-found-backend-xi.vercel.app/auth/get-foundItems",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (!response.ok) return;
+  //  const getUpdatedFoundItem = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       "https://lost-and-found-backend-xi.vercel.app/auth/get-foundItems",
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
+  //     if (!response.ok) return;
 
-      const data = await response.json();
+  //     const data = await response.json();
     
-      setFoundItems(data.foundItems);
-    } catch (error) {
-      console.error("Error fetching Lost Items:", error);
-    }
-  };
+  //     setFoundItems(data.foundItems);
+  //   } catch (error) {
+  //     console.error("Error fetching Lost Items:", error);
+  //   }
+  // };
 
   useEffect(() => {
     setLoading(true);
@@ -104,9 +104,8 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
     });
   }, []); // Run only once
 
-  const verifyFoundItems = async (id, userID, subcata, brandnew) => {
-    setSelectedSubcategory(subcata)
-    setSelectedBrand(brandnew);
+  const verifyFoundItems = async (id, userID) => {
+  
     try {
       const response = await fetch(
         `https://lost-and-found-backend-xi.vercel.app/auth/verifyFoundItems/${id}`,
@@ -123,7 +122,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
         showToast("error", "Error Verifying Request", 3000, "top-right");
         return;
       }
-     await  getUpdatedFoundItem();
+     await  getLostItems();
       try {
         const response = await fetch(
           "https://lost-and-found-backend-xi.vercel.app/auth/pushNotification",
@@ -164,9 +163,11 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
     
     selectedCity,
     selectedCategory,
-    userId
+    userId,
+     updatedSubcatagory,
+      updatedBrand
   ) => {
-   await getUpdatedFoundItem()
+  // await getUpdatedFoundItem()
     let fetchedItems;
     try {
       const response = await fetch(
@@ -198,16 +199,16 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
       return;
     }
 
-    console.log("Selected Subcategory:", selectedSubcategory);
-    console.log("Selected Brand:", selectedBrand);
+    console.log("Selected Subcategory:", updatedSubcatagory);
+    console.log("Selected Brand:", updatedBrand);
 
     const checkSubcategory = fetchedItems.filter(
-      (item) => item.subCategory === selectedSubcategory
+      (item) => item.subCategory === updatedSubcatagory
     );
     console.log("Filtered by subCategory:", checkSubcategory);
 
     const checkBrand = checkSubcategory.filter(
-      (item) => item.brand === selectedBrand
+      (item) => item.brand === updatedBrand
     );
     console.log("Filtered by brand:", checkBrand);
 
@@ -246,11 +247,13 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
   };
 
   const handleApprove = async (checkLostItem) => {
-    await verifyFoundItems(checkLostItem._id, checkLostItem.userId, checkLostItem.subCategory, checkLostItem.brand ); // still approve first
+    await verifyFoundItems(checkLostItem._id, checkLostItem.userId); // still approve first
     await handleSearchingNotification(
       checkLostItem.city,
       checkLostItem.category,
-      checkLostItem.userId
+      checkLostItem.userId,
+      checkLostItem.subCategory, 
+      checkLostItem.brand 
     ); // then search and notify
   };
 
