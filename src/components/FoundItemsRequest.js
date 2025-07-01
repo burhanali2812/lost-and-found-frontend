@@ -70,7 +70,6 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
     }
   };
 
-
   //  const getUpdatedFoundItem = async () => {
   //   try {
   //     const response = await fetch(
@@ -86,7 +85,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
   //     if (!response.ok) return;
 
   //     const data = await response.json();
-    
+
   //     setFoundItems(data.foundItems);
   //   } catch (error) {
   //     console.error("Error fetching Lost Items:", error);
@@ -105,7 +104,6 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
   }, []); // Run only once
 
   const verifyFoundItems = async (id, userID) => {
-  
     try {
       const response = await fetch(
         `https://lost-and-found-backend-xi.vercel.app/auth/verifyFoundItems/${id}`,
@@ -122,7 +120,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
         showToast("error", "Error Verifying Request", 3000, "top-right");
         return;
       }
-     await  getLostItems();
+      await getLostItems();
       try {
         const response = await fetch(
           "https://lost-and-found-backend-xi.vercel.app/auth/pushNotification",
@@ -160,14 +158,13 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
   };
 
   const handleSearchingNotification = async (
-    
     selectedCity,
     selectedCategory,
     userId,
-     updatedSubcatagory,
-      updatedBrand
+    updatedSubcatagory,
+    updatedBrand
   ) => {
-  // await getUpdatedFoundItem()
+    // await getUpdatedFoundItem()
     let fetchedItems;
     try {
       const response = await fetch(
@@ -210,6 +207,13 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
     const checkBrand = checkSubcategory.filter(
       (item) => item.brand === updatedBrand
     );
+    const userIds = checkBrand?.map((item) => item.userId) || [];
+    if (userIds.length === 0) {
+      showToast("error", "No users found to notify.", 3000, "top-right");
+      return; // stop the function here
+    }
+    const itemsIds = checkBrand?.map((item) => item._id) || [];
+
     console.log("Filtered by brand:", checkBrand);
 
     // Check if brand match exists before sending notification
@@ -239,9 +243,42 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
         });
 
         // setSelectedBrands(checkBrand);
-        showToast("success" ,"Notifications Sent Successfully", 3000 , "top-right");
+        showToast(
+          "success",
+          "Notifications Sent Successfully",
+          3000,
+          "top-right"
+        );
       } catch (error) {
         console.error("Error Pushing Notification:", error);
+      }
+
+      for (const item of checkBrand) {
+        try {
+          const notificationResponse = await fetch(
+            "https://lost-and-found-backend-xi.vercel.app/auth/postSavedItems",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              body: JSON.stringify({
+                userId: item.userId,
+                itemId: item._id,
+              }),
+            }
+          );
+
+          if (!notificationResponse.ok) {
+            alert("Error saving item");
+            return;
+          }
+
+          console.log("Saved item:", item._id);
+        } catch (error) {
+          console.error("Error saving item:", error);
+        }
       }
     }
   };
@@ -252,8 +289,8 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
       checkLostItem.city,
       checkLostItem.category,
       checkLostItem.userId,
-      checkLostItem.subCategory, 
-      checkLostItem.brand 
+      checkLostItem.subCategory,
+      checkLostItem.brand
     ); // then search and notify
   };
 
@@ -298,7 +335,12 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
           showToast("error", "Notification Sending error", 3000, "top-right");
           return;
         }
-        showToast("success" ,"Notifications Sent Successfully", 3000 , "top-right");
+        showToast(
+          "success",
+          "Notifications Sent Successfully",
+          3000,
+          "top-right"
+        );
         showToast(
           "success",
           "Notification Sent Successfully",
@@ -350,7 +392,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
       setCnic(newUser.cnic || "Not available");
       setContact(newUser.phone || "Not available");
       setAddress(newUser.address || "Not available");
-   
+
       setProfileImage(newUser.profileImage);
 
       setTitle(foundItems.title || "");
