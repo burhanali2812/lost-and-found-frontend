@@ -104,7 +104,9 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
     });
   }, []); // Run only once
 
-  const verifyFoundItems = async (id, userID) => {
+  const verifyFoundItems = async (id, userID, subcata, brandnew) => {
+    setSelectedSubcategory(subcata)
+    setSelectedBrand(brandnew);
     try {
       const response = await fetch(
         `https://lost-and-found-backend-xi.vercel.app/auth/verifyFoundItems/${id}`,
@@ -244,7 +246,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
   };
 
   const handleApprove = async (checkLostItem) => {
-    await verifyFoundItems(checkLostItem._id, checkLostItem.userId); // still approve first
+    await verifyFoundItems(checkLostItem._id, checkLostItem.userId, checkLostItem.subCategory, checkLostItem.brand ); // still approve first
     await handleSearchingNotification(
       checkLostItem.city,
       checkLostItem.category,
