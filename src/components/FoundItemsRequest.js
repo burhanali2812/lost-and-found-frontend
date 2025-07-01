@@ -70,6 +70,29 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
     }
   };
 
+
+   const getUpdatedFoundItem = async () => {
+    try {
+      const response = await fetch(
+        "https://lost-and-found-backend-xi.vercel.app/auth/get-foundItems",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (!response.ok) return;
+
+      const data = await response.json();
+    
+      setFoundItems(data.foundItems);
+    } catch (error) {
+      console.error("Error fetching Lost Items:", error);
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
 
@@ -98,7 +121,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
         showToast("error", "Error Verifying Request", 3000, "top-right");
         return;
       }
-      getLostItems();
+     await  getUpdatedFoundItem();
       try {
         const response = await fetch(
           "https://lost-and-found-backend-xi.vercel.app/auth/pushNotification",
@@ -136,10 +159,12 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
   };
 
   const handleSearchingNotification = async (
+    
     selectedCity,
     selectedCategory,
     userId
   ) => {
+   await getUpdatedFoundItem()
     let fetchedItems;
     try {
       const response = await fetch(
@@ -466,7 +491,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
                 <div className="modal-header border-0">
                   <h5 className="modal-title" id="verifyLostItemLabel">
                     <i className="fas fa-search me-2 text-success"></i>Verify
-                    Lost Item Request | Lost & Found
+                    Found Item Request | Lost & Found
                   </h5>
                   <button
                     type="button"
