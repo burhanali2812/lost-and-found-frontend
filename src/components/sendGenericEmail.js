@@ -1,10 +1,7 @@
 import emailjs from '@emailjs/browser';
 
 emailjs.init(process.env.REACT_APP_EMAIL_PUBLIC_ID); 
-console.log("Public ID:", process.env.REACT_APP_EMAIL_PUBLIC_ID);
-console.log("Service ID:", process.env.REACT_APP_EMAIL_SERVICE_ID);
-console.log("Template Generic ID:", process.env.REACT_APP_EMAIL_TEMPLATE_GENERIC_ID);
-console.log("Template OTP ID:", process.env.REACT_APP_EMAIL_TEMPLATE_OTP_ID);
+
 
 
 export const sendGenericEmail = (

@@ -661,15 +661,17 @@ function ReportLostItems() {
       return;
     }
 
-    const selectedDate = new Date(date);
-    const today = new Date();
+   const selectedDate = new Date(date);
+selectedDate.setHours(0, 0, 0, 0); // clear time from selected date
 
-    today.setHours(0, 0, 0, 0);
+const today = new Date();
+today.setHours(0, 0, 0, 0); // clear time from today
 
-    if (selectedDate > today) {
-      alert("Date cannot be in the future. Please select a valid date.");
-      return;
-    }
+if (selectedDate > today) {
+  alert("Date cannot be in the future. Please select a valid date.");
+  return;
+}
+
 
     if (!selectedCategory) {
       alert("Please Select Category");
