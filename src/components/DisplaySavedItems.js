@@ -32,7 +32,7 @@ function DisplaySavedItems() {
       const data = await response.json();
       const userSavedItems = (data.saveditems || []).filter(
         (item) => String(item.userId) === String(userId)
-        //&& !item.isDeleted
+        && !item.isDeleted
       );
       const filteredSaved = userSavedItems.filter(
         (item) => item.isSaved === true
@@ -118,7 +118,8 @@ function DisplaySavedItems() {
                   item={item}
                   savedItem={savedItem}
                   onDelete={UpdateSaveItem}
-                  onSave={UpdateSaveItem} // This might be undefined if no match
+                  onSave={UpdateSaveItem}
+                  display = {"savedItems"} // This might be undefined if no match
                 />
               );
             })}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Carousel from "./Carousel";
 import ItemButtons from "./ItemButtons";
 
-export default function ItemCard({ item, savedItem, onDelete, onSave }) {
+export default function ItemCard({ item, savedItem, onDelete, onSave , display}) {
   const placeholderIcon = "https://via.placeholder.com/150?text=No+Image";
   const [userName, setUserName] = useState("");
   const [title, setTitle] = useState("");
@@ -148,6 +148,7 @@ export default function ItemCard({ item, savedItem, onDelete, onSave }) {
             description={description}
             location={location}
             city={city}
+            display= {"savedItems"}
           />
         </div>
       </div>
