@@ -23,6 +23,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
   const [profileImage, setProfileImage] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
   const [Loading, setLoading] = useState(false);
+  let currentFoundItemId;
   //const {setSelectedBrands} = useContext(BrandContext);
 
   const getUser = async () => {
@@ -104,6 +105,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
   }, []); // Run only once
 
   const verifyFoundItems = async (id, userID) => {
+   
     try {
       const response = await fetch(
         `https://lost-and-found-backend-xi.vercel.app/auth/verifyFoundItems/${id}`,
@@ -121,6 +123,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
         return;
       }
       await getLostItems();
+       
       try {
         const response = await fetch(
           "https://lost-and-found-backend-xi.vercel.app/auth/pushNotification",
@@ -143,6 +146,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
           showToast("error", "Notification Sending error", 3000, "top-right");
           return;
         }
+        currentFoundItemId = id;
         showToast(
           "success",
           "Notification Sent Successfully",
@@ -265,7 +269,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
               },
               body: JSON.stringify({
                 userId: item.userId,
-                itemId: item._id,
+                itemId: currentFoundItemId,
               }),
             }
           );
