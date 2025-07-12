@@ -15,6 +15,7 @@ import DisplaySavedItems from "./components/DisplaySavedItems";
 import EmailOTPManage from "./components/EmailOTPManage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProfileSetting from "./components/ProfileSetting";
+import AllUsersData from "./components/AllUsersData";
 
 function App() {
   const [user, setUser] = useState([]);
@@ -191,6 +192,12 @@ function App() {
                       setFoundItems={setFoundItems}
                       onApprove={handleApprove}
                     />
+                  }
+                />
+                  <Route
+                  path="/getallUsersData"
+                  element={
+                    <AllUsersData/>
                   }
                 />
                 <Route

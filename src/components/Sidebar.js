@@ -273,6 +273,7 @@ function Sidebar({
               ) : (
                 ""
               )}
+            
 
               {userData && userData.role === "admin" && (
                 <>
@@ -414,6 +415,21 @@ function Sidebar({
               </li>
                 )
               }
+
+                {userData && userData.role === "admin" && (
+                	
+                  <>
+                  <li className="nav-item mt-2">
+                  <Link to="/getallUsersData" className="nav-link text-white">
+                    <i class="fas fa-users"></i>
+                    {(!isMobile || showMobileMenu) && (
+                      <span className="ms-2">All Users Data</span>
+                    )}
+                   
+                  </Link>
+                </li>
+                  </>
+              )}
 
           
 
