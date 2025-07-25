@@ -12,6 +12,8 @@ export default function ItemCard({ item, savedItem, onDelete, onSave , display})
   const [profileImage, setProfileImage] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
+  const itemsType = display === "savedItems" ? "savedItems" : "matchedItems"
+
   const rawImages = Array.isArray(item?.imageUrl)
     ? item.imageUrl
     : [item?.imageUrl || ""];
@@ -148,7 +150,7 @@ export default function ItemCard({ item, savedItem, onDelete, onSave , display})
             description={description}
             location={location}
             city={city}
-            display= {"savedItems"}
+            display= {itemsType}
           />
         </div>
       </div>

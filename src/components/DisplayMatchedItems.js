@@ -101,6 +101,7 @@ function DisplayMatchedItems() {
                   item={item}
                   savedItem={savedItem}
                   onDelete={deleteSaveItem} 
+                  display = {"matchedItems"}
                 />
               );
             })}
