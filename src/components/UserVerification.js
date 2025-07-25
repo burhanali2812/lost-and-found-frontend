@@ -186,7 +186,12 @@ function UserVerification({ user, setUser }) {
   };
 
   return (
-    <div className="container table-responsive">
+    <div>
+       <h1 className="text-center mt-4">
+        <i class="fa-solid fa-users me-2"></i>Driver List
+      </h1>
+
+         <div className="container table-responsive">
       <table className="table table-striped table-hover text-center my-3">
         <thead>
           <tr>
@@ -494,6 +499,8 @@ function UserVerification({ user, setUser }) {
         </div>
       </div>
     </div>
+    </div>
+ 
   );
 }
 
