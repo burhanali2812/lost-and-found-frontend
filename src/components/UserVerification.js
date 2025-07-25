@@ -186,7 +186,7 @@ function UserVerification({ user, setUser }) {
   };
 
   return (
-    <div className="container">
+    <div className="container table-responsive">
       <table className="table table-striped table-hover text-center my-3">
         <thead>
           <tr>

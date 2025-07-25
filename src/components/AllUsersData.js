@@ -61,7 +61,7 @@ function AllUsersData() {
   return (
     <div>
       <ToastContainer />
-      <div className="container">
+      <div className="container table-responsive">
         <table className="table table-striped table-hover  my-3">
           <thead>
             <tr>
