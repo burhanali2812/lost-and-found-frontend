@@ -30,7 +30,7 @@ function DisplayMatchedItems() {
 
       const data = await response.json();
       const userSavedItems = (data.saveditems || []).filter(
-        (item) => String(item.userId) === String(userId) && !item.isDeletedFromDisplayed
+        (item) => String(item.userId) === String(userId) && !item.isDeleted
       );
       console.log("userSavedItems", userSavedItems)
 
