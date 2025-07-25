@@ -159,22 +159,18 @@ function ItemButtons({
       console.error("Error saving item:", error);
     }
   };
-  const handleDeleteItem = async (id) => {
-    if (display === "savedItems") {
-      await handleDeleteSavedItem(id);
-    } else {
-      await handleDeleteDisplayItem(id);
-    }
-  };
+
 
   const handleDeleteSavedItem = async (id) => {
-    console.log(display)
+    console.log(display);
     const check = window.confirm("Are you sure you want to delete it?");
     if (!check) return;
 
     try {
       const response = await fetch(
-`https://lost-and-found-backend-xi.vercel.app/auth/${display === "savedItems" ? "delete-savedItems" : "delete-displayItems"}/${id}`,
+        `https://lost-and-found-backend-xi.vercel.app/auth/${
+          display === "savedItems" ? "delete-savedItems" : "delete-displayItems"
+        }/${id}`,
         {
           method: "PUT",
           headers: {
@@ -192,30 +188,7 @@ function ItemButtons({
       console.error("Delete error:", error);
     }
   };
-  const handleDeleteDisplayItem = async (id) => {
-    const check = window.confirm("Are you sure you want to delete it?");
-    if (!check) return;
 
-    try {
-      const response = await fetch(
-        `https://lost-and-found-backend-xi.vercel.app/auth/delete-displayItems/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        showToast("error", "Unable to delete SavedItems", 3000, "top-right");
-      }
-      onDelete();
-      showToast("success", "SavedItem Deleted Successfully", 3000, "top-right");
-    } catch (error) {
-      console.error("Delete error:", error);
-    }
-  };
 
   useEffect(() => {
     const savedState = JSON.parse(localStorage.getItem("saveState")) || {};
@@ -261,7 +234,7 @@ function ItemButtons({
         <button
           className="btn btn-danger btn-sm"
           title="Delete"
-          onClick={() => handleDeleteItem(savedItem._id)}
+          onClick={() => handleDeleteSavedItem(savedItem._id)}
         >
           <i className="fa-solid fa-trash me-2"></i> Delete
         </button>
@@ -419,7 +392,7 @@ function ItemButtons({
                           <button
                             className="btn btn-danger btn-sm"
                             title="Delete"
-                            onClick={() => handleDeleteItem(savedItem._id)}
+                            onClick={() => handleDeleteSavedItem(savedItem._id)}
                           >
                             <i className="fa-solid fa-trash me-1"></i> Delete
                           </button>
@@ -547,7 +520,7 @@ function ItemButtons({
                             <button
                               type="button"
                               className="btn btn-danger"
-                              onClick={() => handleDeleteItem(savedItem._id)}
+                              onClick={() => handleDeleteSavedItem(savedItem._id)}
                             >
                               <i className="fa-solid fa-trash me-1"></i>
                               Delete
