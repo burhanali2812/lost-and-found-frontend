@@ -161,9 +161,9 @@ function ItemButtons({
   };
   const handleDeleteItem = async (id) => {
     if (display === "savedItems") {
-      await handleDeleteSavedItem();
+      await handleDeleteSavedItem(id);
     } else {
-      await handleDeleteDisplayItem();
+      await handleDeleteDisplayItem(id);
     }
   };
 
