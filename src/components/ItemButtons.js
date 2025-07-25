@@ -168,12 +168,13 @@ function ItemButtons({
   };
 
   const handleDeleteSavedItem = async (id) => {
+    console.log(display)
     const check = window.confirm("Are you sure you want to delete it?");
     if (!check) return;
 
     try {
       const response = await fetch(
-        `https://lost-and-found-backend-xi.vercel.app/auth/delete-savedItems/${id}`,
+`https://lost-and-found-backend-xi.vercel.app/auth/${display === "savedItems" ? "delete-savedItems" : "delete-displayItems"}/${id}`,
         {
           method: "PUT",
           headers: {
