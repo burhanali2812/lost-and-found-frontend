@@ -12,6 +12,9 @@ function Notification({ notification, setNotification }) {
   const handledisplayImage = () => {
     navigate("/displayImages");
   };
+  const handleUpdateProfile = ()=>{
+    navigate("/profileSetting")
+  }
 
   const getNotifications = async () => {
     try {
@@ -101,6 +104,10 @@ function Notification({ notification, setNotification }) {
     }
   };
 const deleteAccount = async () => {
+  const confirm = window.confirm("Are you sure to delete account permanently?")
+  if(!confirm){
+    return
+  }
   try {
     const response = await fetch(
       "https://lost-and-found-backend-xi.vercel.app/auth/deleteUser",
@@ -185,7 +192,7 @@ const deleteAccount = async () => {
             {/* Buttons */}
             {notifications.title === "Request Declined" ? (
               <div className="d-flex flex-column flex-sm-row justify-content-end align-items-stretch align-items-sm-center gap-2 mt-3">
-                <button className="btn btn-outline-primary btn-sm w-100 w-sm-auto">
+                <button className="btn btn-outline-primary btn-sm w-100 w-sm-auto" onClick={handleUpdateProfile}>
                   <i className="fas fa-user-edit me-2"></i>
                   Update Profile & Resubmit
                 </button>

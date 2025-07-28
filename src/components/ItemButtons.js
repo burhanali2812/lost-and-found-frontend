@@ -100,10 +100,13 @@ function ItemButtons({
   };
 
   const handleWhatsapp = () => {
+    console.log("current item location", currentItemData?.location)
+    console.log("location", location)
     if (!phoneNumber) {
       showToast("warning", "Phone number not available.", 3000, "top-right");
       return;
     }
+
 
     const message = `Respected Dear ${userName},\n\nI hope you are doing well. I just saw the item you found titled '${
       currentItemData?.title || title || ""

@@ -649,6 +649,17 @@ function Signup() {
       );
       return;
     }
+   if (password.length < 8) {
+  showToast(
+    "warning",
+    "Password must be at least 8 characters long",
+    3000,
+    "top-right"
+  );
+  return;
+}
+
+
 
     try {
       const response = await fetch(
@@ -886,7 +897,7 @@ function Signup() {
                         />
                       </div>
 
-                      {/* Password */}
+                   
 
                       <div className="d-grid">
                         <button
