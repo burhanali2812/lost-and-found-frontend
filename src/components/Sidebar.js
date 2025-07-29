@@ -175,7 +175,7 @@ function Sidebar({
           }}
         >
           {/* Logo */}
-          <h4 className="text-center mt-4 fw-bold text-white">
+          <h4 className="text-center mt-4 fw-bold text-white mt-4">
             <i className="fa-solid fa-magnifying-glass-location me-2"></i>
             {!isMobile || showMobileMenu ? "LOST & FOUND HUB" : ""}
           </h4>

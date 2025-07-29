@@ -110,7 +110,7 @@ return (
          <i className="fa-solid fa-bookmark me-2"></i> Saved Items
       </h1>
        
-        <div className="row">
+        <div className="row mt-3">
           {matchedItems.length === 0 && userItem.length === 0 ? (
             <>
               <div className="d-flex justify-content-center mt-5">

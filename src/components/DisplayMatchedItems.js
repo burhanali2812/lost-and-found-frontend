@@ -106,7 +106,7 @@ return (
       </h1>
      
 
-      <div className="row">
+      <div className="row mt-3">
         {!loading && matchedItems.length === 0 && userItem.length === 0 ? (
           <p>No matched or saved items found.</p>
         ) : (
