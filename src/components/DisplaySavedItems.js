@@ -6,6 +6,7 @@ import match from "../images/match.jpg"
 function DisplaySavedItems() {
   const [matchedItems, setMatchedItems] = useState([]);
   const [userItem, setUserItem] = useState([]);
+    
 
   const [loading, setLoading] = useState(true); // State for loading
   const userId = localStorage.getItem("userId");
@@ -81,33 +82,47 @@ function DisplaySavedItems() {
     getAllSavedItems();
   };
 
-  return (
-    <>
-    <ToastContainer/>
-    <div className="container">
-      <div className="row">
-        {loading ? ( // Show loading state
-          <p>Loading...</p>
-        ) : matchedItems.length === 0 && userItem.length === 0 ? (
-          <>
-           <div className="d-flex justify-content-center mt-5">
-                 <img
-                   src={match}
-                   alt="Notification"
-                   className="img-fluid"
-                   style={{ width: "100%", maxWidth: "500px" }}
-                 />
-                 
-               </div>
-          <div className="text-center fw-bold">
-            <h3 style={{opacity: "0.5"}}>No Saved Or Matched Item Found</h3>
-          </div>
-          </>
-        
-               
-        ) : (
-          <>
-            {matchedItems.map((item) => {
+return (
+  <>
+    <ToastContainer />
+
+    {/* Full-screen loading spinner */}
+    {loading && (
+      <div
+        className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-75"
+        style={{ zIndex: 1055 }}
+      >
+        <button className="btn btn-dark" type="button" disabled>
+          <span
+            className="spinner-border spinner-border-sm me-2"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Loading...
+        </button>
+      </div>
+    )}
+
+    {/* Main content only renders when not loading */}
+    {!loading && (
+      <div className="container">
+        <div className="row">
+          {matchedItems.length === 0 && userItem.length === 0 ? (
+            <>
+              <div className="d-flex justify-content-center mt-5">
+                <img
+                  src={match}
+                  alt="Notification"
+                  className="img-fluid"
+                  style={{ width: "100%", maxWidth: "500px" }}
+                />
+              </div>
+              <div className="text-center fw-bold">
+                <h3 style={{ opacity: "0.5" }}>No Saved Or Matched Item Found</h3>
+              </div>
+            </>
+          ) : (
+            matchedItems.map((item) => {
               const savedItem = userItem.find(
                 (u) => String(u.itemId) === String(item._id)
               );
@@ -119,16 +134,17 @@ function DisplaySavedItems() {
                   savedItem={savedItem}
                   onDelete={UpdateSaveItem}
                   onSave={UpdateSaveItem}
-                  display = {"savedItems"} // This might be undefined if no match
+                  display="savedItems"
                 />
               );
-            })}
-          </>
-        )}
+            })
+          )}
+        </div>
       </div>
-    </div>
-    </>
-  );
+    )}
+  </>
+);
+
 }
 
 export default DisplaySavedItems;

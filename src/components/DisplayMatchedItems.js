@@ -6,6 +6,7 @@ function DisplayMatchedItems() {
   const [matchedItems, setMatchedItems] = useState([]);
   const [userItem, setUserItem] = useState([]);
 
+
   const [loading, setLoading] = useState(true); // State for loading
   const userId = localStorage.getItem("userId");
 
@@ -79,38 +80,52 @@ function DisplayMatchedItems() {
     getAllSavedItems();
   };
 
-  return (
-    <>
-    <ToastContainer/>
+return (
+  <>
+    <ToastContainer />
+
+    {loading && (
+      <div
+        className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-75"
+        style={{ zIndex: 1055 }}
+      >
+        <button className="btn btn-dark" type="button" disabled>
+          <span
+            className="spinner-border spinner-border-sm me-2"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Loading...
+        </button>
+      </div>
+    )}
+
     <div className="container">
       <div className="row">
-        {loading ? ( // Show loading state
-          <p>Loading...</p>
-        ) : matchedItems.length === 0 && userItem.length === 0 ? (
+        {!loading && matchedItems.length === 0 && userItem.length === 0 ? (
           <p>No matched or saved items found.</p>
         ) : (
-          <>
-            {matchedItems.map((item) => {
-              const savedItem = userItem.find(
-                (u) => String(u.itemId) === String(item._id)
-              );
+          matchedItems.map((item) => {
+            const savedItem = userItem.find(
+              (u) => String(u.itemId) === String(item._id)
+            );
 
-              return (
-                <ItemCard
-                  key={item._id || item.itemId}
-                  item={item}
-                  savedItem={savedItem}
-                  onDelete={deleteSaveItem} 
-                  display = {"matchedItems"}
-                />
-              );
-            })}
-          </>
+            return (
+              <ItemCard
+                key={item._id || item.itemId}
+                item={item}
+                savedItem={savedItem}
+                onDelete={deleteSaveItem}
+                display="matchedItems"
+              />
+            );
+          })
         )}
       </div>
     </div>
-    </>
-  );
+  </>
+);
+
 }
 
 export default DisplayMatchedItems;
