@@ -33,7 +33,7 @@ function DisplayMatchedItems() {
       const userSavedItems = (data.saveditems || []).filter(
         (item) => String(item.userId) === String(userId) && !item.isDeletedFromDisplayed
       );
-      console.log("userSavedItems", userSavedItems)
+    
 
       setUserItem(userSavedItems);
 
@@ -43,7 +43,7 @@ function DisplayMatchedItems() {
         setMatchedItems([]);
         return;
       }
-      console.log("itemIds", itemIds)
+    
 
       const foundItemsResponse = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/get-foundItemsByIds",
@@ -63,7 +63,7 @@ function DisplayMatchedItems() {
 
       const foundItemsData = await foundItemsResponse.json();
       setMatchedItems(foundItemsData.foundItems || []);
-      console.log("foundItemsData", foundItemsData.foundItems)
+
     } catch (error) {
       console.error("Error:", error);
       showToast( "error","Something went wrong. Please try again later.", 3000 ,"top-right");
@@ -101,6 +101,11 @@ return (
     )}
 
     <div className="container">
+        <h1 className="text-center mt-4">
+          <i className="fa-solid fa-circle-check text-success me-2"></i> Possible Matched Items
+      </h1>
+     
+
       <div className="row">
         {!loading && matchedItems.length === 0 && userItem.length === 0 ? (
           <p>No matched or saved items found.</p>

@@ -160,7 +160,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
       const data = await response.json();
 
       if (data.success) {
-        console.log("Fetched matched items:", data.foundItems);
+
         fetchedItems = data.foundItems;
       } else {
         console.error("Error fetching found items:", data.message);
@@ -171,7 +171,6 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
       return [];
     }
 
-    console.log("Fetched Items:", fetchedItems);
 
     if (!Array.isArray(fetchedItems) || fetchedItems.length === 0) {
       console.error("No matched items found:", fetchedItems);
@@ -181,12 +180,12 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
     const checkSubcategory = fetchedItems.filter(
       (item) => item.subCategory === selectedSubcategorys
     );
-    console.log("Filtered by subCategory:", checkSubcategory);
+
 
     const checkBrand = checkSubcategory.filter(
       (item) => item.brand === selectedBrands
     );
-    console.log("Filtered by brand:", checkBrand);
+
 
     // Check if brand match exists before sending notification
     if (checkBrand && checkBrand.length > 0) {
@@ -220,7 +219,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
       }
 
       for (const saveitem of checkBrand) {
-        console.log("Filtered by saved:", saveitem);
+
         try {
           const notificationResponse = await fetch(
             "https://lost-and-found-backend-xi.vercel.app/auth/postSavedItems",
@@ -259,7 +258,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
     ); // then search and notify
   };
   const declineLostItem = async () => {
-    console.log("selectedlost items", selectedLostItems);
+
     try {
       const response = await fetch(
         `https://lost-and-found-backend-xi.vercel.app/auth/verifyLostItems/${selectedLostItems._id}`,
@@ -277,7 +276,7 @@ function LostItemsRequest({ lostItems, setLostItems, onApprove }) {
         return;
       }
       getLostItems();
-      console.log("selectedlost items", selectedLostItems);
+ 
 
       try {
         const notificationResponse = await fetch(

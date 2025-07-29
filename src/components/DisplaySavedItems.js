@@ -106,6 +106,10 @@ return (
     {/* Main content only renders when not loading */}
     {!loading && (
       <div className="container">
+          <h1 className="text-center mt-4">
+         <i className="fa-solid fa-bookmark me-2"></i> Saved Items
+      </h1>
+       
         <div className="row">
           {matchedItems.length === 0 && userItem.length === 0 ? (
             <>

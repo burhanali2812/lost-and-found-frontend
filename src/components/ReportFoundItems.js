@@ -651,7 +651,7 @@ function ReportFoundItems() {
           return;
         }
         const data = await response.json();
-        console.log(data);
+ 
       } catch (error) {
         console.error("Error fetching Founitems:", error);
       }
@@ -731,7 +731,7 @@ function ReportFoundItems() {
     await new Promise((resolve) => setTimeout(resolve, 100));
     const formattedDate = new Date(date).toISOString().split("T")[0];
     const userId = localStorage.getItem("userId");
-    console.log("User ID:", userId);
+  
 
     const formData = new FormData();
     formData.append("userId", userId);
@@ -764,7 +764,7 @@ function ReportFoundItems() {
 
       if (response.ok) {
         setSubmit(true);
-        console.log("Item added successfully:", data);
+     
         alert("Item added successfully:", data);
         setSelectedCategory("");
         setSelectedSubcategory("");
@@ -789,7 +789,7 @@ function ReportFoundItems() {
     if (!event.target.files || event.target.files.length === 0) return;
 
     const files = Array.from(event.target.files);
-    console.log("Newly selected files:", files);
+
 
     setSelectedFiles(files); // accumulate files
   };
@@ -818,7 +818,7 @@ function ReportFoundItems() {
 
     setImages(newImages);
     setUploadedFiles(newUploadedFiles);
-    console.log(newUploadedFiles);
+
   };
   const handleDeleteImage = (index) => {
     const newImages = [...images];

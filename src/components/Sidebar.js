@@ -62,7 +62,7 @@ function Sidebar({
         setUserData(data.user);
        setUserName(data.user?.name || "Loading..");
 
-        console.log("userNam")
+    
       } catch (error) {
         console.error("Error fetching profile image:", error);
       }
@@ -421,7 +421,7 @@ function Sidebar({
                   <>
                   <li className="nav-item mt-2">
                   <Link to="/getallUsersData" className="nav-link text-white">
-                    <i class="fas fa-users"></i>
+                    <i className="fas fa-users"></i>
                     {(!isMobile || showMobileMenu) && (
                       <span className="ms-2">All Users Data</span>
                     )}

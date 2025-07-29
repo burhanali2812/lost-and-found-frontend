@@ -142,7 +142,7 @@ function ProfileSetting() {
     }
 
     try {
-      console.log("checkAction", action);
+
 
       const response = await fetch(
         "https://lost-and-found-backend-xi.vercel.app/auth/verify-password",
@@ -200,11 +200,7 @@ function ProfileSetting() {
       if (backSideCnicDB) formData.append("backCnic", backSideCnicDB);
       if (name) formData.append("name", name);
       if (address) formData.append("address", address);
-      console.log(profileImageDB,)
-      console.log(frontSideCnicDB,)
-      console.log(backSideCnicDB,)
-      console.log(name,)
-      console.log(address,)
+   
 
       try {
         const response = await fetch(
@@ -300,8 +296,7 @@ function ProfileSetting() {
   
       try {
         const compressedFile = await imageCompression(file, options);
-        console.log("Original:", file.size / 1024 / 1024, "MB");
-        console.log("Compressed:", compressedFile.size / 1024 / 1024, "MB");
+
   
         setPreview(URL.createObjectURL(compressedFile));
         setFileState(compressedFile);

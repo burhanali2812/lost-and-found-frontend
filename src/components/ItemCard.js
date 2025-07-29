@@ -57,7 +57,7 @@ export default function ItemCard({ item, savedItem, onDelete, onSave , display})
             );
 
             const data2 = await response2.json();
-            console.log("Phone number:", data2.user?.phone);
+         
             setPhoneNumber(data2.user?.phone);
             setUserName(data2.user?.name || "");
             const fixedPath = data2.user?.profileImage?.replace(/\\/g, "/");
@@ -66,7 +66,7 @@ export default function ItemCard({ item, savedItem, onDelete, onSave , display})
               : `https://lost-and-found-backend-xi.vercel.app/${fixedPath}`;
 
             setProfileImage(fullImageURL);
-            console.log("Profile Image URL:", data2.user?.profileImage);
+
           }
         }
       } catch (error) {

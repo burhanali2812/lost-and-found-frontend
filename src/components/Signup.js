@@ -202,8 +202,7 @@ function Signup() {
 
     try {
       const compressedFile = await imageCompression(file, options);
-      console.log("Original:", file.size / 1024 / 1024, "MB");
-      console.log("Compressed:", compressedFile.size / 1024 / 1024, "MB");
+   
 
       setPreview(URL.createObjectURL(compressedFile));
       setFileState(compressedFile);

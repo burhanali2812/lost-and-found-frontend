@@ -15,7 +15,7 @@ const useAuth = () => {
 
         try {
             const decoded = JSON.parse(atob(storedToken.split(".")[1]));
-            console.log("Decoded Token:", decoded);
+   
 
             if (decoded.exp * 1000 < Date.now()) {
                 localStorage.removeItem("token");

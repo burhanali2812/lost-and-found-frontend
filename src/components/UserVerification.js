@@ -56,12 +56,12 @@ function UserVerification({ user, setUser }) {
         return;
       }
       const data = await response.json();
-      console.log("data", data);
+    
       const filterUsers = data.users.filter(
         (user) => user.isVerified === "requested"
       );
       setUser(filterUsers);
-      console.log(filterUsers);
+     
     } catch (error) {
       console.error("Error fetching Users:", error);
     }
@@ -127,9 +127,7 @@ function UserVerification({ user, setUser }) {
           }),
         }
       );
-      console.log("Sending Notification To:", userIds);
-      console.log("Message:", finalMessage);
-      console.log("Title:", title);
+   
 
       if (!response.ok) {
         alert("Cannot Push Notification");
@@ -188,7 +186,7 @@ function UserVerification({ user, setUser }) {
   return (
     <div>
        <h1 className="text-center mt-4">
-        <i class="fa-solid fa-users me-2"></i>Users Requests
+        <i className="fa-solid fa-users me-2"></i>Users Requests
       </h1>
 
          <div className="container table-responsive">

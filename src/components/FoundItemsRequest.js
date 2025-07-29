@@ -182,7 +182,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
       const data = await response.json();
 
       if (data.success) {
-        console.log("Fetched matched items:", data.lostItems);
+ 
         fetchedItems = data.lostItems;
       } else {
         console.error("Error fetching found items:", data.message);
@@ -193,20 +193,18 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
       return [];
     }
 
-    console.log("Fetched Items:", fetchedItems);
+
 
     if (!Array.isArray(fetchedItems) || fetchedItems.length === 0) {
       console.error("No matched items found:", fetchedItems);
       return;
     }
 
-    console.log("Selected Subcategory:", updatedSubcatagory);
-    console.log("Selected Brand:", updatedBrand);
 
     const checkSubcategory = fetchedItems.filter(
       (item) => item.subCategory === updatedSubcatagory
     );
-    console.log("Filtered by subCategory:", checkSubcategory);
+
 
     const checkBrand = checkSubcategory.filter(
       (item) => item.brand === updatedBrand
@@ -218,7 +216,6 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
     }
     const itemsIds = checkBrand?.map((item) => item._id) || [];
 
-    console.log("Filtered by brand:", checkBrand);
 
     // Check if brand match exists before sending notification
     if (checkBrand && checkBrand.length > 0) {
@@ -279,7 +276,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
             return;
           }
 
-          console.log("Saved item:", item._id);
+       
         } catch (error) {
           console.error("Error saving item:", error);
         }
@@ -316,7 +313,7 @@ function FoundItemsRequest({ foundItems, setFoundItems }) {
         return;
       }
       getLostItems();
-      console.log("selectedFound items", setSelectedFoundItems);
+  
 
       try {
         const notificationResponse = await fetch(

@@ -68,7 +68,7 @@ function ItemButtons({
           const data2 = await response2.json();
           setCurrentUserData(data2.user);
           // setEmail(data2.user?.email || "");
-          console.log("Phone number2220", data2.user?.phone);
+       
 
           setPhoneNumber(data2.user?.phone || "");
           setUserName(data2.user?.name || "");
@@ -100,8 +100,7 @@ function ItemButtons({
   };
 
   const handleWhatsapp = () => {
-    console.log("current item location", currentItemData?.location)
-    console.log("location", location)
+
     if (!phoneNumber) {
       showToast("warning", "Phone number not available.", 3000, "top-right");
       return;
@@ -134,7 +133,7 @@ function ItemButtons({
 
     const encodedMessage = encodeURIComponent(message);
     const url = `https://api.whatsapp.com/send?phone=92${normalizedNumber}&text=${encodedMessage}`;
-    console.log("Redirecting to WhatsApp:", url);
+  
     window.open(url, "_blank");
   };
 
@@ -165,7 +164,7 @@ function ItemButtons({
 
 
   const handleDeleteSavedItem = async (id) => {
-    console.log(display);
+   
     const check = window.confirm("Are you sure you want to delete it?");
     if (!check) return;
 

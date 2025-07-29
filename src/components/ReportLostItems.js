@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { showToast } from "./Toastify2";
 function ReportLostItems() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
@@ -698,7 +699,7 @@ if (selectedDate > today) {
     await new Promise((resolve) => setTimeout(resolve, 100));
     const formattedDate = new Date(date).toISOString().split("T")[0];
 
-    console.log(userId);
+ 
     const formData = new FormData();
     formData.append("userId", userId);
     formData.append("title", title);
@@ -709,18 +710,7 @@ if (selectedDate > today) {
     formData.append("city", selectedCity);
     formData.append("location", location);
     formData.append("dateLost", formattedDate);
-    console.log("userId", userId);
-    console.log("title", title);
-    console.log("category", selectedCategory);
-    console.log("subCategory", selectedSubcategory);
-    console.log("brand", selectedBrand);
-    console.log("description", description);
-    console.log("city", selectedCity);
-    console.log("location", location);
-    console.log("dateLost", formattedDate);
-    uploadedFiles.forEach((file) => {
-      console.log("images", file);
-    });
+   
 
     uploadedFiles.forEach((file) => {
       formData.append("images", file);
@@ -741,12 +731,9 @@ if (selectedDate > today) {
 
       if (response.ok) {
           setSubmit(true)
-        console.log("Item added successfully:", data);
-        alert("Item added successfully:", data);
-        // localStorage.setItem("selectedCity", selectedCity);
-        // localStorage.setItem("selectedCategory", selectedCategory);
-        // localStorage.setItem("selectedSubcategory", selectedSubcategory);
-        // localStorage.setItem("selectedBrand", selectedBrand);
+          showToast("success", "Item added successfully!", 3000, "top-right");
+
+      
 
         setSelectedCategory("");
         setSelectedSubcategory("");
@@ -771,7 +758,7 @@ if (selectedDate > today) {
     if (!event.target.files || event.target.files.length === 0) return;
 
     const files = Array.from(event.target.files);
-    console.log("Newly selected files:", files);
+
 
     setSelectedFiles(files);
   };
@@ -800,7 +787,7 @@ if (selectedDate > today) {
 
     setImages(newImages);
     setUploadedFiles(newUploadedFiles);
-    console.log(newUploadedFiles);
+
   };
   const handleDeleteImage = (index) => {
     const newImages = [...images];
@@ -993,7 +980,7 @@ if (selectedDate > today) {
 
         <div className="col-md-3" style={{ marginTop: 47 }}>
           <button className="btn btn-outline-dark w-100" onClick={handleUpload}>
-            <i class="fa-solid fa-file-arrow-up"></i> Upload
+            <i className="fa-solid fa-file-arrow-up"></i> Upload
           </button>
         </div>
 

@@ -33,7 +33,7 @@ function Notification({ notification, setNotification }) {
         return;
       }
       const data = await response.json();
-      console.log(data);
+    
       setNotification(data.notifications);
     } catch (error) {
       console.error("Error fetching Notifications:", error);
