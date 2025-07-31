@@ -16,6 +16,7 @@ import EmailOTPManage from "./components/EmailOTPManage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProfileSetting from "./components/ProfileSetting";
 import AllUsersData from "./components/AllUsersData";
+import Pwa_App from "./components/Pwa_App";
 
 function App() {
   const [user, setUser] = useState([]);
@@ -211,6 +212,10 @@ function App() {
                  <Route
                   path="/profileSetting"
                   element={<ProfileSetting  editUser={handleEditUser} />}
+                />
+                 <Route
+                  path="/app"
+                  element={<Pwa_App/>}
                 />
               </Routes>
             </Sidebar>

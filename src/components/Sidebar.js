@@ -399,6 +399,19 @@ function Sidebar({
                   )}
                 </Link>
               </li>
+               <li className="nav-item">
+                <Link
+                  to="/app"
+                  className="nav-link text-white"
+                  onClick={() => isMobile && setShowMobileMenu(false)}
+                >
+                  <i class="fa-solid fa-download"></i>{" "}
+                  {(!isMobile || showMobileMenu) && (
+                    <span className="ms-2">Install App</span>
+                  )}
+                </Link>
+              </li>
+              
 
               {
                 userData && userData.role === "user" && (

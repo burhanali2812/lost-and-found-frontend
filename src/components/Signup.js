@@ -696,7 +696,7 @@ function Signup() {
     } catch (error) {
       setLoading(false);
       console.error("Error:", error);
-      showToast("error", "Network Error. Try again.", 3000, "top-right");
+      
     }
   };
 
