@@ -269,6 +269,10 @@ function ProfileSetting() {
     }
   };
   const openUserEditModal = () => {
+    if(!frontCnicImage || !backCnicImage) {
+      setEditCnicVisible(true)
+    }
+   
     setName(currentUser?.name || "Loading...");
     setCnic(currentUser?.cnic || "Loading...");
     setAddress(currentUser?.address || "Loading...");
@@ -285,6 +289,8 @@ function ProfileSetting() {
 
 
    const compressAndSetImage = async (e, setPreview, setFileState) => {
+
+
       const file = e.target.files[0];
       if (!file) return;
   
@@ -466,7 +472,9 @@ function ProfileSetting() {
                       : "Not provided"}
                   </div>
                 </div>
-                <div className="d-flex justify-content-end mt-2">
+                {
+                  frontCnicImage && backCnicImage && (
+                    <div className="d-flex justify-content-end mt-2">
                   <button
                     className="btn btn-warning"
                     onClick={openPasswordModal}
@@ -474,6 +482,9 @@ function ProfileSetting() {
                     <i className="fas fa-id-card me-2"></i> {cnicText}
                   </button>
                 </div>
+                  )
+                }
+                
 
                 <div className="row mt-2 g-3 justify-content-center">
                   {/* Front CNIC */}
@@ -890,15 +901,32 @@ function ProfileSetting() {
                 </div>
               </div>
               <div className="container">
-                 {cnicEditVisible === false ?(<div className="alert alert-info small mb-0">
-                    <strong>Note:</strong> To change your CNIC, please first
-                    click the
-                    <strong style={{ color: "#0d6efd", margin: "0 4px" }}>
-                      "View CNIC Images"
-                    </strong>{" "}
-                     below button and enter your password to unlock access.
-                  </div>):("")}
-                <div
+               {cnicEditVisible === false && (
+  frontCnicImage && backCnicImage ? (
+    <div className="alert alert-info small mb-0">
+      <strong>Note:</strong> To change your CNIC, please first
+      click the
+      <strong style={{ color: "#0d6efd", margin: "0 4px" }}>
+        "View CNIC Images"
+      </strong>
+      button below and enter your password to unlock access.
+    </div>
+  ) : (
+    <div className="alert alert-info d-flex align-items-start small mt-3" role="alert">
+      <i
+        className="fas fa-id-card me-3"
+        style={{ fontSize: "1.5rem", color: "#0d6efd", marginTop: "3px" }}
+      ></i>
+      <div>
+        <strong>Note:</strong> Please upload your CNIC images for identity verification and security purposes.
+      </div>
+    </div>
+  )
+)}
+
+                {
+                  frontCnicImage && backCnicImage && (
+                    <div
                   className="d-flex justify-content-end mt-2"
                   style={{ marginRight: "16px" }}
                 >
@@ -909,6 +937,8 @@ function ProfileSetting() {
                     <i className="fas fa-id-card me-2"></i> {cnicEditText}
                   </button>
                 </div>
+                  )
+                }
 
                 <div className=" mt-2 gap-3 mb-3  d-flex flex-column align-items-center justify-content-center">
                   {/* Front CNIC */}
@@ -948,7 +978,7 @@ function ProfileSetting() {
                                 e,
                                 setFrontCnicImage,
                                 setFrontSideCnicDB
-                              )} // your handler function
+                              )} 
                             />
                           </>
                         )}
@@ -973,6 +1003,7 @@ function ProfileSetting() {
                           </div>
                         )}
                       </div>
+                      
                     </div>
                   </div>
 

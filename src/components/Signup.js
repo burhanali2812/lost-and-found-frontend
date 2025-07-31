@@ -57,7 +57,6 @@ function Signup() {
   const inputRefs = useRef([]);
   const [intervalId, setIntervalId] = useState(null);
   const [progress, setProgress] = useState(0);
-  
 
   const checkPasswordStrength = (password) => {
     if (password.length < 8) return "Weak";
@@ -80,7 +79,7 @@ function Signup() {
     e.preventDefault();
     setAction("signin");
   };
-   const handleDontHaveAccount = (e) => {
+  const handleDontHaveAccount = (e) => {
     e.preventDefault();
     setAction("signup");
   };
@@ -202,7 +201,6 @@ function Signup() {
 
     try {
       const compressedFile = await imageCompression(file, options);
-   
 
       setPreview(URL.createObjectURL(compressedFile));
       setFileState(compressedFile);
@@ -439,7 +437,7 @@ function Signup() {
       const data = await response.json();
       setCurrentUserId(data.userId);
       if (response.ok) {
-        setProgress(50)
+        setProgress(50);
         showToast(
           "success",
           "Personal Information save Successfully!",
@@ -512,7 +510,7 @@ function Signup() {
       if (response2.ok) {
         try {
           await sendOTP();
-          setProgress(25)
+          setProgress(25);
           // setSignupState(true);
           setLoading(false);
           inputRefs.current[0]?.focus();
@@ -545,41 +543,22 @@ function Signup() {
     }
   };
 
-  const handleCloseCnicOpenPassword = async () => {
-    await handleUploadImages();
-    setCnicToggle(false);
-    setEnterPasswordFields(true);
-  };
+  // const handleCloseCnicOpenPassword = async () => {
+  //   await handleUploadImages();
 
-  const handleUploadImages = async () => {
+  // };
+
+  const handleUploadImages = async (e) => {
+    e.preventDefault();
     setLoading(true);
-    if (!profileImage) {
+    if (!profileImageDB) {
       showToast(
         "warning",
         "Please upload your profile picture.",
         3000,
         "top-right"
       );
-      setLoading(false);
-      return;
-    }
-    if (!frontSideCnic) {
-      showToast(
-        "warning",
-        "Please upload the front side of your CNIC",
-        3000,
-        "top-right"
-      );
-      setLoading(false);
-      return;
-    }
-    if (!backSideCnic) {
-      showToast(
-        "warning",
-        "Please upload the back side of your CNIC.",
-        3000,
-        "top-right"
-      );
+      // setCnicToggle(true);
       setLoading(false);
       return;
     }
@@ -602,13 +581,15 @@ function Signup() {
       const data = await response.json();
 
       if (response.ok) {
-        setProgress(75)
+        setProgress(75);
         showToast(
           "success",
           "Documents Uploaded Successfully",
           3000,
           "top-right"
         );
+        setCnicToggle(false);
+        setEnterPasswordFields(true);
         setLoading(false);
       } else {
         setLoading(false);
@@ -648,17 +629,15 @@ function Signup() {
       );
       return;
     }
-   if (password.length < 8) {
-  showToast(
-    "warning",
-    "Password must be at least 8 characters long",
-    3000,
-    "top-right"
-  );
-  return;
-}
-
-
+    if (password.length < 8) {
+      showToast(
+        "warning",
+        "Password must be at least 8 characters long",
+        3000,
+        "top-right"
+      );
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -679,11 +658,9 @@ function Signup() {
       if (response.ok) {
         setLoading(false);
         setAccountCreateAnimation(true);
-        setProgress(100)
-        setEnterPasswordFields(false)
+        setProgress(100);
+        setEnterPasswordFields(false);
         personalToggle(false);
-
-        
       } else {
         setLoading(false);
         showToast(
@@ -696,7 +673,6 @@ function Signup() {
     } catch (error) {
       setLoading(false);
       console.error("Error:", error);
-      
     }
   };
 
@@ -762,26 +738,30 @@ function Signup() {
                   >
                     SIGN UP
                   </h1>
-                 {
-                  progress === 0 ? (""):(
-                     <div
-                    className="progress"
-                    role="progressbar"
-                    aria-label="Example with label"
-                    aria-valuenow="25"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style={{ height: "11px" }} // sets overall height
-                  >
+                  {progress === 0 ? (
+                    ""
+                  ) : (
                     <div
-                      className="progress-bar bg-warning text-black fw-bold"
-                      style={{ width: `${progress}%`, height: "11px", fontSize: "10px" }}
+                      className="progress"
+                      role="progressbar"
+                      aria-label="Example with label"
+                      aria-valuenow="25"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style={{ height: "11px" }} // sets overall height
                     >
-                      {`${progress}%`}
+                      <div
+                        className="progress-bar bg-warning text-black fw-bold"
+                        style={{
+                          width: `${progress}%`,
+                          height: "11px",
+                          fontSize: "10px",
+                        }}
+                      >
+                        {`${progress}%`}
+                      </div>
                     </div>
-                  </div>
-                  )
-                 }
+                  )}
 
                   <p style={{ opacity: 0.8, fontSize: "1.1rem" }}>
                     Join our Lost and Found community! Create your account to
@@ -896,8 +876,6 @@ function Signup() {
                         />
                       </div>
 
-                   
-
                       <div className="d-grid">
                         <button
                           className="btn btn-outline-light"
@@ -1000,17 +978,59 @@ function Signup() {
                             }
                           />
                         </div>
-                        <div className="color-white">
-                          <div className="d-flex align-items-center text-white">
-                            <i
-                              className="fas fa-exclamation-circle me-2"
-                              style={{ fontSize: "20px", marginBottom: 45 }}
-                            ></i>
-                            <p>
-                              Your CNIC details are collected for identity
-                              verification purposes only and will not be shared
-                              publicly.
-                            </p>
+                        <div className="my-4">
+                          <hr
+                            style={{
+                              height: "3px",
+                              backgroundColor: "white",
+                              border: "none",
+                              borderRadius: "10px",
+                            }}
+                          />
+
+                          <h5 className="text-white fw-bold">
+                            CNIC Image (Optional)
+                          </h5>
+
+                          <div
+                            className="p-3 rounded mt-3"
+                            style={{
+                              backgroundColor: "#1e1e2f",
+                              color: "#e0e0e0",
+                              fontSize: "0.95rem",
+                              border: "1px solid #2c3e50",
+                            }}
+                          >
+                            <div className="d-flex align-items-start">
+                              <i
+                                className="fas fa-shield-alt me-3"
+                                style={{
+                                  fontSize: "1.5rem",
+                                  color: "#0d6efd",
+                                  marginTop: "4px",
+                                }}
+                              ></i>
+                              <div>
+                                <strong style={{ color: "#ffffff" }}>
+                                  Privacy Notice:
+                                </strong>
+                                <br />
+                                Your CNIC image will only be used to{" "}
+                                <strong>verify your identity</strong> and{" "}
+                                <strong>protect your found items</strong>. We{" "}
+                                <u>do not share</u> your personal data with
+                                anyone.
+                                <br />
+                                <br />
+                                <strong style={{ color: "#28a745" }}>
+                                  💡 Recommendation:
+                                </strong>
+                                <br />
+                                Uploading your CNIC image increases your trust
+                                level and helps others identify you more easily
+                                if they find your lost items.
+                              </div>
+                            </div>
                           </div>
                         </div>
 
@@ -1156,7 +1176,7 @@ function Signup() {
                           <button
                             type="submit"
                             className="btn btn-outline-light"
-                            onClick={handleCloseCnicOpenPassword}
+                            onClick={handleUploadImages}
                             disabled={loading}
                           >
                             {loading === false ? (
@@ -1487,7 +1507,7 @@ function Signup() {
                       ></i>
                     </span>
                   </div>
-                  
+
                   <div className="text-end mt-1 mb-1">
                     <button
                       type="button"
@@ -1532,18 +1552,18 @@ function Signup() {
                     </button>
                   </div>
 
-                   <div className="text-center mt-3">
-                      <p className="text-white">
-                        Don't have an account?{" "}
-                        <Link
-                          to="/login-signup"
-                          className="text-decoration-none"
-                          onClick={handleDontHaveAccount}
-                        >
-                          Sign up
-                        </Link>
-                      </p>
-                    </div>
+                  <div className="text-center mt-3">
+                    <p className="text-white">
+                      Don't have an account?{" "}
+                      <Link
+                        to="/login-signup"
+                        className="text-decoration-none"
+                        onClick={handleDontHaveAccount}
+                      >
+                        Sign up
+                      </Link>
+                    </p>
+                  </div>
                 </form>
               </>
             )}
