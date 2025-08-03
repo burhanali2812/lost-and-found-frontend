@@ -234,6 +234,7 @@ const postUpdateSettings = async () => {
       if (backSideCnicDB) formData.append("backCnic", backSideCnicDB);
       if (name) formData.append("name", name);
       if (address) formData.append("address", address);
+      
    
 
       try {
@@ -251,6 +252,7 @@ const postUpdateSettings = async () => {
         const data = await response.json();
   
         if (response.ok) {
+          await postUpdateSettings();
          await getUser()
           showToast(
             "success",
