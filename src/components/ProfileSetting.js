@@ -77,6 +77,40 @@ function ProfileSetting() {
 
     getUser();
   }, [userId]);
+const postUpdateSettings = async () => {
+  if (currentUser?.isVerified === "declined") {
+  try {
+    const response = await fetch(
+      "https://lost-and-found-backend-xi.vercel.app/auth/updateUserVerification",
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      showToast(
+      "info",
+      "Your account update request has been sent to the Lost and Found team for verification.",
+      3000,
+      "top-right"
+    );
+    } else {
+      showToast("error", data.message || "Failed to send verification request.", 3000, "top-right");
+    }
+  } catch (error) {
+    console.error("Error updating verification:", error);
+    showToast("error", "Something went wrong. Please try again later.", 3000, "top-right");
+  }
+}
+};
+
+
   const resetPassword = async () => {
     setLoadingPassword(true)
     const token = localStorage.getItem("resetToken");
