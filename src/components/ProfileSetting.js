@@ -85,7 +85,6 @@ const postUpdateSettings = async () => {
       {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
@@ -228,6 +227,7 @@ const postUpdateSettings = async () => {
 
    const handleUpdateData = async () => {
       setLoading(true);
+        await postUpdateSettings();
       const formData = new FormData();
       if (profileImageDB) formData.append("profileImage", profileImageDB);
       if (frontSideCnicDB) formData.append("frontCnic", frontSideCnicDB);
@@ -252,7 +252,7 @@ const postUpdateSettings = async () => {
         const data = await response.json();
   
         if (response.ok) {
-          await postUpdateSettings();
+       
          await getUser()
           showToast(
             "success",
